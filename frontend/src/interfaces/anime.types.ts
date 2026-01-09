@@ -1,0 +1,30 @@
+export interface Anime {
+    id: number;
+    title: string;
+    description?: string;
+    genre?: string;
+    release_year?: number;
+    img_url_icon: string;
+    img_url_banner: string;
+    created_at?: Date;
+}
+
+export interface AnimeResponse {
+    animes: Anime[];
+    anime: Anime | null;
+    error?: any;
+    isLoading: boolean;
+    message?: string | null;
+    createAnime: (animeData: Partial<Anime> | FormData) => Promise<void>;
+    fetchAnimes: () => Promise<void>;
+    getAnimeById: (id: number) => Promise<void>;
+    deleteAnime: (id: number) => Promise<void>;
+    updateAnime: (id: number, animeData: Partial<Anime>) => Promise<void>;
+
+}
+export interface FavoriteAnime extends Anime {
+  added_at: Date; 
+}
+export interface WatchlistAnime extends Anime {
+  added_at: Date; 
+}

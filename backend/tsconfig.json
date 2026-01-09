@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "./dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+    // Linia "typeRoots" a fost ȘTEARSĂ. Este foarte important.
+  },
+  "include": [
+    "src/**/*.ts",      // Găsește toate fișierele .ts
+    "src/**/*.d.ts"   // Găsește toate fișierele .d.ts (inclusiv al tău)
+  ],
+  "exclude": ["node_modules"]
+}
