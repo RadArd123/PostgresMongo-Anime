@@ -39,3 +39,6 @@ dist-ssr/
 
 # OS generated files
 Thumbs.db
+
+
+# Backend specific ignores

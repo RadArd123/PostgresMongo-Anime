@@ -39,3 +39,4 @@ dist-ssr/
 
 # OS generated files
 Thumbs.db
+# Frontend specific ignores
