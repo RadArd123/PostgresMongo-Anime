@@ -7,12 +7,14 @@ import Footer from "@/components/myComponents/Footer";
 import NewEpisodesSection from "@/components/myComponents/NewEpisodesSection";
 import NewsCards from "@/components/myComponents/NewsCards";
 import { useAnimeStore } from "@/store/animeStore";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
+
+
 
 const HomePage = () => {
   const {animes, fetchAnimes} = useAnimeStore();
-   const topAnimes = animes.sort(() => Math.random() - 0.5).slice(0, 10); 
-   const popularAnimes = animes.sort(() => Math.random() - 0.3).slice(0, 10); 
+   const topAnimes = useMemo(() => [...animes].sort(() => Math.random() - 0.5).slice(0, 10), [animes]); 
+   const popularAnimes = useMemo(() => [...animes].sort(() => Math.random() - 0.3).slice(0, 10), [animes]); 
 
 
   useEffect(() => {
@@ -26,8 +28,11 @@ const HomePage = () => {
     <div className="w-full h-full ">
       <BannerImg />
 
-      {/* Centered responsive container so sections stack and don't overlap */}
-      <div className="absolute max-w-[85vw] mx-auto px-4 space-y-20 left-[10vw]">
+      {/* Responsive container taking full available width while clearing sidebar */}
+      <div className="relative w-full pl-[130px] md:pl-[150px] pr-8 md:pr-16 space-y-20 pt-8 pb-12 z-10">
+        
+        {/* New Glassmorphism Preview Section */}
+        {/* Top Animes Section restored to its original place */}
         <section>
           <AnimeCards title={topAnimetitle} animes={topAnimes} />
         </section>
@@ -47,6 +52,8 @@ const HomePage = () => {
         <section>
           <NewEpisodesSection />
         </section>
+
+
         <section >
           <Footer />
         </section>

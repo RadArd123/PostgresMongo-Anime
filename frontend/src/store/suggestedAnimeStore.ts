@@ -16,7 +16,7 @@ export const useSuggestedAnimeStore = create<ISuggestedAnimeResponse>((set) => (
                 message: response.data.message
             }));
         } catch (error: any) {
-            set({ error: error.message, isLoading: false });
+            set({ error: error.response?.data?.message || error.message, isLoading: false });
         }finally {
             set({ isLoading: false });
         }
@@ -24,26 +24,41 @@ export const useSuggestedAnimeStore = create<ISuggestedAnimeResponse>((set) => (
     getSuggestedAnimes: async (): Promise<void> => {
         set({ isLoading: true, error: null });
         try{
-            const response = await axiosInstance.get("anime-data/getSuggestedAnimes");
-            set({ suggestedAnimes: response.data.suggestedAnimes });
+            const response = await axiosInstance.get("/anime-data/getSuggestedAnimes");
+            const data = response.data.suggestedAnimes || (Array.isArray(response.data) ? response.data : []);
+            set({ suggestedAnimes: data });
         } catch (error: any) {
-            set({ error: error.message, isLoading: false });
+            set({ error: error.response?.data?.message || error.message, isLoading: false });
         }finally {
             set({ isLoading: false });
         }
     },
-    removeSuggestedAnime: async (id: string): Promise<void> => {
+    removeSuggestedAnime: async (id: number): Promise<void> => {
         set({ isLoading: true, error: null });
         try{
-            const response = await axiosInstance.delete(`anime-data/removeSuggestedAnime/${id}`);
+            const response = await axiosInstance.delete(`/anime-data/removeSuggestedAnime/${id}`);
             set((state) => ({
-                suggestedAnimes: state.suggestedAnimes.filter((suggestedAnime:any) => suggestedAnime._id !== id),
+                suggestedAnimes: state.suggestedAnimes.filter((suggestedAnime:any) => String(suggestedAnime.id) !== String(id)),
                 message: response.data.message
             }));
         } catch (error: any) {
-            set({ error: error.message, isLoading: false });
+            set({ error: error.response?.data?.message || error.message, isLoading: false });
         }finally {
             set({ isLoading: false });
         }
     },
+    updateSuggestedAnime: async (id: number, data: Partial<ISuggestedAnime>): Promise<void> => {
+        set({ isLoading: true, error: null });
+        try {
+            const response = await axiosInstance.put(`/anime-data/updateSuggestedAnime/${id}`, data);
+            set((state) => ({
+                suggestedAnimes: state.suggestedAnimes.map((sa) => String(sa.id) === String(id) ? response.data.suggestedAnime : sa),
+                message: response.data.message
+            }));
+        } catch (error: any) {
+            set({ error: error.response?.data?.message || error.message, isLoading: false });
+        } finally {
+            set({ isLoading: false });
+        }
+    }
 }));

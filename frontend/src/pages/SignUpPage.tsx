@@ -1,134 +1,152 @@
-import { User, Mail, Lock, Loader } from "lucide-react";
 import { useState } from "react";
-import PasswordStrengthMeter from "../components/myComponents/PasswordStrengthMeter.jsx";
 import { Link, useNavigate } from "react-router-dom";
-import { Input } from "@/components/ui/input.js";
-import { Button } from "@/components/ui/button.js";
-import { useAuthStore } from "@/store/authStore.js";
+import AnimeFightBackground from "@/components/myComponents/AnimeFightBackground";
+import { useAuthStore } from "@/store/authStore";
 import { toast } from "sonner";
 
-const SignUpPage = () => {
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+export default function SignUpPage() {
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const { signup, error: authError } = useAuthStore();
   const navigate = useNavigate();
-  const { signup , isLoading, error } = useAuthStore();
 
-  const handleSignUp = async (e: React.FormEvent) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    if (error) setError(null);
+  };
+
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    try{
-      await signup(username, email, password);
-      if(!isLoading && !error){
-        navigate("/");
-        toast.success("Signup successful!");
-      }
+    setIsLoading(true);
+    setError(null);
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      setIsLoading(false);
+      return;
+    }
+
+    // Call zustand signup function
+    await signup(formData.username, formData.email, formData.password);
     
-      
-    }catch(err:any){
-      console.error("Signup error:", err);
+    // Check if authentication was successful
+    if (useAuthStore.getState().isAuthenticated) {
+      navigate("/");
+    } else {
+      setIsLoading(false);
     }
   };
 
+  const displayError = error || authError;
+
   return (
-    <div className="min-h-screen flex items-center justify-center px-4">
-      {/* CARD */}
-      <div className="w-full max-w-md rounded-3xl border border-white/10 bg-black/60 
-                      backdrop-blur-xl shadow-[0_0_60px_rgba(101,123,232,0.35)] overflow-hidden ">
-        <div className="p-8">
-          {/* TITLU */}
-          <h2 className="text-3xl font-extrabold text-center tracking-tight 
-                         bg-linear-to-r from-indigo-500 to-blue-500 bg-clip-text text-transparent">
-            Create Account
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-400">
-            Join the community and keep track of your favourite animes.
-          </p>
+    <main className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[#02040a]">
+      {/* Background Anime Grid Matrix */}
+      <AnimeFightBackground />
 
-          {/* FORM */}
-          <form className="mt-8 space-y-5" onSubmit={handleSignUp}>
-            {/* USERNAME */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-200">Full Name</label>
-              <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  type="text"
-                  placeholder="Enter your full name"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="pl-10 bg-white/5 border-white/10 text-gray-100 
-                             placeholder:text-gray-500 focus-visible:ring-blue-500 focus-visible:ring-2"
-                />
-              </div>
+      {/* Center Cyberpunk Console Form (No outer box/border, floating free) */}
+      <div className="relative z-30 w-full max-w-md px-6 my-8 animate-in zoom-in-95 duration-500">
+        <div className="relative z-10 w-full">
+          <div className="mb-10 text-center">
+            <h1 className="text-3xl md:text-5xl text-zinc-100 leading-tight tracking-tighter drop-shadow-[0_4px_20px_rgba(0,0,0,0.95)]">
+              Create{" "}
+              <span className="text-white font-black drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]">
+                Your Avatar
+              </span>
+              <br />
+              <span className="text-zinc-400 font-light text-base md:text-lg tracking-wide drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
+                to Join the Guild
+              </span>
+            </h1>
+          </div>
+
+          <form className="space-y-4" onSubmit={handleSignup} autoComplete="off">
+            <div className="space-y-3">
+              <input
+                type="text"
+                placeholder="Choose Avatar Name (Username)"
+                className="w-full bg-black/80 backdrop-blur-2xl border border-white/20 rounded-2xl px-5 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-white/50 focus:ring-1 focus:ring-white/30 transition-all shadow-[0_10px_30px_rgba(0,0,0,0.8)]"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+              />
+
+              <input
+                type="email"
+                placeholder="System Email"
+                className="w-full bg-black/80 backdrop-blur-2xl border border-white/20 rounded-2xl px-5 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-white/50 focus:ring-1 focus:ring-white/30 transition-all shadow-[0_10px_30px_rgba(0,0,0,0.8)]"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+              />
+              
+              <input
+                type="password"
+                placeholder="Create Access Password"
+                className="w-full bg-black/80 backdrop-blur-2xl border border-white/20 rounded-2xl px-5 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-white/50 focus:ring-1 focus:ring-white/30 transition-all shadow-[0_10px_30px_rgba(0,0,0,0.8)]"
+                name="password"
+                autoComplete="new-password"
+                value={formData.password}
+                onChange={handleChange}
+              />
+
+              <input
+                type="password"
+                placeholder="Confirm Password"
+                className="w-full bg-black/80 backdrop-blur-2xl border border-white/20 rounded-2xl px-5 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-white/50 focus:ring-1 focus:ring-white/30 transition-all shadow-[0_10px_30px_rgba(0,0,0,0.8)]"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                autoComplete="new-password"
+                onChange={handleChange}
+              />
             </div>
 
-            {/* EMAIL */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-200">Email</label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="pl-10 bg-white/5 border-white/10 text-gray-100 
-                             placeholder:text-gray-500 focus-visible:ring-[#657be8] focus-visible:ring-2"
-                />
+            {displayError && (
+              <div className="text-red-400 text-[10px] uppercase tracking-widest text-center animate-pulse drop-shadow-md">
+                System Alert: {displayError}
               </div>
-            </div>
-
-            {/* PASSWORD */}
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-200">Password</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10 bg-white/5 border-white/10 text-gray-100 
-                             placeholder:text-gray-500 focus-visible:ring-blue-500 focus-visible:ring-2"
-                />
-              </div>
-              <PasswordStrengthMeter password={password} />
-            </div>
-
-            {error && (
-              <p className="text-sm text-red-400 font-semibold">{error}</p>
             )}
 
-            {/* BUTTON */}
-            <Button
+            <div className="flex justify-center pt-2">
+              <p className="text-[11px] text-zinc-400 font-medium tracking-wider uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+                Already have an ID?{" "}
+                <Link
+                  to="/login"
+                  className="text-zinc-100 hover:text-white underline underline-offset-4 transition-all ml-1 font-bold"
+                >
+                  Go to your Realm
+                </Link>
+              </p>
+            </div>
+            
+            <button
               type="submit"
-                className="mt-2 w-full py-3 text-base font-bold rounded-2xl 
-                         bg-linear-to-r from-indigo-500 to-blue-500 
-                         hover:brightness-120 hover:shadow-[0_10px_30px_rgba(101,123,232,0.5)]
-                         focus-visible:ring-2 focus-visible:ring-offset-2 
-                         focus-visible:ring-blue-500 focus-visible:ring-offset-gray-900 border-0"
+              disabled={isLoading}
+              className="w-full group mt-6 bg-white hover:bg-zinc-200 disabled:bg-zinc-500 border border-white/20 rounded-2xl py-2 pl-8 pr-2 flex items-center justify-between transition-all active:scale-[0.98] shadow-[0_10px_40px_rgba(255,255,255,0.15)]"
             >
-              {isLoading ? (
-                <Loader className="animate-spin mx-auto h-5 w-5" />
-              ) : (
-                "Sign Up"
-              )}
-            </Button>
+              <span className="text-black font-black tracking-tighter uppercase text-sm">
+                {isLoading ? "Synchronizing..." : "Complete Registration"}
+              </span>
+              <div className="w-12 h-12 bg-black rounded-xl flex items-center justify-center group-hover:translate-x-1 transition-transform">
+                <span className="text-white text-xl">→</span>
+              </div>
+            </button>
           </form>
-        </div>
 
-        {/* FOOTER */}
-        <div className="px-8 py-4 border-t border-white/5 bg-black/50 flex justify-center">
-          <p className="text-sm text-gray-400">
-            Already have an account?{" "}
-            <Link to="/login" className="text-[#657be8] font-medium hover:underline">
-              Login
-            </Link>
+          <p className="mt-10 text-[10px] text-zinc-500 text-center leading-relaxed font-medium tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+            By registering, you initialize your connection to the{" "}
+            <span onClick={() => toast.info('📜 Disponibil în curând în versiunea finală.')} className="text-zinc-300 underline cursor-pointer hover:text-white transition-colors">
+              Guild Protocols
+            </span>
           </p>
         </div>
       </div>
-    </div>
+    </main>
   );
-};
-
-export default SignUpPage;
+}

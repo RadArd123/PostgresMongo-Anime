@@ -1,24 +1,16 @@
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { Card, CardContent } from "../ui/card";
-
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { Input } from "../ui/input";
 import ActionCard from "./ActionCard";
-
-// Importing the store you provided
 import { useAnimeNewsStore } from "@/store/animeNewsStore";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import type { Anime } from "@/interfaces/anime.types";
 import { ScrollArea } from "../ui/scroll-area";
+import { Newspaper } from "lucide-react";
 
-const DialogAddNews = ({animes= []}: {animes: Anime[]}) => {
+const DialogAddNews = ({ animes = [] }: { animes: Anime[] }) => {
   const { addAnimeNews, isLoading } = useAnimeNewsStore();
   const [open, setOpen] = useState(false);
 
@@ -42,10 +34,7 @@ const DialogAddNews = ({animes= []}: {animes: Anime[]}) => {
     formData.append("body_text", bodyText);
     formData.append("tags", tags);
     if (relatedPostgresAnimeId)
-      formData.append(
-        "related_postgres_anime_id",
-        relatedPostgresAnimeId.toString()
-      );
+      formData.append("related_postgres_anime_id", relatedPostgresAnimeId.toString());
     if (rating) formData.append("rating", rating.toString());
     formData.append("views_text", viewsText);
     if (backgroundImage) formData.append("background_image", backgroundImage);
@@ -78,25 +67,29 @@ const DialogAddNews = ({animes= []}: {animes: Anime[]}) => {
         />
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-3xl max-h-screen overflow-y-auto bg-linear-to-b from-black via-slate-950 to-black text-white rounded-2xl shadow-2xl border border-blue-500/30 p-4 sm:p-6">
-      <ScrollArea className="max-h-[90vh]">
-        <form className="space-y-5" onSubmit={handleSubmit}>
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-white">
-              Add News Article
-            </DialogTitle>
-          </DialogHeader>
+      <DialogContent className="sm:max-w-3xl max-h-screen overflow-y-auto bg-slate-950/80 backdrop-blur-2xl text-white rounded-2xl shadow-2xl border border-white/10 p-4 sm:p-6">
+        <ScrollArea className="max-h-[85vh] pr-4">
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <DialogHeader className="flex flex-row items-center gap-3 space-y-0 pb-2">
+              <div className="bg-blue-500/20 p-2 rounded-xl">
+                  <Newspaper className="w-6 h-6 text-blue-400" />
+              </div>
+              <div>
+                  <DialogTitle className="text-2xl font-bold text-white">
+                  Add News Article
+                  </DialogTitle>
+                  <p className="text-sm text-slate-400 mt-1">
+                  Share the latest updates and announcements.
+                  </p>
+              </div>
+            </DialogHeader>
 
-          {/* Primary Info Card */}
-          <Card className="bg-slate-900/60 border border-blue-500/20 rounded-2xl">
-            <CardContent className="pb-0 grid gap-4 sm:grid-cols-2">
-              {/* Title */}
-              <div className="flex justify-between w-full gap-3 sm:col-span-2">
-                <div className="space-y-2 col-span-2 w-full">
-                  <label
-                    htmlFor="title"
-                    className="text-sm font-medium text-slate-100"
-                  >
+            {/* Primary Info Card */}
+            <Card className="bg-white/5 border border-white/5 rounded-2xl shadow-inner">
+              <CardContent className="p-4 grid gap-5 sm:grid-cols-2">
+                {/* Title */}
+                <div className="space-y-2 sm:col-span-2">
+                  <label htmlFor="title" className="text-sm font-medium text-slate-300">
                     Title <span className="text-blue-400">*</span>
                   </label>
                   <Input
@@ -106,16 +99,13 @@ const DialogAddNews = ({animes= []}: {animes: Anime[]}) => {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     required
-                    className="bg-slate-900/70 border border-slate-700/60 text-white placeholder:text-slate-500 rounded-lg focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500"
+                    className="bg-black/40 border-white/10 text-white placeholder:text-slate-500 rounded-xl transition-all duration-300 focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:border-blue-500 hover:border-blue-500/50"
                   />
                 </div>
 
                 {/* Sub Title */}
-                <div className="space-y-2 col-span-2 w-full">
-                  <label
-                    htmlFor="sub_title"
-                    className="text-sm font-medium text-slate-100"
-                  >
+                <div className="space-y-2 sm:col-span-2">
+                  <label htmlFor="sub_title" className="text-sm font-medium text-slate-300">
                     Sub Title
                   </label>
                   <Input
@@ -124,182 +114,160 @@ const DialogAddNews = ({animes= []}: {animes: Anime[]}) => {
                     placeholder="Part 3 Release Date"
                     value={subTitle}
                     onChange={(e) => setSubTitle(e.target.value)}
-                    className="bg-slate-900/70 border border-slate-700/60 text-white placeholder:text-slate-500 rounded-lg focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500"
+                    className="bg-black/40 border-white/10 text-white placeholder:text-slate-500 rounded-xl transition-all duration-300 focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:border-blue-500 hover:border-blue-500/50"
                   />
                 </div>
-              </div>
 
-              {/* Body Text */}
-              <div className="space-y-2 sm:col-span-2">
-                <label
-                  htmlFor="body_text"
-                  className="text-sm font-medium text-slate-100"
-                >
-                  Body Text <span className="text-blue-400">*</span>
-                </label>
-                <textarea
-                  id="body_text"
-                  name="body_text"
-                  rows={4}
-                  placeholder="The final season begins..."
-                  value={bodyText}
-                  onChange={(e) => setBodyText(e.target.value)}
-                  required
-                  className="w-full h-20 bg-slate-900/70 border border-slate-700/60 text-white placeholder:text-slate-500 rounded-lg px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500 resize-none"
-                />
-              </div>
-            </CardContent>
-          </Card>
+                {/* Body Text */}
+                <div className="space-y-2 sm:col-span-2">
+                  <label htmlFor="body_text" className="text-sm font-medium text-slate-300">
+                    Body Text <span className="text-blue-400">*</span>
+                  </label>
+                  <textarea
+                    id="body_text"
+                    name="body_text"
+                    rows={4}
+                    placeholder="The final season begins..."
+                    value={bodyText}
+                    onChange={(e) => setBodyText(e.target.value)}
+                    required
+                    className="w-full h-32 bg-black/40 border border-white/10 text-white placeholder:text-slate-500 rounded-xl px-3 py-2 text-sm transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:border-blue-500 hover:border-blue-500/50 resize-none"
+                  />
+                </div>
+              </CardContent>
+            </Card>
 
-          {/* Metadata Card */}
-          <Card className="bg-slate-900/60 border border-blue-500/20 rounded-2xl ">
-            <CardContent className="p-3 pb-0 grid gap-4 sm:grid-cols-2">
-              <div className ="flex flex-col sm:col-span-2 sm:flex-row sm:gap-4">
-              {/* Tags */}
-              <div className="space-y-2 sm:col-span-2">
-                <label
-                  htmlFor="tags"
-                  className="text-sm font-medium text-slate-100"
-                >
-                  Tags{" "}
-                  <span className="text-xs text-slate-400">
-                    (Comma separated)
-                  </span>
-                </label>
-                <Input
-                  id="tags"
-                  name="tags"
-                  placeholder="Action, Drama, Titans"
-                  value={tags}
-                  onChange={(e) => setTags(e.target.value)}
-                  className="bg-slate-900/70 border border-slate-700/60 text-white placeholder:text-slate-500 rounded-lg focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500"
-                />
-              </div>
+            {/* Metadata Card */}
+            <Card className="bg-white/5 border border-white/5 rounded-2xl shadow-inner">
+              <CardContent className="p-4 grid gap-5 sm:grid-cols-2">
+                {/* Tags */}
+                <div className="space-y-2 sm:col-span-2">
+                  <label htmlFor="tags" className="text-sm font-medium text-slate-300">
+                    Tags{" "}
+                    <span className="text-xs text-slate-500">
+                      (Comma separated)
+                    </span>
+                  </label>
+                  <Input
+                    id="tags"
+                    name="tags"
+                    placeholder="Action, Drama, Titans"
+                    value={tags}
+                    onChange={(e) => setTags(e.target.value)}
+                    className="bg-black/40 border-white/10 text-white placeholder:text-slate-500 rounded-xl transition-all duration-300 focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:border-blue-500 hover:border-blue-500/50"
+                  />
+                </div>
 
-              {/* Rating */}
-              <div className="space-y-2">
-                <label
-                  htmlFor="rating"
-                  className="text-sm font-medium text-slate-100"
-                >
-                  Rating
-                </label>
-                <Input
-                  id="rating"
-                  name="rating"
-                  type="number"
-                  step="0.1"
-                  placeholder="9.2"
-                  value={rating}
-                  onChange={(e) => setRating(Number(e.target.value))}
-                  className="bg-slate-900/70 border border-slate-700/60 text-white placeholder:text-slate-500 rounded-lg focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500"
-                />
-              </div>
+                {/* Rating */}
+                <div className="space-y-2">
+                  <label htmlFor="rating" className="text-sm font-medium text-slate-300">
+                    Rating
+                  </label>
+                  <Input
+                    id="rating"
+                    name="rating"
+                    type="number"
+                    step="0.1"
+                    placeholder="9.2"
+                    value={rating}
+                    onChange={(e) => setRating(Number(e.target.value))}
+                    className="bg-black/40 border-white/10 text-white placeholder:text-slate-500 rounded-xl transition-all duration-300 focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:border-blue-500 hover:border-blue-500/50"
+                  />
+                </div>
 
-              {/* Views Text */}
-              <div className="space-y-2 sm:col-span-2">
-                <label
-                  htmlFor="views_text"
-                  className="text-sm font-medium text-slate-100"
-                >
-                  Views Display Text
-                </label>
-                <Input
-                  id="views_text"
-                  name="views_text"
-                  placeholder="2.5M Reads"
-                  value={viewsText}
-                  onChange={(e) => setViewsText(e.target.value)}
-                  className="bg-slate-900/70 border border-slate-700/60 text-white placeholder:text-slate-500 rounded-lg focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500"
-                />
-              </div>
-              </div>
-              {/* Related ID */}
-              <div className="space-y-2">
-                <label
-                  htmlFor="related_postgres_anime_id"
-                  className="text-sm font-medium text-slate-100"
-                >
-                  Related Anime ID
-                </label>
-                    <Select
-                  value={relatedPostgresAnimeId? String(relatedPostgresAnimeId) : ""}
-                  onValueChange={(value) => setRelatedPostgresAnimeId((value))}
-                >
-                  <SelectTrigger className="bg-slate-900/70 border border-slate-700/60 text-white rounded-xl focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-0 focus-visible:border-blue-500">
-                    <SelectValue placeholder="Select anime" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-slate-900 border border-slate-700/60 text-white">
-                    {animes.map((anime) => (
-                      <SelectItem key={anime.id} value={String(anime.id)}>
-                        {anime.title}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                <p className="text-xs text-slate-400">
-                  The selected anime’s ID will be used as <code>anime_id</code>.
-                </p>
-                <Input
-                  id="related_postgres_anime_id"
-                  name="related_postgres_anime_id"
-                  type="number"
-                  placeholder="50"
-                  value={relatedPostgresAnimeId}
-                  onChange={(e) =>
-                    setRelatedPostgresAnimeId((e.target.value))
-                  }
-                  className="bg-slate-900/70 border border-slate-700/60 text-white placeholder:text-slate-500 rounded-lg focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:border-blue-500"
-                />
-              </div>
-            </CardContent>
-          </Card>
+                {/* Views Text */}
+                <div className="space-y-2">
+                  <label htmlFor="views_text" className="text-sm font-medium text-slate-300">
+                    Views Display Text
+                  </label>
+                  <Input
+                    id="views_text"
+                    name="views_text"
+                    placeholder="2.5M Reads"
+                    value={viewsText}
+                    onChange={(e) => setViewsText(e.target.value)}
+                    className="bg-black/40 border-white/10 text-white placeholder:text-slate-500 rounded-xl transition-all duration-300 focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:border-blue-500 hover:border-blue-500/50"
+                  />
+                </div>
+                
+                {/* Related ID */}
+                <div className="space-y-2 sm:col-span-2">
+                  <label htmlFor="related_postgres_anime_id" className="text-sm font-medium text-slate-300">
+                    Related Anime
+                  </label>
+                  <Select
+                    value={relatedPostgresAnimeId ? String(relatedPostgresAnimeId) : ""}
+                    onValueChange={(value) => setRelatedPostgresAnimeId((value))}
+                  >
+                    <SelectTrigger className="bg-black/40 border-white/10 text-white rounded-xl transition-all duration-300 focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:ring-offset-0 focus-visible:border-blue-500 hover:border-blue-500/50">
+                      <SelectValue placeholder="Select anime" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-900 border border-slate-700 text-white">
+                      {animes.map((anime) => (
+                        <SelectItem key={anime.id} value={String(anime.id)}>
+                          {anime.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-slate-500">
+                    Selecting an anime sets the <code>related_postgres_anime_id</code>.
+                  </p>
+                  
+                  {/* Keep the input to allow manual entry if needed or just show the ID */}
+                  <Input
+                    id="related_postgres_anime_id_input"
+                    name="related_postgres_anime_id_input"
+                    type="number"
+                    placeholder="Or enter ID manually (e.g. 50)"
+                    value={relatedPostgresAnimeId}
+                    onChange={(e) => setRelatedPostgresAnimeId((e.target.value))}
+                    className="mt-2 bg-black/40 border-white/10 text-white placeholder:text-slate-500 rounded-xl transition-all duration-300 focus-visible:ring-2 focus-visible:ring-blue-500/50 focus-visible:border-blue-500 hover:border-blue-500/50"
+                  />
+                </div>
+              </CardContent>
+            </Card>
 
-          {/* Media Card */}
-          <Card className="bg-slate-900/60 border border-blue-500/20 rounded-2xl">
-            <CardContent className="p-3 ">
-              <div className="space-y-2">
-                <label
-                  htmlFor="background_image"
-                  className="text-sm font-medium text-slate-100"
-                >
-                  Background Image <span className="text-blue-400">*</span>
-                </label>
-                <Input
-                  id="background_image"
-                  name="background_image"
-                  type="file"
-                  accept="image/*"
-                  required
-                  onChange={(e) =>
-                    setBackgroundImage(e.target.files ? e.target.files[0] : "")
-                  }
-                  className="cursor-pointer bg-slate-900/70 border border-slate-700/60 text-white rounded-lg file:mr-3 file:rounded-lg file:border-0 file:bg-blue-500 file:px-3 file:py-1.5 file:text-xs file:font-medium file:text-slate-950 hover:file:bg-blue-600"
-                />
-              </div>
-            </CardContent>
-          </Card>
+            {/* Media Card */}
+            <Card className="bg-white/5 border border-white/5 rounded-2xl shadow-inner">
+              <CardContent className="p-4">
+                <div className="space-y-2">
+                  <label htmlFor="background_image" className="text-sm font-medium text-slate-300">
+                    Background Image <span className="text-blue-400">*</span>
+                  </label>
+                  <Input
+                    id="background_image"
+                    name="background_image"
+                    type="file"
+                    accept="image/*"
+                    required
+                    onChange={(e) => setBackgroundImage(e.target.files ? e.target.files[0] : "")}
+                    className="cursor-pointer bg-black/40 border-white/10 text-slate-300 rounded-xl file:mr-4 file:rounded-lg file:border-0 file:bg-blue-500/20 file:text-blue-400 file:px-4 file:py-1.5 file:text-xs file:font-semibold hover:file:bg-blue-500/30 transition-all duration-300 focus-visible:ring-2 focus-visible:ring-blue-500/50"
+                  />
+                </div>
+              </CardContent>
+            </Card>
 
-          {/* Actions */}
-          <div className="flex items-center justify-end gap-3 pt-1 pb-1">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setOpen(false)}
-              className="border-slate-600/70 text-slate-200 bg-transparent hover:bg-slate-800/80 rounded-xl"
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              disabled={isLoading}
-              className="px-5 py-2.5 text-sm font-semibold rounded-xl bg-blue-500 text-slate-950 shadow-lg shadow-blue-500/30 hover:bg-blue-600"
-            >
-              {isLoading ? "Publishing..." : "Publish News"}
-            </Button>
-          </div>
-        </form>
-         </ScrollArea>
+            {/* Actions */}
+            <div className="flex items-center justify-end gap-3 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOpen(false)}
+                className="border-white/10 text-slate-300 bg-white/5 hover:bg-white/10 hover:text-white rounded-xl transition-all"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="px-6 py-2.5 text-sm font-bold rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:from-blue-500 hover:to-indigo-500 transition-all"
+              >
+                {isLoading ? "Publishing..." : "Publish News"}
+              </Button>
+            </div>
+          </form>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

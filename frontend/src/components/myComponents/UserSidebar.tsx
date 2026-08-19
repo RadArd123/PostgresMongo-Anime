@@ -1,282 +1,188 @@
+import React, { useEffect, useMemo, useState } from "react";
+import { ScrollArea } from "../ui/scroll-area";
+import UserIcon from "./UserIcon";
+import { Home, Shield, User as UserIconLucide, RefreshCw, Search } from "lucide-react";
+import { axiosInstance } from "@/lib/axios";
 
-import { ScrollArea } from '../ui/scroll-area'
-import  { useMemo, useState } from "react";
-import UserIcon from './UserIcon';
-import { Home } from 'lucide-react';
-
-type UserRole = "user" | "admin";
-
-interface User {
+export interface AdminUser {
   id: number;
   username: string;
   email: string;
-  role: UserRole;
+  role: "admin" | "user";
   avatarUrl: string;
+  status?: string;
   lastActive: string;
+  createdAt?: string;
+  totalVisits?: number;
+  activeDays?: number;
+  favoritesCount?: number;
+  watchlistCount?: number;
+  activityScore?: number;
 }
-const users: User[] = [
-  {
-    id: 1,
-    username: "ShadowFox",
-    email: "shadow.fox@example.com",
-    role: "admin",
-    avatarUrl: "src/assets/avatars/avatar1.jpg",
-    lastActive: "2 minutes ago",
-  },
-  {
-    id: 2,
-    username: "LunaHikari",
-    email: "luna.hikari@example.com",
-    role: "user",
-    avatarUrl: "src/assets/avatars/avatar2.jpg",
-    lastActive: "12 minutes ago",
-  },
-  {
-    id: 3,
-    username: "OtakuKing",
-    email: "otaku.king@example.com",
-    role: "user",
-    avatarUrl: "src/assets/avatars/avatar3.jpg",
-    lastActive: "1 hour ago",
-  },
-  {
-    id: 4,
-    username: "SageSensei",
-    email: "sage.sensei@example.com",
-    role: "user",
-    avatarUrl: "src/assets/avatars/avatar4.jpg",
-    lastActive: "3 hours ago",
-  },
-  {
-    id: 5,
-    username: "PixelNeko",
-    email: "pixel.neko@example.com",
-    role: "user",
-    avatarUrl: "src/assets/avatars/avatar5.jpg",
-    lastActive: "Yesterday",
-  },
-  {
-    id: 6,
-    username: "AdminZero",
-    email: "admin.zero@example.com",
-    role: "admin",
-    avatarUrl: "src/assets/avatars/avatar6.jpg",
-    lastActive: "Now",
-  },
-   {
-    id: 7,
-    username: "ShadowFox",
-    email: "shadow.fox@example.com",
-    role: "admin",
-    avatarUrl: "src/assets/avatars/avatar1.jpg",
-    lastActive: "2 minutes ago",
-  },
-  {
-    id: 8,
-    username: "LunaHikari",
-    email: "luna.hikari@example.com",
-    role: "user",
-    avatarUrl: "src/assets/avatars/avatar2.jpg",
-    lastActive: "12 minutes ago",
-  },
-  {
-    id: 9,
-    username: "OtakuKing",
-    email: "otaku.king@example.com",
-    role: "user",
-    avatarUrl: "src/assets/avatars/avatar3.jpg",
-    lastActive: "1 hour ago",
-  },
-  {
-    id: 10,
-    username: "SageSensei",
-    email: "sage.sensei@example.com",
-    role: "user",
-    avatarUrl: "src/assets/avatars/avatar4.jpg",
-    lastActive: "3 hours ago",
-  },
-  {
-    id: 11,
-    username: "PixelNeko",
-    email: "pixel.neko@example.com",
-    role: "user",
-    avatarUrl: "src/assets/avatars/avatar5.jpg",
-    lastActive: "Yesterday",
-  },
-  {
-    id: 12,
-    username: "AdminZero",
-    email: "admin.zero@example.com",
-    role: "admin",
-    avatarUrl: "src/assets/avatars/avatar6.jpg",
-    lastActive: "Now",
-  },
-  {
-    id: 13,
-    username: "ShadowFox",
-    email: "shadow.fox@example.com",
-    role: "admin",
-    avatarUrl: "src/assets/avatars/avatar1.jpg",
-    lastActive: "2 minutes ago",
-  },
-  {
-    id: 14,
-    username: "LunaHikari",
-    email: "luna.hikari@example.com",
-    role: "user",
-    avatarUrl: "src/assets/avatars/avatar2.jpg",
-    lastActive: "12 minutes ago",
-  },
-  {
-    id: 15,
-    username: "OtakuKing",
-    email: "otaku.king@example.com",
-    role: "user",
-    avatarUrl: "src/assets/avatars/avatar3.jpg",
-    lastActive: "1 hour ago",
-  },
-  {
-    id: 16,
-    username: "SageSensei",
-    email: "sage.sensei@example.com",
-    role: "user",
-    avatarUrl: "src/assets/avatars/avatar4.jpg",
-    lastActive: "3 hours ago",
-  },
-  {
-    id: 17,
-    username: "PixelNeko",
-    email: "pixel.neko@example.com",
-    role: "user",
-    avatarUrl: "src/assets/avatars/avatar5.jpg",
-    lastActive: "Yesterday",
-  },
-  {
-    id: 18,
-    username: "AdminZero",
-    email: "admin.zero@example.com",
-    role: "admin",
-    avatarUrl: "src/assets/avatars/avatar6.jpg",
-    lastActive: "Now",
-  },
-   {
-    id: 19,
-    username: "ShadowFox",
-    email: "shadow.fox@example.com",
-    role: "admin",
-    avatarUrl: "src/assets/avatars/avatar1.jpg",
-    lastActive: "2 minutes ago",
-  },
-  {
-    id: 20,
-    username: "LunaHikari",
-    email: "luna.hikari@example.com",
-    role: "user",
-    avatarUrl: "src/assets/avatars/avatar2.jpg",
-    lastActive: "12 minutes ago",
-  },
-  {
-    id: 21,
-    username: "OtakuKing",
-    email: "otaku.king@example.com",
-    role: "user",
-    avatarUrl: "src/assets/avatars/avatar3.jpg",
-    lastActive: "1 hour ago",
-  },
-  {
-    id: 22,
-    username: "SageSensei",
-    email: "sage.sensei@example.com",
-    role: "user",
-    avatarUrl: "src/assets/avatars/avatar4.jpg",
-    lastActive: "3 hours ago",
-  },
-  {
-    id: 23,
-    username: "PixelNeko",
-    email: "pixel.neko@example.com",
-    role: "user",
-    avatarUrl: "src/assets/avatars/avatar5.jpg",
-    lastActive: "Yesterday",
-  },
-  {
-    id: 24,
-    username: "AdminZero",
-    email: "admin.zero@example.com",
-    role: "admin",
-    avatarUrl: "src/assets/avatars/avatar6.jpg",
-    lastActive: "Now",
-  },
-];
 
-const UserSidebar = () => {
-     const [userSearch, setUserSearch] = useState("");
+interface UserSidebarProps {
+  onSelectUser?: (user: AdminUser) => void;
+  selectedUserId?: number;
+}
 
-  // Memoized filtered user list (re-calculated only when search or users change)
+const UserSidebar: React.FC<UserSidebarProps> = ({ onSelectUser, selectedUserId }) => {
+  const [users, setUsers] = useState<AdminUser[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [userSearch, setUserSearch] = useState("");
+
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const res = await axiosInstance.get("/admin/users");
+      if (res.data?.success && Array.isArray(res.data.users)) {
+        setUsers(res.data.users);
+      }
+    } catch (err) {
+      console.error("Error fetching admin users:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  // Memoized filtered user list
   const filteredUsers = useMemo(() => {
-    const query = userSearch.toLowerCase();
+    const query = userSearch.toLowerCase().trim();
     if (!query) return users;
 
     return users.filter(
       (user) =>
-        user.username.toLowerCase().includes(query) ||
-        user.email.toLowerCase().includes(query)
+        user.username?.toLowerCase().includes(query) ||
+        user.email?.toLowerCase().includes(query)
     );
-  }, [userSearch]);
+  }, [users, userSearch]);
+
+  const adminCount = useMemo(() => users.filter((u) => u.role === "admin").length, [users]);
 
   return (
-     <aside className="hidden md:flex flex-col w-64 border-r border-slate-800 bg-black top-0 left-0 h-screen fixed">
-        {/* Logo / Brand */}
-        <div className="h-16 flex items-center justify-around gap-2 text-lg font-bold border-b border-slate-800">
-          🌀  Admin
-          <a href="/" className="p-2 rounded hover:bg-slate-800 transition"><Home size={24} /></a>
+    <aside className="hidden md:flex flex-col w-64 border-r border-[#21262d] bg-[#0d1117] top-0 left-0 h-screen fixed z-30 shadow-2xl">
+      {/* Logo / Brand */}
+      <div className="h-16 px-4 flex items-center justify-between border-b border-[#21262d] bg-[#010409]">
+        <div className="flex items-center gap-2">
+          <span className="text-xl">🌀</span>
+          <span className="font-black text-white text-base tracking-wide" style={{ fontFamily: "Righteous, cursive" }}>
+            Admin Portal
+          </span>
         </div>
+        <div className="flex items-center gap-1">
+          <button
+            onClick={fetchUsers}
+            title="Refresh Users"
+            className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-[#161b22] transition-colors"
+          >
+            <RefreshCw size={14} className={loading ? "animate-spin text-blue-400" : ""} />
+          </button>
+          <a
+            href="/"
+            title="Back to Home"
+            className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-[#161b22] transition-colors"
+          >
+            <Home size={16} />
+          </a>
+        </div>
+      </div>
 
-        {/* Sidebar content */}
-        <nav className="flex-1 flex flex-col py-4">
-          {/* Sidebar search for users only */}
-          <div className="px-3 pb-3">
+      {/* User Stats Bar */}
+      <div className="px-4 py-2.5 bg-[#161b22]/50 border-b border-[#21262d] flex items-center justify-between text-xs font-mono text-gray-400">
+        <span>Total: <b className="text-white">{users.length}</b></span>
+        <span className="flex items-center gap-1 text-purple-400">
+          <Shield size={12} /> Admins: <b>{adminCount}</b>
+        </span>
+      </div>
+
+      {/* Sidebar Content */}
+      <nav className="flex-1 flex flex-col pt-3 overflow-hidden">
+        {/* Search input */}
+        <div className="px-3 pb-3">
+          <div className="relative">
+            <Search size={14} className="absolute left-3 top-2.5 text-gray-500" />
             <input
-              className="w-full rounded-lg bg-slate-900 border border-slate-700 px-3 py-1.5 text-xs placeholder:text-slate-500 outline-none focus:ring-2 focus:ring-fuchsia-500/60 focus:border-fuchsia-500"
-              placeholder="Search users..."
+              className="w-full rounded-xl bg-[#161b22] border border-[#21262d] pl-8 pr-3 py-1.5 text-xs text-white placeholder:text-gray-500 outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all"
+              placeholder="Search users by name/email..."
               value={userSearch}
               onChange={(e) => setUserSearch(e.target.value)}
             />
           </div>
+        </div>
 
-          {/* Scrollable list of users using Radix ScrollArea */}
-          <ScrollArea className="h-[80vh] px-1">
-              <div className="space-y-3">
-                {filteredUsers.map((user) => (
+        {/* Scrollable User List */}
+        <ScrollArea className="flex-1 px-2 pb-4">
+          {loading && users.length === 0 ? (
+            <div className="py-12 text-center text-xs text-gray-500 space-y-2">
+              <RefreshCw size={20} className="animate-spin mx-auto text-blue-500" />
+              <p>Loading DB users...</p>
+            </div>
+          ) : (
+            <div className="space-y-1">
+              {filteredUsers.map((user) => {
+                const isSelected = selectedUserId === user.id;
+                const isAdminUser = user.role === "admin";
+
+                return (
                   <button
                     key={user.id}
-                    className="w-full flex items-center gap-3 rounded-xl px-2 py-2 hover:bg-slate-900/80 border border-transparent hover:border-slate-700 text-left transition"
+                    onClick={() => onSelectUser?.(user)}
+                    className={`w-full flex items-center gap-3 rounded-xl px-2.5 py-2 text-left transition-all group ${
+                      isSelected
+                        ? "bg-blue-600/20 border border-blue-500/50 text-white shadow-md"
+                        : "hover:bg-[#161b22] border border-transparent hover:border-[#21262d] text-gray-300"
+                    }`}
                   >
-                    <UserIcon username={user.username} avatarUrl={user.avatarUrl} />
+                    <div className="relative shrink-0">
+                      <UserIcon username={user.username} avatarUrl={user.avatarUrl} />
+                      {isAdminUser && (
+                        <div className="absolute -bottom-1 -right-1 size-4 rounded-full bg-purple-600 border border-[#0d1117] flex items-center justify-center text-white shadow" title="Admin">
+                          <Shield size={10} />
+                        </div>
+                      )}
+                    </div>
+
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold truncate">
-                        {user.username}
-                      </p>
-                      <p className="text-[11px] text-slate-400 truncate">
+                      <div className="flex items-center justify-between gap-1">
+                        <p className={`text-xs font-bold truncate ${isAdminUser ? "text-purple-300" : "text-white"}`}>
+                          {user.username}
+                        </p>
+                        {isAdminUser ? (
+                          <span className="text-[9px] px-1.5 py-0.2 rounded bg-purple-500/20 text-purple-400 font-mono border border-purple-500/30 uppercase">
+                            Admin
+                          </span>
+                        ) : (
+                          <span className="text-[9px] px-1.5 py-0.2 rounded bg-gray-800 text-gray-400 font-mono uppercase">
+                            User
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-gray-400 truncate mt-0.5">
                         {user.email}
                       </p>
-                      <p className="text-[10px] text-slate-500">
-                        {user.role === "admin" ? "Admin • " : "User • "}
-                        {user.lastActive}
+                      <p className="text-[10px] text-gray-500 truncate mt-0.5 font-mono">
+                        Active: {user.lastActive}
                       </p>
                     </div>
                   </button>
-                ))}
-                {filteredUsers.length === 0 && (
-                  <p className="text-[11px] text-slate-500 px-2">
-                    No users match “{userSearch}”.
-                  </p>
-                )}
-              </div>
-          </ScrollArea>
-        </nav>
-      </aside>
-  )
-}
+                );
+              })}
 
-export default UserSidebar
+              {filteredUsers.length === 0 && !loading && (
+                <div className="text-center py-8 text-gray-500 text-xs px-4">
+                  <UserIconLucide size={24} className="mx-auto mb-2 opacity-30" />
+                  No users matching "{userSearch}" found.
+                </div>
+              )}
+            </div>
+          )}
+        </ScrollArea>
+      </nav>
+    </aside>
+  );
+};
+
+export default UserSidebar;

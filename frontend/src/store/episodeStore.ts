@@ -55,6 +55,20 @@ export const useEpisodeStore = create<EpisodeResponse>((set) => ({
             set({isLoading: false});
         }
     },
+    updateEpisode: async (id: number, episodeData: Partial<Episode>) => {
+        set({isLoading: true, error: null});
+        try{
+            const response = await axiosInstance.put(`/episodes/updateEpisode/${id}`, episodeData);
+            set((state) => ({
+                episodesById: state.episodesById.map(ep => ep.id === id ? response.data.episode : ep),
+                message: response.data.message
+            }));
+        }catch (err: any) {
+            set({error: err.response?.data?.message || "Failed to update episode"});
+        } finally {
+            set({isLoading: false});
+        }
+    },
     resetEpisodes: () => {
         set({episodesById: [], episodes: [], currentEpisode: null, error: null, message: null});
     }

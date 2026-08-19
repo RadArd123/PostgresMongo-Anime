@@ -8,7 +8,7 @@ const NewsAdmin = ({news}: {news: IAnimeNews[]}) => {
   <div className=" p-3 rounded-lg w-full ">
     <ScrollArea className="h-[80vh] pr-2">
       {news.map((news) => (
-        <div key={news._id} className="flex gap-3 mb-4">
+        <div key={news.id} className="flex gap-3 mb-4">
           <img
             className="w-24 h-16 rounded-lg object-cover"
             alt={news.title}

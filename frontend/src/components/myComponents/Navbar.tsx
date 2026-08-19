@@ -18,12 +18,17 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useAuthStore } from "@/store/authStore";
+import { useProfileStore } from "@/store/profileStore";
+import zoroAvatar from "@/assets/zoro.jpg";
 import { useNavigate } from "react-router-dom";
+import { SupportModal } from "./SupportModal";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const [openSupport, setOpenSupport] = useState(false);
 
   const { logout, isLoading, error, isAdmin, checkAuth } = useAuthStore();
+  const { profile, fetchProfile } = useProfileStore();
 
   const handleLogout = async () => {
     try {
@@ -37,12 +42,18 @@ const Navbar = () => {
   };
   useEffect(() => {
     checkAuth();
-  }, [isAdmin]);
+    if (!profile) {
+      fetchProfile();
+    }
+  }, [isAdmin, profile, fetchProfile]);
   console.log("isAdmin in Navbar:", isAdmin);
+
+  const avatarSrc = profile?.avatar_url || zoroAvatar;
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
     <>
+      <SupportModal open={openSupport} onOpenChange={setOpenSupport} />
       <header className="fixed top-4 right-10  z-50 px-2 bg-neutral-900/70 backdrop-blur text-white shadow-md rounded-xl">
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <button
@@ -58,7 +69,7 @@ const Navbar = () => {
 
             {/* Cool Button */}
 
-            <div className="group relative flex justify-center items-center text-white text-sm font-bold">
+            <div onClick={() => setOpenSupport(true)} className="group relative flex justify-center items-center text-white text-sm font-bold">
               <div className="shadow-md flex items-center group-hover:gap-2  bg-neutral-800/80 text-neutral-200 hover:bg-neutral-700/80 border border-neutral-700/60  p-3 rounded-full cursor-pointer duration-300">
                 <svg
                   fill="none"
@@ -110,7 +121,7 @@ const Navbar = () => {
               <PopoverTrigger asChild>
                 <Avatar className="w-13 h-13 rounded-full overflow-hidden border-9 border-zinc-800 ">
                   <AvatarImage
-                    src="../../src/assets/zoro.jpg"
+                    src={avatarSrc}
                     className="w-full h-full object-cover"
                   />
                   <AvatarFallback>CN</AvatarFallback>

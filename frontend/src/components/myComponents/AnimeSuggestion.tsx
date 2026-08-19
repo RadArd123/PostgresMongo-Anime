@@ -1,30 +1,15 @@
+import { useEffect } from "react";
 import { Play, Bookmark, Star, Eye } from "lucide-react";
-
-interface AnimeSuggestionItem {
-  id: number;
-  title: string;
-  description: string;
-  imageUrl: string;
-  category: string;
-  rating: number;
-  views: string;
-}
-
-const animeSuggestions: AnimeSuggestionItem[] = [
-  {
-    id: 1,
-    title: "JUJUTSU KAISEN",
-    description:
-      "JUJUTSU KAISEN is a serialized manga series with story and artwork by Gege Akutami and published in Weekly Shonen Jump. An anime adaptation came shortly after, blending intense action and grounded character moments.",
-    imageUrl: "src/assets/jjk.png",
-    category: "Trending",
-    rating: 9.2,
-    views: "2.5M",
-  },
-];
+import { useSuggestedAnimeStore } from "@/store/suggestedAnimeStore";
 
 const AnimeSuggestion: React.FC = () => {
-  const anime = animeSuggestions[0];
+  const { suggestedAnimes, getSuggestedAnimes } = useSuggestedAnimeStore();
+
+  useEffect(() => {
+    getSuggestedAnimes();
+  }, [getSuggestedAnimes]);
+
+  const anime = suggestedAnimes[0];
   if (!anime) return null;
 
   return (
@@ -34,52 +19,52 @@ const AnimeSuggestion: React.FC = () => {
             Anime Suggestion
           </h1>
         </div>
-      <div className="max-w-8xl mx-auto px-6  rounded-3xl  border border-gray-800 overflow-hidden">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center py-8">
-          {/* Poster column */}
-          <div className="md:col-span-5 flex justify-center md:justify-start px-4 group">
-            <div className="relative w-[320px] md:w-[480px] lg:w-[660px]">
-              <div className="rounded-2xl overflow-hidden shadow-2xl w-full">
-                <img
-                  src={anime.imageUrl}
-                  alt={anime.title}
-                  className="w-full h-[420px] object-cover object-center transform transition-transform duration-700 group-hover:scale-105"
-                />
-              </div>
-              
-              <div className="absolute top-4 left-4 bg-blue-500 text-white px-3 py-1 rounded-full text-sm font-extrabold tracking-wide">
-                {anime.category}
-              </div>
+      <div className="max-w-8xl mx-auto rounded-[32px] bg-white/[0.02] border border-white/10  overflow-hidden ">
+        <div className="flex flex-col md:flex-row gap-10 md:gap-16 items-center p-8 lg:p-12">
+          {/* Poster / Image */}
+          <div className="relative w-full md:w-1/2 max-w-[600px] shrink-0 group">
+            <div className="rounded-2xl overflow-hidden  w-full">
+              <img
+                src={anime.poster_image}
+                alt={anime.title}
+                className="w-full h-auto md:h-[400px] object-cover object-center transform transition-transform duration-700 group-hover:scale-105"
+              />
+            </div>
+            
+            <div className="absolute top-4 left-4 bg-blue-600 text-white px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase shadow-lg">
+              {anime.badge_label}
             </div>
           </div>
-          {/* Content column */}
-          <div className="md:col-span-7 text-white px-6 md:px-8">
-            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-3">
+
+          {/* Content */}
+          <div className="w-full md:w-1/2 text-white flex flex-col justify-center">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-4 leading-tight">
               {anime.title}
             </h1>
+            
             <div className="flex items-center gap-4 mb-6 text-sm text-gray-300">
-              <div className="inline-flex items-center gap-2 bg-white/5 px-3 py-1 rounded-full">
+              <div className="inline-flex items-center gap-2 bg-yellow-500/10 px-3 py-1.5 rounded-full border border-yellow-500/20">
                 <Star className="w-4 h-4 text-yellow-400" />
-                <strong>{anime.rating}</strong>
+                <strong className="text-yellow-400 font-bold">{anime.rating}</strong>
               </div>
-              <div className="inline-flex items-center gap-2 text-gray-400">
+              <div className="inline-flex items-center gap-2 text-gray-400 bg-white/5 px-3 py-1.5 rounded-full">
                 <Eye className="w-4 h-4" />
-                <span>{anime.views}</span>
+                <span className="font-medium">{anime.views_count} Views</span>
               </div>
             </div>
 
-            <p className="text-gray-300 max-w-2xl leading-relaxed mb-8">
+            <p className="text-gray-400 text-lg md:text-xl leading-relaxed mb-10 max-w-[90%]">
               {anime.description}
             </p>
 
             <div className="flex flex-wrap items-center gap-4">
-              <button className="flex items-center gap-3 bg-linear-to-r from-blue-400 to-blue-600 text-black font-bold px-6 py-3 rounded-lg shadow-lg hover:scale-105 transition-transform">
-                <Play className="w-5 h-5" />
+              <button className="flex items-center gap-3 bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-4 rounded-xl shadow-[0_0_20px_rgba(37,99,235,0.4)] transition-all active:scale-95">
+                <Play className="w-5 h-5 fill-current" />
                 Start Watching
               </button>
 
-              <button className="flex items-center gap-2 border border-blue-500 text-blue-500 px-5 py-3 rounded-lg hover:bg-white/5 transition">
-                <Bookmark className="w-4 h-4" />
+              <button className="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white px-6 py-4 rounded-xl transition-all active:scale-95 font-semibold">
+                <Bookmark className="w-5 h-5" />
                 Add to Watchlist
               </button>
             </div>

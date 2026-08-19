@@ -1,5 +1,6 @@
 
-export interface IHeroAnime extends Document {
+export interface IHeroAnime {
+    id: number;
     postgres_anime_id: number;
     title: string;
     description: string;
@@ -16,5 +17,6 @@ export interface IHeroAnimeResponse {
     message?: string | null;
     addHeroAnime: (heroAnimeData: Partial<IHeroAnime>) => Promise<void>;
     getHeroAnimes: () => Promise<void>;
-    removeHeroAnime: (id: string) => Promise<void>;
+    removeHeroAnime: (id: number) => Promise<void>;
+    updateHeroAnime: (id: number, data: Partial<IHeroAnime>) => Promise<void>;
 }

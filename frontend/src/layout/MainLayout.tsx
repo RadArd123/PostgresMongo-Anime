@@ -1,57 +1,24 @@
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
-
+import { useState } from "react";
 import SidebarApp from "../components/myComponents/AnimeSidebarApp";
 import { Outlet } from "react-router-dom";
-import { useState } from "react";
-import Navbar from "@/components/myComponents/Navbar";
 
 const MainLayout = () => {
-  const [collapsed, setCollapsed] = useState(false);
-  const [sidebarSize, setSidebarSize] = useState(6); // % lățime
-
-  const COLLAPSE_AT = 10;
+  const [collapsed, setCollapsed] = useState(true); // Start collapsed by default so it doesn't cover too much at first
 
   return (
     <>
-      <Navbar />
-      <ResizablePanelGroup
-        direction="horizontal"
-        className="fixed inset-y-0 left-0 w-full z-50 flex pointer-events-none"
-      >
-        <ResizablePanel
-          defaultSize={sidebarSize}
-          minSize={6}
-          maxSize={22}
-          onResize={(size) => {
-            setSidebarSize(size);
-            setCollapsed(size <= COLLAPSE_AT);
-          }}>
-          <div className="h-full" />
-        </ResizablePanel>
-
-        
-        <ResizableHandle className="bg-transparent cursor-col-resize pointer-events-auto" />
-
-        <ResizablePanel
-          defaultSize={100 - sidebarSize}
-          className="pointer-events-none"
-        >
-          <div className="h-full" />
-        </ResizablePanel>
-      </ResizablePanelGroup>
-
-
+      {/* Sidebar Area - FLOATING OVER CONTENT */}
       <div
-        className="fixed inset-y-0 left-0 z-40"
-        style={{ width: `${sidebarSize}%` }}
+        className={`fixed inset-y-0 left-0 z-50 transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] pointer-events-none`}
       >
-        <SidebarApp collapsed={collapsed} />
+        <div className={`h-full pointer-events-auto transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)] ${
+          collapsed ? "w-[100px]" : "w-[300px]"
+        }`}>
+          <SidebarApp collapsed={collapsed} setCollapsed={setCollapsed} />
+        </div>
       </div>
 
+      {/* Main Content Area */}
       <div className="h-full">
         <Outlet />
       </div>
@@ -60,4 +27,3 @@ const MainLayout = () => {
 };
 
 export default MainLayout;
-

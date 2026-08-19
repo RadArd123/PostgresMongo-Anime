@@ -16,7 +16,7 @@ export const useAuthStore = create<AuthResponse>((set) => ({
         set({isLoading:true, error:null});
         try{
             const response = await axiosInstance.post("/auth/signup", { username, email, password });
-            set({user: response.data.user, isAuthenticated:true, message: response.data.message});  
+            set({user: response.data.user, isAuthenticated:true, isAdmin: response.data.user?.isAdmin || false, message: response.data.message});  
         }catch(err:any){
             set({error: err.response?.data?.message || "Signup failed"});
         } finally{
@@ -28,7 +28,7 @@ export const useAuthStore = create<AuthResponse>((set) => ({
         try{
             const response = await axiosInstance.post("/auth/login", { username, password });
           
-            set({user: response.data.user, isAuthenticated:true, message: response.data.message});  
+            set({user: response.data.user, isAuthenticated:true, isAdmin: response.data.user?.isAdmin || false, message: response.data.message});  
           
         }catch(err:any){
             set({error: err.response?.data?.message || "Login failed"});

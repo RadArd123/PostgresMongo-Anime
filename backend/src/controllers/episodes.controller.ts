@@ -16,6 +16,19 @@ export const createEpisode = async (req: Request, res: Response) => {
         res.status(500).json({ message: "Server error during episode creation." });
         }
 };
+export const getLatestEpisodes = async (req: Request, res: Response) => {
+    try {
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = parseInt(req.query.limit as string) || 6;
+        const offset = (page - 1) * limit;
+        
+        const episodes = await episodeModel.getLatestEpisodes(limit, offset);
+        res.status(200).json({ episodes });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error fetching latest episodes." });
+    }
+};
 export const getEpisodesByAnimeId = async (req: Request, res: Response) => {
     try{
         const {animeId} = req.params;
@@ -53,5 +66,20 @@ export const getEpisodeById = async (req: Request, res: Response) => {
     }catch(err){
         console.error(err);
         res.status(500).json({ message: "Server error fetching episode." });
+    }
+};
+
+export const updateEpisode = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { title, duration, episode_number, video_url } = req.body;
+        const updatedEpisode = await episodeModel.updateEpisode(Number(id), { title, duration, episode_number, video_url });
+        if (!updatedEpisode) {
+            return res.status(404).json({ message: "Episode not found" });
+        }
+        res.status(200).json({ message: "Episode updated successfully", episode: updatedEpisode });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: "Server error updating episode." });
     }
 };

@@ -1,5 +1,5 @@
-export interface IAnimeNews extends Document {
-    _id: string;
+export interface IAnimeNews {
+    id: number;
     title: string;
     sub_title?: string;
     body_text: string;  
@@ -20,5 +20,6 @@ export interface IAnimeNewsResponse {
     message?: string | null;
     addAnimeNews: (animeNewsData: Partial<IAnimeNews>) => Promise<void>;
     getAnimeNews: () => Promise<void>;
-    removeAnimeNews: (id: string) => Promise<void>;
+    removeAnimeNews: (id: number) => Promise<void>;
+    updateAnimeNews: (id: number, data: Partial<IAnimeNews>) => Promise<void>;
 }

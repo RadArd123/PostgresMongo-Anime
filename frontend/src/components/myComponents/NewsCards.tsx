@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Star, TrendingUp } from "lucide-react";
 import { useAnimeNewsStore } from "@/store/animeNewsStore";
-
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { ScrollArea } from "../ui/scroll-area";
 
 const NewsCards = () => {
   const [isSliding, setIsSliding] = useState(false);
@@ -68,85 +69,135 @@ const NewsCards = () => {
   };
 
   return (
-    <div className="max-w-8xl mx-auto ">
+    <div className="max-w-8xl mx-auto">
       {/* Header */}
-      <div className="border-l-4 border-blue-700 pl-4 mb-8 px-4">
+      <div className="border-l-4 border-blue-600 pl-4 mb-8 px-4">
         <h1 className="text-white text-2xl md:text-3xl font-extrabold leading-tight">
           Latest Anime News
         </h1>
         <p className="text-gray-400 mt-2">Discover the latest stories in anime</p>
       </div>
 
-      {/* Full Width Slider */}
+      {/* Slider */}
       <div
         ref={sliderRef}
         onMouseDown={handleMouseDown}
         onMouseUp={handleMouseUp}
         onMouseLeave={handleMouseUp}
         onMouseMove={handleMouseMove}
-        className="flex overflow-x-scroll hide-scrollbar cursor-grab select-none active:cursor-grabbing"
+        className="flex overflow-x-scroll hide-scrollbar cursor-grab select-none active:cursor-grabbing gap-6 px-4 pb-8"
       >
         {animeNews.map((news) => (
-          <div
-            key={news._id}
-            className="shrink-0 h-120 group relative flex items-center justify-center w-full min-w-full"
+          <Dialog key={news.id}>
+            <DialogTrigger asChild onClick={(e) => {
+              // Prevent opening if user is actively dragging the slider
+              if (Math.abs(startX.current - e.pageX) > 5) {
+                e.preventDefault();
+              }
+            }}>
+              <div
+                className="shrink-0 h-[380px] md:h-[450px] group relative w-[85vw] sm:w-[320px] md:w-[400px] lg:w-[500px] rounded-3xl overflow-hidden shadow-2xl bg-gray-900 cursor-pointer"
+              >
+                {/* Image Container */}
+                <img
+                  src={news.background_image}
+                  alt={news.title}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 pointer-events-none"
+                />
+                
+                {/* Gradient Overlays */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-transparent opacity-90 pointer-events-none" />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent opacity-50 pointer-events-none" />
 
-          >
-            {/* Image Container with Rounded Corners */}
-            <div className="absolute inset-0 mx-4 rounded-2xl overflow-hidden pointer-events-none">
-              <img
-                src={news.background_image}
-                alt={news.title}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              
-              {/* Dark Gradient Overlay */}
-              <div className="absolute inset-0 bg-linear-to-r from-black/80 via-black/40 to-transparent opacity-70 group-hover:opacity-60 transition-opacity duration-300" />
-            </div>
+                {/* Content Container */}
+                <div className="absolute inset-0 flex flex-col justify-between p-5 md:p-8 pointer-events-none">
+                  {/* Top Section: Category Badge */}
+                  <div className="flex items-start">
+                    <span className="backdrop-blur-md bg-blue-600/80 text-white px-3 py-1.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider shadow-lg">
+                      {news.tags?.[0] || "News"}
+                    </span>
+                  </div>
 
-            {/* Content Overlay */}
-            <div className="absolute inset-0 mx-4 rounded-2xl flex flex-col justify-between p-6 md:p-8 text-white pointer-events-none">
-              {/* Top Section: Category Badge */}
-              <div className="flex justify-between items-start">
-                <span className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg transform transition-transform duration-300 group-hover:scale-110">
-                  {news.tags?.[0] || "News"}
-                </span>
+                  {/* Bottom Section: Text and Stats */}
+                  <div className="mt-auto space-y-3">
+                    <div className="space-y-1.5">
+                      <p className="text-[10px] sm:text-xs md:text-sm text-blue-400 font-semibold uppercase tracking-widest drop-shadow-md">
+                        {new Date(news.publish_date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
+                      </p>
+                      <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white leading-tight line-clamp-2 drop-shadow-lg group-hover:text-blue-100 transition-colors">
+                        {news.title}
+                      </h2>
+                      <p className="text-xs sm:text-sm md:text-base text-gray-300 line-clamp-2 font-medium drop-shadow-md">
+                        {news.body_text}
+                      </p>
+                    </div>
+
+                    {/* Stats */}
+                    <div className="flex gap-4 sm:gap-6 text-xs sm:text-sm text-gray-300 pt-3 border-t border-white/20">
+                      <div className="flex items-center gap-1.5 sm:gap-2">
+                        <Star className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 fill-yellow-400 drop-shadow-md" />
+                        <span className="font-bold text-white drop-shadow-md">{news?.overlay_stats?.rating || "-"}</span>
+                      </div>
+                      <div className="flex items-center gap-1.5 sm:gap-2">
+                        <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400 drop-shadow-md" />
+                        <span className="font-bold text-white drop-shadow-md">{news?.overlay_stats?.views_text || "-"}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Hover Glow / Border */}
+                <div className="absolute inset-0 rounded-3xl border border-white/10 group-hover:border-blue-500/50 transition-colors duration-500 pointer-events-none" />
               </div>
-
-              {/* Bottom Section: Title, Description, Stats */}
-              <div className="space-y-4 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                <div>
-                  <p className="text-xs text-gray-300 mb-1 uppercase tracking-wide">{new Date(news.publish_date).toLocaleDateString()}</p>
-                  <h2 className="text-2xl md:text-4xl font-bold leading-tight mb-2 line-clamp-2 group-hover:text-blue-300 transition-colors">
-                    {news.title}
-                  </h2>
-                  <p className="text-gray-200 text-sm md:text-base line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                    {news.body_text}
+            </DialogTrigger>
+            
+            <DialogContent className="sm:max-w-4xl max-h-[95vh] p-0 bg-black/95 backdrop-blur-2xl text-white rounded-3xl shadow-2xl border border-white/10 overflow-hidden flex flex-col">
+              <div className="relative w-full h-[250px] md:h-[400px] shrink-0">
+                <img
+                  src={news.background_image}
+                  alt={news.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
+                <div className="absolute bottom-6 left-6 md:bottom-8 md:left-10 pr-6">
+                  <span className="backdrop-blur-md bg-blue-600/80 text-white px-3 py-1.5 rounded-full text-[10px] sm:text-xs font-bold uppercase tracking-wider shadow-lg">
+                    {news.tags?.[0] || "News"}
+                  </span>
+                  <DialogTitle asChild>
+                    <h2 className="text-2xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight drop-shadow-lg mt-4 max-w-3xl">
+                      {news.title}
+                    </h2>
+                  </DialogTitle>
+                  <p className="text-xs md:text-sm text-blue-400 font-semibold uppercase tracking-widest mt-3">
+                    {new Date(news.publish_date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' })}
                   </p>
                 </div>
-
-                {/* Stats */}
-                <div className="flex gap-6 text-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 pt-2 border-t border-gray-500/50">
+              </div>
+              
+              <ScrollArea className="flex-1 px-6 py-6 md:px-10 overflow-y-auto">
+                <div className="flex items-center gap-6 text-sm text-gray-300 pb-6 border-b border-white/10 mb-6">
                   <div className="flex items-center gap-2">
-                    <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                   <span>{news?.overlay_stats?.rating ? news.overlay_stats.rating : " "}</span>
+                    <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                    <span className="font-bold text-white">{news?.overlay_stats?.rating || "-"}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <TrendingUp className="w-4 h-4 text-green-400" />
-                    <span>{news?.overlay_stats?.views_text ? news.overlay_stats.views_text : " "} </span>
+                    <TrendingUp className="w-5 h-5 text-emerald-400" />
+                    <span className="font-bold text-white">{news?.overlay_stats?.views_text || "-"}</span>
                   </div>
                 </div>
-              </div>
-            </div>
-
-            {/* Hover Border */}
-            <div className="absolute inset-0 mx-4 rounded-2xl border-2 border-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-          </div>
+                <div className="text-gray-300 text-base md:text-lg leading-relaxed whitespace-pre-wrap font-medium pb-8">
+                  {news.body_text}
+                </div>
+              </ScrollArea>
+            </DialogContent>
+          </Dialog>
         ))}
       </div>
 
       {/* Scroll Indicator */}
-      <p className="text-gray-500 text-sm mt-4 px-4">← Drag to scroll through news →</p>
+      <p className="text-gray-500 text-sm px-4 flex items-center gap-2">
+        <span>←</span> Drag to scroll through news <span>→</span>
+      </p>
     </div>
   );
 };

@@ -1,125 +1,131 @@
-import { Lock, Loader, User } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Input } from "@/components/ui/input.js";
-import { Button } from "@/components/ui/button.js";
+import AnimeFightBackground from "@/components/myComponents/AnimeFightBackground";
 import { useAuthStore } from "@/store/authStore";
 import { toast } from "sonner";
 
-const LoginPage = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+export default function LoginPage() {
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  });
+  const [isInitializing, setIsInitializing] = useState(false);
+  const { login, error: authError } = useAuthStore();
   const navigate = useNavigate();
 
-  const {login, isLoading, error} = useAuthStore();
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    try{
-      await login(username, password);   
+    setIsInitializing(true);
+
+    // Call zustand login function
+    await login(formData.username, formData.password);
+    
+    // Check if authentication was successful
+    if (useAuthStore.getState().isAuthenticated) {
       navigate("/");
-    } catch (err: any) {
-      console.error("Login error:", err);
-      toast.error(err?.message || "Login failed. Please try again.");
+    } else {
+      setIsInitializing(false);
     }
-  }
+  };
 
- 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 ">
-      <div className="w-full max-w-md rounded-3xl border border-white/10 bg-black/60 
-                      backdrop-blur-xl shadow-[0_0_60px_rgba(101,123,232,0.35)] overflow-hidden">
-        <div className="p-8">
-          {/* TITLE */}
-          <h2 className="text-3xl font-extrabold text-center tracking-tight 
-                         bg-linear-to-r from-indigo-500 to-blue-500 bg-clip-text text-transparent">
-            Welcome Back
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-400">
-            Log in to continue your anime journey.
-          </p>
+    <main className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[#02040a]">
+      {/* Background Anime Grid Matrix */}
+      <AnimeFightBackground />
 
-          {/* FORM */}
-          <form className="mt-8 space-y-5" onSubmit={handleLogin}>
-            {/* USERNAME */}
-            <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <label className="text-sm font-medium text-gray-200">Username</label>
-                 </div>
+      {/* Center Cyberpunk Console Form (No outer box/border, floating free) */}
+      <div className="relative z-30 w-full max-w-md px-6 my-8 animate-in zoom-in-95 duration-500">
+        <div className="relative z-10 w-full">
+          <div className="mb-10 text-center">
+            <h1 className="text-3xl md:text-5xl text-zinc-100 leading-tight tracking-tighter drop-shadow-[0_4px_20px_rgba(0,0,0,0.95)]">
+              Initialize{" "}
+              <span className="text-white font-black drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]">
+                Radu Anime Realm
+              </span>
+              <br />
+              <span className="text-zinc-400 font-light text-base md:text-lg tracking-wide drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
+                to Unlock your Journey
+              </span>
+            </h1>
+          </div>
+
+          <form className="space-y-4" onSubmit={handleLogin} autoComplete="off">
+            <div className="space-y-3">
               <div className="relative">
-                <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                  type="username"
-                  placeholder="Enter your Username"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="pl-10 bg-white/5 border-white/10 text-gray-100 
-                             placeholder:text-gray-500 focus-visible:ring-blue-500 focus-visible:ring-2"
+                <input
+                  type="text"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleChange}
+                  placeholder="Username"
+                  className="w-full bg-black/80 backdrop-blur-2xl border border-white/20 rounded-2xl px-5 py-3.5 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-white/50 focus:ring-1 focus:ring-white/30 transition-all shadow-[0_10px_30px_rgba(0,0,0,0.8)]"
                 />
               </div>
-            </div>
 
-            {/* PASSWORD */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-gray-200">
-                  Password
-                </label>
-              </div>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
+                <input
                   type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="pl-10 bg-white/5 border-white/10 text-gray-100 
-                             placeholder:text-gray-500 focus-visible:ring-blue-500 focus-visible:ring-2"
+                  name="password"
+                  autoComplete="new-password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Access Password"
+                  className="w-full bg-black/80 backdrop-blur-2xl border border-white/20 rounded-2xl px-5 py-3.5 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-white/50 focus:ring-1 focus:ring-white/30 transition-all shadow-[0_10px_30px_rgba(0,0,0,0.8)]"
                 />
               </div>
-                  <button
-                  type="button"
-                  className="text-xs text-gray-400 hover:text-[#657be8] transition"
-                >
-                  Forgot password?
-                </button>
             </div>
-
-            {/* ERROR */}
-            {error && (
-              <p className="text-sm text-red-400 font-semibold">{error}</p>
+         
+            {authError && (
+              <div className="text-red-400 text-[10px] uppercase tracking-widest text-center animate-pulse drop-shadow-md">
+                Error: {authError}
+              </div>
             )}
 
-            {/* BUTTON */}
-            <Button
-              type="submit"
-              className="mt-2 w-full py-3 text-base font-bold rounded-2xl 
-                         bg-linear-to-r from-indigo-500 to-blue-500 
-                         hover:brightness-120 hover:shadow-[0_10px_30px_rgba(101,123,232,0.5)]
-                         focus-visible:ring-2 focus-visible:ring-offset-2 
-                         focus-visible:ring-blue-500 focus-visible:ring-offset-gray-900 border-0"
-            >
-              {isLoading ? (
-                <Loader className="animate-spin mx-auto h-5 w-5" />
-              ) : (
-                "Log In"
-              )}
-            </Button>
-          </form>
-        </div>
+            <div className="flex justify-center pt-2">
+              <p className="text-[11px] text-zinc-400 font-medium tracking-wider uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+                New to the guild?{" "}
+                <Link
+                  to="/signup"
+                  className="text-zinc-100 hover:text-white underline underline-offset-4 transition-all ml-1 font-bold"
+                >
+                  Create Avatar
+                </Link>
+              </p>
+            </div>
 
-        {/* FOOTER */}
-        <div className="px-8 py-4 border-t border-white/5 bg-black/50 flex justify-center">
-          <p className="text-sm text-gray-400">
-            Don&apos;t have an account?{" "}
-            <Link to="/signup" className="text-[#657be8] font-medium hover:underline">
-              Sign Up
-            </Link>
+            <button 
+              type="submit"
+              disabled={isInitializing}
+              className="w-full group mt-6 bg-white hover:bg-zinc-200 disabled:bg-zinc-500 border border-white/20 rounded-2xl py-2 pl-8 pr-2 flex items-center justify-between transition-all active:scale-[0.98] shadow-[0_10px_40px_rgba(255,255,255,0.15)]"
+            >
+              <span className="text-black font-black tracking-tighter uppercase text-sm">
+                {isInitializing ? "Processing..." : "Enter Realm"}
+              </span>
+              <div className="w-12 h-12 bg-black rounded-xl flex items-center justify-center group-hover:translate-x-1 transition-transform">
+                <span className="text-white text-xl">→</span>
+              </div>
+            </button>
+          </form>
+          
+          <p className="mt-10 text-[10px] text-zinc-500 text-center leading-relaxed font-medium tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+            By entering, you agree to the{" "}
+            <span onClick={() => toast.info('📜 Disponibil în curând în versiunea finală.')} className="text-zinc-300 underline cursor-pointer hover:text-white transition-colors">
+              Guild Protocols
+            </span>{" "}
+            &{" "}
+            <span onClick={() => toast.info('📜 Disponibil în curând în versiunea finală.')} className="text-zinc-300 underline cursor-pointer hover:text-white transition-colors">
+              Anime Privacy Policy
+            </span>
           </p>
         </div>
       </div>
-    </div>
+    </main>
   );
-};
-
-export default LoginPage;
+}

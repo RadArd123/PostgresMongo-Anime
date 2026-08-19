@@ -19,6 +19,6 @@ export interface EpisodeResponse{
     fetchEpisodesByAnimeId?: (animeId: number) => Promise<void>;
     deleteEpisode?: (id: number) => Promise<void>;
     getEpisodeById?: (id: number) => Promise<void>;
+    updateEpisode?: (id: number, episodeData: Partial<Episode>) => Promise<void>;
     resetEpisodes: () => void;  
-    
 }
