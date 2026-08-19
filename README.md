@@ -1,6 +1,6 @@
 # PERN Anime App
 
-This is a full-stack web application for browsing and managing information about anime. It features a React-based frontend and a Node.js/Express backend with a PostgreSQL database.
+This is a full-stack web application for browsing and managing information about anime. It features a React-based frontend and a Node.js/Express backend with a PostgreSQL and MongoDb database.
 
 ## Tech Stack
 
