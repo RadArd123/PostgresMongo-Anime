@@ -2,7 +2,7 @@
 import type { FavoriteAnime } from "@/interfaces/anime.types";
 import { useFavoritesStore } from "@/store/favoritesStore";
 import { useWatchlistStore } from "@/store/watchlistStore";
-import { Bookmark, Heart } from "lucide-react";
+import { BookmarkIcon, HeartIcon } from "lucide-react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
     
@@ -89,7 +89,7 @@ const AnimeFavWatch = ({ animes }: { animes: FavoriteAnime[] }) => {
                           onClick={(e) => handleFavoriteClick(e, anime.id)}
                           className="transition-transform hover:scale-110 active:scale-95"
                         >
-                          <Heart
+                          <HeartIcon
                             size={22}
                             className={`transition-colors drop-shadow-sm ${
                               isFavorited
@@ -103,7 +103,7 @@ const AnimeFavWatch = ({ animes }: { animes: FavoriteAnime[] }) => {
                             onClick={(e) => handleWatchlistClick(e, anime.id)}
                             className="transition-transform hover:scale-110 active:scale-95"
                           >
-                          <Bookmark
+                          <BookmarkIcon
                             size={22}
                             className={`cursor-pointer drop-shadow-sm ${
                               isInWatchlist

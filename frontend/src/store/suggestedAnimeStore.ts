@@ -1,3 +1,4 @@
+import { adminMutationFailed } from "@/lib/adminMutation";
 import {create} from 'zustand';
 import {axiosInstance} from '../lib/axios';
 import type {ISuggestedAnime, ISuggestedAnimeResponse} from '../interfaces/suggestedAnime.types';
@@ -17,7 +18,8 @@ export const useSuggestedAnimeStore = create<ISuggestedAnimeResponse>((set) => (
             }));
         } catch (error: any) {
             set({ error: error.response?.data?.message || error.message, isLoading: false });
-        }finally {
+          adminMutationFailed(error, "Unable to save this change.");
+    }finally {
             set({ isLoading: false });
         }
     },
@@ -43,7 +45,8 @@ export const useSuggestedAnimeStore = create<ISuggestedAnimeResponse>((set) => (
             }));
         } catch (error: any) {
             set({ error: error.response?.data?.message || error.message, isLoading: false });
-        }finally {
+          adminMutationFailed(error, "Unable to save this change.");
+    }finally {
             set({ isLoading: false });
         }
     },
@@ -57,7 +60,8 @@ export const useSuggestedAnimeStore = create<ISuggestedAnimeResponse>((set) => (
             }));
         } catch (error: any) {
             set({ error: error.response?.data?.message || error.message, isLoading: false });
-        } finally {
+          adminMutationFailed(error, "Unable to save this change.");
+    } finally {
             set({ isLoading: false });
         }
     }

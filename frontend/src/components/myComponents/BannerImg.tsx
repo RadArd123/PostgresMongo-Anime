@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import SplitTextAnime from "./SplitTextAnime";
 import BlurText from "./BlurText";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious, type CarouselApi } from "@/components/ui/carousel";
-import { Star } from "lucide-react";
+import { StarIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { useHeroAnimeStore } from "@/store/heroAnime.Store";
 
@@ -63,7 +63,7 @@ const BannerImg = () => {
                       <div className="flex flex-wrap items-center gap-3">
                           <div className="inline-flex items-center gap-2 rounded-full bg-yellow-500/15 px-4 py-2 text-sm font-semibold text-yellow-300">
                             <span className="grid h-6 w-6 place-items-center rounded-full bg-yellow-500/30">
-                              <Star className="h-4 w-4" />
+                              <StarIcon className="h-4 w-4" />
                             </span>
                             {slide.rating}
                           </div>

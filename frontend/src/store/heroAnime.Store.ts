@@ -1,3 +1,4 @@
+import { adminMutationFailed } from "@/lib/adminMutation";
 import {create} from 'zustand';
 import {axiosInstance} from '../lib/axios';
 import type {IHeroAnime, IHeroAnimeResponse} from '../interfaces/heroAnime.types';
@@ -14,7 +15,8 @@ export const useHeroAnimeStore = create<IHeroAnimeResponse>((set) => ({
             set((state) => ({heroAnimes: [...state.heroAnimes, response.data.heroAnime], message: response.data.message}));
         } catch (error: any) {
             set({ error: error.response?.data?.message || error.message, isLoading: false });
-        }finally {
+          adminMutationFailed(error, "Unable to save this change.");
+    }finally {
             set({ isLoading: false });
         }
   },
@@ -40,7 +42,8 @@ export const useHeroAnimeStore = create<IHeroAnimeResponse>((set) => ({
             }));
         } catch (error: any) {
             set({ error: error.response?.data?.message || error.message, isLoading: false });
-        }finally {
+          adminMutationFailed(error, "Unable to save this change.");
+    }finally {
             set({ isLoading: false });
         }
   },
@@ -54,7 +57,8 @@ export const useHeroAnimeStore = create<IHeroAnimeResponse>((set) => ({
             }));
         } catch (error: any) {
             set({ error: error.response?.data?.message || error.message, isLoading: false });
-        } finally {
+          adminMutationFailed(error, "Unable to save this change.");
+    } finally {
             set({ isLoading: false });
         }
   }

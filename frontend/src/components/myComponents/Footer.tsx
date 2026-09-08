@@ -1,4 +1,4 @@
-import { Github, Instagram, Twitter, Youtube, Tv2 } from "lucide-react";
+import { GithubIcon, InstagramIcon, TwitterIcon, YoutubeIcon, Tv2Icon } from "lucide-react";
 
 const Footer = () => {
   const year = new Date().getFullYear();
@@ -23,13 +23,13 @@ const Footer = () => {
 
         {/* Discover */}
         <div>
-          <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gray-500 mb-5">Discover</p>
+          <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gray-500 mb-5">Descoperă</p>
           <ul className="space-y-3 text-sm text-gray-400">
             {[
-              { label: "Home", href: "/" },
-              { label: "Browse", href: "/browse" },
-              { label: "New Episodes", href: "/new-episodes" },
-              { label: "Continue Watching", href: "/continue-watching" },
+              { label: "Acasă", href: "/" },
+              { label: "Explorează", href: "/browse" },
+              { label: "Episoade Noi", href: "/new-episodes" },
+              { label: "Continuă Vizionarea", href: "/continue-watching" },
             ].map(({ label, href }) => (
               <li key={label}>
                 <a
@@ -45,9 +45,9 @@ const Footer = () => {
 
         {/* Genres */}
         <div>
-          <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gray-500 mb-5">Genres</p>
+          <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gray-500 mb-5">Genuri</p>
           <ul className="space-y-3 text-sm text-gray-400">
-            {["Action", "Romance", "Fantasy", "Horror", "Shonen", "Comedy"].map((g) => (
+            {["Acțiune", "Dragoste", "Fantezie", "Horror", "Shonen", "Comedie"].map((g) => (
               <li key={g}>
                 <a href="/browse" className="hover:text-white transition-colors duration-150">
                   {g}
@@ -59,12 +59,12 @@ const Footer = () => {
 
         {/* Account */}
         <div>
-          <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gray-500 mb-5">Account</p>
+          <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gray-500 mb-5">Cont</p>
           <ul className="space-y-3 text-sm text-gray-400">
             {[
-              { label: "My Favorites", href: "/favorites" },
-              { label: "Watchlist", href: "/watchlist" },
-              { label: "Profile", href: "/profile" },
+              { label: "Favoritele Mele", href: "/favorites" },
+              { label: "Listă de Urmărire", href: "/watchlist" },
+              { label: "Profil", href: "/profile" },
             ].map(({ label, href }) => (
               <li key={label}>
                 <a href={href} className="hover:text-white transition-colors duration-150">
@@ -77,13 +77,13 @@ const Footer = () => {
 
         {/* Connect */}
         <div>
-          <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gray-500 mb-5">Connect</p>
+          <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-gray-500 mb-5">Conectează-te</p>
           <div className="flex flex-col gap-3">
             {[
-              { icon: <Twitter size={15} />, label: "Twitter / X", href: "https://x.com" },
-              { icon: <Instagram size={15} />, label: "Instagram", href: "https://instagram.com" },
-              { icon: <Youtube size={15} />, label: "YouTube", href: "https://youtube.com" },
-              { icon: <Github size={15} />, label: "GitHub", href: "https://github.com" },
+              { icon: <TwitterIcon size={15} />, label: "TwitterIcon / X", href: "https://x.com" },
+              { icon: <InstagramIcon size={15} />, label: "InstagramIcon", href: "https://instagram.com" },
+              { icon: <YoutubeIcon size={15} />, label: "YouTube", href: "https://youtube.com" },
+              { icon: <GithubIcon size={15} />, label: "GitHub", href: "https://github.com" },
             ].map(({ icon, label, href }) => (
               <a
                 key={label}
@@ -103,12 +103,12 @@ const Footer = () => {
       {/* Bottom bar */}
       <div className="border-t border-white/5 px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
         <div className="flex items-center gap-2 text-gray-600 text-xs">
-          <Tv2 size={13} />
+          <Tv2Icon size={13} />
           <span>COPYRIGHT © {year}</span>
           <span className="font-bold text-gray-400 tracking-widest uppercase">AniVerse</span>
         </div>
         <p className="text-xs text-gray-600 tracking-widest uppercase">
-          ✦ Watch. Discover. Obsess.
+          ✦ Vizionează. Descoperă. Fascinează-te.
         </p>
       </div>
 

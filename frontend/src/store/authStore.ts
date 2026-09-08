@@ -6,6 +6,7 @@ import type { AuthResponse } from "../interfaces/auth.types";
 export const useAuthStore = create<AuthResponse>((set) => ({
     user: null,
     isAuthenticated: false,
+    hasCheckedAuth: false,
     isAdmin: false,
     error: null,
     isLoading: false,
@@ -51,12 +52,21 @@ export const useAuthStore = create<AuthResponse>((set) => ({
         set({isLoading:true, error:null});  
         try{
             const response = await axiosInstance.get("/auth/check-auth");
-            set({isAuthenticated:true, message: response.data.message , isAdmin: response.data.isAdmin});
-            console.log("isAdmin in checkAuth:", response.data.isAdmin);
+            set({
+                user: response.data.user,
+                isAuthenticated: true,
+                message: response.data.message,
+                isAdmin: response.data.isAdmin,
+                error: null,
+            });
         }catch(err:any){
-            set({error: err.response?.data?.message || "Authentication check failed"});
+            if (err.response?.status === 401) {
+                set({ user: null, isAuthenticated: false, isAdmin: false, error: null });
+            } else {
+                set({error: err.response?.data?.message || "Authentication check failed"});
+            }
         } finally{
-            set({isLoading:false});
+            set({isLoading:false, hasCheckedAuth:true});
         }   
     },
     

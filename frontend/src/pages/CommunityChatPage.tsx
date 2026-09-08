@@ -4,8 +4,8 @@ import { useChatStore, type ChatMessage } from "@/store/chatStore";
 import { useAuthStore } from "@/store/authStore";
 import { useAnimeStore } from "@/store/animeStore";
 import {
-  MessageSquare, Send, Sparkles, Trash2, Crown, Star,
-  Plus, X, ExternalLink, Hash, ArrowLeft
+  MessageSquareIcon, SendIcon, SparklesIcon, Trash2Icon, CrownIcon, StarIcon,
+  PlusIcon, XIcon, ExternalLinkIcon, HashIcon, ArrowLeftIcon
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -49,7 +49,7 @@ const CommunityChatPage = () => {
     if (!inputMsg.trim() && !selectedAnimeId) return;
     setIsSending(true);
     try {
-      await sendMessage(inputMsg.trim() || "Check out this anime recommendation!", selectedAnimeId);
+      await sendMessage(inputMsg.trim() || "Vedeți această recomandare anime!", selectedAnimeId);
       setInputMsg("");
       setSelectedAnimeId(null);
     } catch (err) {
@@ -72,14 +72,14 @@ const CommunityChatPage = () => {
   ) || [];
 
   return (
-    <div className="min-h-screen w-full bg-[#0b0c10] text-slate-100 pl-[80px] md:pl-[120px] pr-4 md:pr-10 py-6 flex flex-col items-center">
+    <div className="min-h-screen w-full bg-[#0b0c10] text-slate-100 px-4 md:pl-[130px] lg:pl-[150px] md:pr-10 py-6 flex flex-col items-center">
       <div className="w-full max-w-6xl h-[calc(100vh-3rem)] rounded-3xl bg-[#11131a] border border-white/10 shadow-2xl flex flex-col overflow-hidden">
         
         {/* Top Chat Channel Header */}
         <div className="px-6 py-4 bg-[#161822]/90 border-b border-white/10 flex items-center justify-between shrink-0 backdrop-blur-md">
           <div className="flex items-center gap-3">
             <div className="size-10 rounded-2xl bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400">
-              <Hash size={22} />
+              <HashIcon size={22} />
             </div>
             <div>
               <div className="flex items-center gap-2">
@@ -90,7 +90,7 @@ const CommunityChatPage = () => {
               </div>
               <p className="text-xs text-gray-400 flex items-center gap-2 mt-0.5">
                 <span className={`inline-block size-2 rounded-full ${isConnected ? "bg-green-500 animate-pulse" : "bg-amber-500"}`} />
-                <span>{isConnected ? "Real-time WebSocket connected" : "Connecting live feed..."}</span>
+                <span>{isConnected ? "WebSocket conectat în timp real" : "Se conectează fluxul live..."}</span>
               </p>
             </div>
           </div>
@@ -100,7 +100,7 @@ const CommunityChatPage = () => {
               onClick={() => navigate("/")}
               className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-gray-300 hover:text-white transition-all"
             >
-              <ArrowLeft size={16} /> Exit Chat
+              <ArrowLeftIcon size={16} /> Ieși din Chat
             </button>
           </div>
         </div>
@@ -110,22 +110,22 @@ const CommunityChatPage = () => {
           {isLoading && messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full space-y-3 text-gray-500">
               <div className="size-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
-              <p className="text-sm">Loading community messages...</p>
+              <p className="text-sm">Se încarcă mesajele comunității...</p>
             </div>
           ) : messages.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center p-8 space-y-4 max-w-md mx-auto">
               <div className="size-16 rounded-full bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
-                <MessageSquare size={28} />
+                <MessageSquareIcon size={28} />
               </div>
-              <h3 className="text-xl font-bold text-white">No messages yet!</h3>
+              <h3 className="text-xl font-bold text-white">Niciun mesaj încă!</h3>
               <p className="text-xs text-gray-400 leading-relaxed">
-                Welcome to the global anime lounge! Be the first to start the conversation or recommend your favorite series.
+                Bine ai venit în lounge-ul anime! Fii primul care începe conversația sau recomandă seriile tale preferate.
               </p>
             </div>
           ) : (
             messages.map((msg: ChatMessage) => {
               const isMe = user && user.id === msg.user_id;
-              const canDelete = isMe || (user && user.is_admin);
+              const canDelete = isMe || (user && user.isAdmin);
               const isAdminMsg = msg.role === "admin";
 
               return (
@@ -148,7 +148,7 @@ const CommunityChatPage = () => {
                     <div className={`flex items-center gap-2 text-xs ${isMe ? "justify-end" : "justify-start"}`}>
                       <span className={`font-black ${isAdminMsg ? "text-amber-400 flex items-center gap-1" : "text-gray-200"}`}>
                         {msg.username || `User #${msg.user_id}`}
-                        {isAdminMsg && <Crown size={12} className="fill-amber-400" />}
+                        {isAdminMsg && <CrownIcon size={12} className="fill-amber-400" />}
                       </span>
                       <span className="text-[10px] text-gray-500">
                         {new Date(msg.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
@@ -159,7 +159,7 @@ const CommunityChatPage = () => {
                           className="opacity-0 group-hover/msg:opacity-100 text-gray-500 hover:text-red-400 transition-all p-0.5"
                           title="Delete message"
                         >
-                          <Trash2 size={12} />
+                          <Trash2Icon size={12} />
                         </button>
                       )}
                     </div>
@@ -188,20 +188,20 @@ const CommunityChatPage = () => {
                         </div>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-1.5 text-[10px] font-bold text-blue-400 uppercase tracking-wider">
-                            <Sparkles size={11} /> Recommended Anime
+                            <SparklesIcon size={11} /> Anime Recomandat
                           </div>
                           <h4 className="text-xs font-bold text-white truncate mt-0.5 group-hover/card:text-blue-400 transition-colors">
                             {msg.anime_title || `Anime #${msg.anime_id}`}
                           </h4>
                           {msg.rating && (
                             <div className="flex items-center gap-1 text-[11px] font-semibold text-amber-400 mt-1">
-                              <Star size={11} className="fill-amber-400" />
+                              <StarIcon size={11} className="fill-amber-400" />
                               <span>{msg.rating} / 10</span>
                             </div>
                           )}
                         </div>
                         <div className="size-8 rounded-full bg-blue-500/10 text-blue-400 group-hover/card:bg-blue-500 group-hover/card:text-white flex items-center justify-center transition-all shrink-0">
-                          <ExternalLink size={14} />
+                          <ExternalLinkIcon size={14} />
                         </div>
                       </div>
                     )}
@@ -221,15 +221,15 @@ const CommunityChatPage = () => {
           {selectedAnimeObj && (
             <div className="flex items-center justify-between gap-3 px-4 py-2 rounded-xl bg-blue-950/40 border border-blue-500/40 text-xs font-bold text-blue-300 animate-in fade-in slide-in-from-bottom-2 duration-300">
               <div className="flex items-center gap-2 truncate">
-                <Sparkles size={14} className="text-blue-400 shrink-0" />
-                <span className="truncate">Attaching Recommendation: <span className="text-white font-extrabold">{selectedAnimeObj.title}</span></span>
+                <SparklesIcon size={14} className="text-blue-400 shrink-0" />
+                <span className="truncate">Se atașează Recomandare: <span className="text-white font-extrabold">{selectedAnimeObj.title}</span></span>
               </div>
               <button
                 onClick={() => setSelectedAnimeId(null)}
                 className="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors"
                 title="Remove attachment"
               >
-                <X size={14} />
+                <XIcon size={14} />
               </button>
             </div>
           )}
@@ -241,8 +241,8 @@ const CommunityChatPage = () => {
               className="px-4 py-3 rounded-2xl bg-white/5 hover:bg-blue-600/20 border border-white/10 hover:border-blue-500/50 text-gray-300 hover:text-blue-400 font-bold text-xs flex items-center gap-2 transition-all shrink-0 shadow-sm"
               title="Recommend an anime in your chat message"
             >
-              <Plus size={16} className="text-blue-400" />
-              <span className="hidden sm:inline">Recommend Anime</span>
+              <PlusIcon size={16} className="text-blue-400" />
+              <span className="hidden sm:inline">Recomandă Anime</span>
             </button>
 
             {/* Textarea Input */}
@@ -250,12 +250,12 @@ const CommunityChatPage = () => {
               value={inputMsg}
               onChange={(e) => setInputMsg(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Send a message in #general-community... (Enter to send)"
+              placeholder="Trimite un mesaj în #general-community... (Enter pentru a trimite)"
               rows={1}
               className="flex-1 px-5 py-3 rounded-2xl bg-[#0b0c10] border border-white/15 focus:border-blue-500 text-sm text-white placeholder-gray-500 focus:outline-none resize-none max-h-24 shadow-inner"
             />
 
-            {/* Send Button */}
+            {/* SendIcon Button */}
             <button
               onClick={handleSend}
               disabled={isSending || (!inputMsg.trim() && !selectedAnimeId)}
@@ -264,7 +264,7 @@ const CommunityChatPage = () => {
               {isSending ? (
                 <div className="size-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
               ) : (
-                <Send size={18} className="translate-x-0.5" />
+                <SendIcon size={18} className="translate-x-0.5" />
               )}
             </button>
           </div>
@@ -277,14 +277,14 @@ const CommunityChatPage = () => {
         <DialogContent className="bg-[#11131a] border border-white/15 text-white max-w-lg rounded-3xl p-6 shadow-2xl">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold flex items-center gap-2 text-white">
-              <Sparkles className="text-blue-500" /> Select an Anime to Recommend
+              <SparklesIcon className="text-blue-500" /> Selectează un Anime de Recomandat
             </DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4 mt-2">
             <input
               type="text"
-              placeholder="Search anime title..."
+              placeholder="Caută titlul anime..."
               value={searchAnimeQuery}
               onChange={(e) => setSearchAnimeQuery(e.target.value)}
               className="w-full px-4 py-2.5 rounded-xl bg-black/50 border border-white/15 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
@@ -292,7 +292,7 @@ const CommunityChatPage = () => {
 
             <div className="max-h-72 overflow-y-auto space-y-2 pr-1 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-white/10">
               {filteredAnimes.length === 0 ? (
-                <p className="text-center text-xs text-gray-500 py-6">No anime found</p>
+                <p className="text-center text-xs text-gray-500 py-6">Niciun anime găsit</p>
               ) : (
                 filteredAnimes.map((anime) => (
                   <div
@@ -320,7 +320,7 @@ const CommunityChatPage = () => {
                       </div>
                     </div>
                     <span className="text-xs font-bold text-blue-400 px-3 py-1 rounded-lg bg-blue-500/10 border border-blue-500/20 opacity-0 group-hover:opacity-100 transition-opacity">
-                      Attach
+                      Atașează
                     </span>
                   </div>
                 ))

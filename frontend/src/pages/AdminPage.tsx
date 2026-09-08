@@ -23,9 +23,13 @@ import { useHeroAnimeStore } from "@/store/heroAnime.Store";
 import { useSuggestedAnimeStore } from "@/store/suggestedAnimeStore";
 import { GenreDonutChart, ContentBarChart, ActivityAreaChart } from "@/components/myComponents/AdminCharts";
 import UserManagementTable from "@/components/myComponents/UserManagementTable";
+import { BadgesTab } from "@/components/myComponents/BadgesTab";
 import { axiosInstance } from "@/lib/axios";
-import { LayoutDashboard, Film, Sparkles, Newspaper, ShieldCheck, RefreshCw, Users } from "lucide-react";
+import { LayoutDashboardIcon, VideoIcon, SparklesIcon, NewspaperIcon, ShieldCheckIcon, RefreshCwIcon, UsersIcon, MedalIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import AdminRecordDialog from '@/components/myComponents/AdminRecordDialog';
+import AdminMediaDialog from '@/components/myComponents/AdminMediaDialog';
+import AdminEpisodesDirectory from '@/components/myComponents/AdminEpisodesDirectory';
 
 interface AdminStatsData {
   totalUsers: number;
@@ -45,18 +49,21 @@ const AdminPage: React.FC = () => {
   const { heroAnimes, getHeroAnimes } = useHeroAnimeStore();
   const { suggestedAnimes, getSuggestedAnimes } = useSuggestedAnimeStore();
 
-  const [activeTab, setActiveTab] = useState<"overview" | "users" | "animes" | "featured" | "news">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "users" | "animes" | "featured" | "news" | "badges">("overview");
   const [stats, setStats] = useState<AdminStatsData | null>(null);
   const [loadingStats, setLoadingStats] = useState(false);
+  const [statsError, setStatsError] = useState('');
 
   const fetchAdminStats = async () => {
     setLoadingStats(true);
+    setStatsError('');
     try {
       const res = await axiosInstance.get("/admin/stats");
       if (res.data?.success) {
         setStats(res.data.stats);
       }
     } catch (e) {
+      setStatsError('Unable to load statistics. Use Refresh Data to try again.');
       console.error("Failed to load admin stats:", e);
     } finally {
       setLoadingStats(false);
@@ -75,20 +82,21 @@ const AdminPage: React.FC = () => {
   const animeSortedByRecent = [...animes].sort((a, b) => b.id - a.id);
 
   const tabs = [
-    { id: "overview", label: "Overview & Analytics", icon: <LayoutDashboard size={16} /> },
-    { id: "users", label: "Users & Roles", icon: <Users size={16} /> },
-    { id: "animes", label: "Animes & Episodes", icon: <Film size={16} /> },
-    { id: "featured", label: "Hero & Suggestions", icon: <Sparkles size={16} /> },
-    { id: "news", label: "Anime News", icon: <Newspaper size={16} /> },
+    { id: "overview", label: "Overview & Analytics", icon: <LayoutDashboardIcon size={16} /> },
+    { id: "users", label: "Users & Roles", icon: <UsersIcon size={16} /> },
+    { id: "animes", label: "Animes & Episodes", icon: <VideoIcon size={16} /> },
+    { id: "featured", label: "Hero & Suggestions", icon: <SparklesIcon size={16} /> },
+    { id: "news", label: "Anime News", icon: <NewspaperIcon size={16} /> },
+    { id: "badges", label: "Badges & Messages", icon: <MedalIcon size={16} /> },
   ] as const;
 
   const defaultStats: AdminStatsData = stats || {
-    totalUsers: 1,
+    totalUsers: 0,
     totalAnimes: animes.length || 0,
     totalEpisodes: 0,
     totalNews: animeNews?.length || 0,
     totalSuggestions: suggestedAnimes?.length || 0,
-    totalVisits: 1,
+    totalVisits: 0,
     genreDistribution: [],
     recentActivity: [],
   };
@@ -109,7 +117,7 @@ const AdminPage: React.FC = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#21262d] pb-6">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <ShieldCheck className="size-6 text-blue-500" />
+                  <ShieldCheckIcon className="size-6 text-blue-500" />
                   <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight" style={{ fontFamily: "Righteous, cursive" }}>
                     Cyberwiz Admin Portal
                   </h1>
@@ -120,16 +128,17 @@ const AdminPage: React.FC = () => {
               </div>
 
               <button
-                onClick={fetchAdminStats}
+                onClick={() => { void fetchAdminStats(); void fetchAnimes(); void getAnimeNews(); void getHeroAnimes(); void getSuggestedAnimes(); }}
                 disabled={loadingStats}
                 className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#161b22] hover:bg-[#21262d] border border-[#30363d] text-xs font-bold text-white transition-all w-fit shadow-md"
               >
-                <RefreshCw size={14} className={loadingStats ? "animate-spin text-blue-400" : "text-gray-400"} />
+                <RefreshCwIcon size={14} className={loadingStats ? "animate-spin text-blue-400" : "text-gray-400"} />
                 Refresh Data
               </button>
             </div>
 
             {/* Navigation Tabs */}
+            {statsError && <p role="alert" className="text-sm text-red-300">{statsError}</p>}
             <div className="flex gap-2 overflow-x-auto pb-2 border-b border-[#21262d] hide-scrollbar">
               {tabs.map((tab) => (
                 <button
@@ -235,6 +244,7 @@ const AdminPage: React.FC = () => {
                       <DialogAddAnime />
                       <DialogUpdateAnime animes={animeSortedByName} />
                       <DialogDeleteAnime animes={animeSortedByName} />
+                      <AdminMediaDialog kind="anime" records={animeSortedByName} onSaved={fetchAnimes} />
                       <DialogAddEpisode animes={animeSortedByName} />
                       <DialogUpdateEpisode
                         episodes={episodesById}
@@ -257,6 +267,7 @@ const AdminPage: React.FC = () => {
                       <AnimeAdmin animes={animeSortedByRecent} />
                     </div>
                   </div>
+                  <AdminEpisodesDirectory animes={animeSortedByName} />
                 </motion.div>
               )}
 
@@ -276,10 +287,20 @@ const AdminPage: React.FC = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                       <DialogAddHeroAnime animes={animeSortedByName} />
                       <DialogUpdateHeroAnime animes={animeSortedByName} heroAnimes={heroAnimes} />
-                      <div className="hidden lg:block"></div>
+                      <AdminRecordDialog title="Delete Hero Banner" description="Remove a banner from the homepage" records={heroAnimes} destructive onSave={async id => { await axiosInstance.delete(`/anime-data/removeHeroAnime/${id}`); await getHeroAnimes(); }} />
+                      <AdminMediaDialog kind="hero" records={heroAnimes} onSaved={getHeroAnimes} />
                       <DialogAddSuggestedAnime animes={animeSortedByName} />
                       <DialogUpdateSuggestedAnime animes={animeSortedByName} suggestedAnimes={suggestedAnimes} />
+                      <AdminRecordDialog title="Delete Suggestion" description="Remove a suggested anime from the homepage" records={suggestedAnimes} destructive onSave={async id => { await axiosInstance.delete(`/anime-data/removeSuggestedAnime/${id}`); await getSuggestedAnimes(); }} />
+                      <AdminMediaDialog kind="suggestion" records={suggestedAnimes} onSaved={getSuggestedAnimes} />
                     </div>
+                  </div>
+                  <div className="grid sm:grid-cols-2 gap-6">
+                    {[{ title: 'Hero Banners', records: heroAnimes }, { title: 'Suggestions', records: suggestedAnimes }].map(group => <div key={group.title} className="bg-[#0D1117] border border-[#21262d] rounded-2xl p-6 space-y-3">
+                      <h3 className="font-bold">{group.title} ({group.records.length})</h3>
+                      {group.records.map(record => <p key={record.id} className="text-sm text-gray-300">{record.title}</p>)}
+                      {!group.records.length && <p className="text-sm text-gray-400">No records yet.</p>}
+                    </div>)}
                   </div>
                 </motion.div>
               )}
@@ -301,6 +322,7 @@ const AdminPage: React.FC = () => {
                       <DialogAddNews animes={animeSortedByName} />
                       <DialogUpdateNews animes={animeSortedByName} news={animeNews} />
                       <DialogDeleteNews news={animeNews} />
+                      <AdminMediaDialog kind="news" records={animeNews} onSaved={getAnimeNews} />
                     </div>
                   </div>
 
@@ -326,6 +348,10 @@ const AdminPage: React.FC = () => {
                 >
                   <UserManagementTable />
                 </motion.div>
+              )}
+
+              {activeTab === "badges" && (
+                <BadgesTab />
               )}
             </AnimatePresence>
 

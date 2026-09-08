@@ -1,3 +1,4 @@
+import { adminMutationFailed } from "@/lib/adminMutation";
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import type { IAnimeNews, IAnimeNewsResponse } from "../interfaces/animeNews.types";
@@ -17,7 +18,8 @@ export const useAnimeNewsStore = create<IAnimeNewsResponse>((set) => ({
             }));
         } catch (error: any) {
             set({ error: error.response?.data?.message || error.message, isLoading: false });
-        }finally {
+          adminMutationFailed(error, "Unable to save this change.");
+    }finally {
             set({ isLoading: false });
         }
     },
@@ -43,21 +45,23 @@ export const useAnimeNewsStore = create<IAnimeNewsResponse>((set) => ({
             }));
         } catch (error: any) {
             set({ error: error.response?.data?.message || error.message, isLoading: false });
-        }finally {
+          adminMutationFailed(error, "Unable to save this change.");
+    }finally {
             set({ isLoading: false });
         }
     },
     updateAnimeNews: async (id: number, data: Partial<IAnimeNews>): Promise<void> => {
         set({ isLoading: true, error: null });
         try {
-            const response = await axiosInstance.put(`/anime-data/updateAnimeNews/${id}`, data);
+            const response = await axiosInstance.put(`/anime-data/updateAnimeNews/${id}`, data instanceof FormData ? data : { ...data, overlay_stats: undefined, rating: data.overlay_stats?.rating ?? null, views_text: data.overlay_stats?.views_text ?? null, related_postgres_anime_id: data.related_postgres_anime_id ?? null });
             set((state) => ({
                 animeNews: state.animeNews.map((news: any) => String(news.id) === String(id) ? response.data.animeNews : news),
                 message: response.data.message
             }));
         } catch (error: any) {
             set({ error: error.response?.data?.message || error.message, isLoading: false });
-        } finally {
+          adminMutationFailed(error, "Unable to save this change.");
+    } finally {
             set({ isLoading: false });
         }
     }

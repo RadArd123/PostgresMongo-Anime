@@ -1,6 +1,6 @@
 export interface Donation {
   id: number;
-  user_id: number;
+  user_id: number | null;
   tier_name: string;
   amount: number;
   coffees: number;
@@ -18,9 +18,7 @@ export interface DonationStats {
 }
 
 export interface DonationInput {
-  tier_name: string;
   amount: number;
-  coffees: number;
   donor_name: string;
   message: string;
 }
@@ -34,5 +32,5 @@ export interface DonationStore {
   fetchDonations: () => Promise<void>;
   fetchStats: () => Promise<void>;
   fetchUserDonations: () => Promise<void>;
-  createDonation: (data: DonationInput) => Promise<boolean>;
+  createCheckoutSession: (data: DonationInput) => Promise<string | null>;
 }

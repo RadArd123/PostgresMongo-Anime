@@ -5,7 +5,8 @@ import cloudinary from "../config/cloudinary";
 export const uploadToCloudinary = async (file: UploadedFile):Promise<string> => {
     try{
         const result = await cloudinary.uploader.upload(file.tempFilePath, {
-            resource_type: 'auto', 
+            resource_type: 'image',
+            allowed_formats: ['jpg', 'jpeg', 'png', 'webp', 'gif'],
         });
         const url = result.secure_url;
         // Auto-optimize by converting format to webp/avif and optimizing quality

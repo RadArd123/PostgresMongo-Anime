@@ -1,3 +1,4 @@
+import { crudError } from '../utils/crudError';
 import { Request, Response } from "express";
 import { UploadedFile } from "express-fileupload";
 import { uploadToCloudinary } from "../scripts/uploadToCloudinary";
@@ -18,7 +19,7 @@ export const addHeroAnime = async (req: Request, res: Response) => {
     const { postgres_anime_id, title, description, original_title, rating } =
       req.body;
 
-    if (!postgres_anime_id || !title || !description || !rating) {
+    if (!postgres_anime_id || !title || !description) {
       return res
         .status(400)
         .json({
@@ -32,7 +33,7 @@ export const addHeroAnime = async (req: Request, res: Response) => {
       title,
       description,
       original_title || null,
-      Number(rating),
+      Number(rating ?? 0),
       imageUrl
     );
 
@@ -44,9 +45,7 @@ export const addHeroAnime = async (req: Request, res: Response) => {
       });
   } catch (err: any) {
     console.error(err);
-    res
-      .status(500)
-      .json({ message: "Server error during Hero Anime creation." });
+    crudError(res, err, "Server error during Hero Anime creation.");
   }
 };
 
@@ -56,9 +55,7 @@ export const getHeroAnimes = async (req: Request, res: Response) => {
     res.status(200).json(heroAnimes);
   } catch (err: any) {
     console.error(err);
-    res
-      .status(500)
-      .json({ message: "Server error during fetching Hero Animes." });
+    crudError(res, err, "Server error during fetching Hero Animes.");
   }
 };
 
@@ -73,9 +70,7 @@ export const removeHeroAnime = async (req: Request, res: Response) => {
     res.status(200).json({ message: "Hero Anime deleted successfully" });
   } catch (err: any) {
     console.error(err);
-    res
-      .status(500)
-      .json({ message: "Server error during deleting Hero Anime." });
+    crudError(res, err, "Server error during deleting Hero Anime.");
   }
 };
 
@@ -108,7 +103,7 @@ export const addSuggestedAnime = async (req: Request, res: Response) => {
 
   } catch (err: any) {
     console.error(err);
-    res.status(500).json({ message: "Server error during Suggested Anime creation." });
+    crudError(res, err, "Server error during Suggested Anime creation.");
   }
 };
 
@@ -118,7 +113,7 @@ export const getSuggestedAnimes = async (req: Request, res: Response) => {
         res.status(200).json(suggestedAnimes);
     }catch(err:any){
         console.error(err);
-        res.status(500).json({ message: "Server error during fetching Suggested Animes." });
+        crudError(res, err, "Server error during fetching Suggested Animes.");
     }
 }
 
@@ -132,7 +127,7 @@ export const removeSuggestedAnime = async (req: Request, res: Response) => {
         res.status(200).json({ message: "Suggested Anime deleted successfully" });
     }catch(err:any){
         console.error(err);
-        res.status(500).json({ message: "Server error during deleting Suggested Anime." });
+        crudError(res, err, "Server error during deleting Suggested Anime.");
     }
 }
 
@@ -166,7 +161,7 @@ export const addAnimeNews = async (req: Request, res: Response) => {
              imageUrl,
              parsedTags.length > 0 ? parsedTags : null,
              related_postgres_anime_id ? Number(related_postgres_anime_id) : null,
-             rating ? Number(rating) : null,
+             rating != null ? Number(rating) : null,
              views_text || null
         );
         
@@ -182,7 +177,7 @@ export const addAnimeNews = async (req: Request, res: Response) => {
         res.status(201).json({ message: "Anime News created successfully", animeNews: formattedNews });
     } catch (err: any) {
         console.error(err);
-        return res.status(500).json({ message: "Server error during file upload." });
+        return crudError(res, err, "Server error during file upload.");
     }
 }
 
@@ -202,7 +197,7 @@ export const getAnimeNews = async (req: Request, res: Response) => {
         res.status(200).json(formattedNews);
     }catch(err:any){
         console.error(err);
-        res.status(500).json({ message: "Server error during fetching Anime News." });
+        crudError(res, err, "Server error during fetching Anime News.");
     }
 };
 
@@ -216,7 +211,7 @@ export const removeAnimeNews = async (req: Request, res: Response) => {
         res.status(200).json({ message: "Anime News deleted successfully" });
     }catch(err:any){
         console.error(err);
-        res.status(500).json({ message: "Server error during deleting Anime News." });
+        crudError(res, err, "Server error during deleting Anime News.");
     }
 };
 
@@ -236,7 +231,7 @@ export const updateHeroAnime = async (req: Request, res: Response) => {
         res.status(200).json({ message: "Hero Anime updated successfully", heroAnime: updated });
     } catch (err: any) {
         console.error(err);
-        res.status(500).json({ message: "Server error during Hero Anime update." });
+        crudError(res, err, "Server error during Hero Anime update.");
     }
 };
 
@@ -250,14 +245,14 @@ export const updateSuggestedAnime = async (req: Request, res: Response) => {
             title,
             description || null,
             views_count || null,
-            rating ? Number(rating) : null,
+            rating != null ? Number(rating) : null,
             badge_label || 'Trending'
         );
         if (!updated) return res.status(404).json({ message: "Suggested Anime not found" });
         res.status(200).json({ message: "Suggested Anime updated successfully", suggestedAnime: updated });
     } catch (err: any) {
         console.error(err);
-        res.status(500).json({ message: "Server error during Suggested Anime update." });
+        crudError(res, err, "Server error during Suggested Anime update.");
     }
 };
 
@@ -282,7 +277,7 @@ export const updateAnimeNews = async (req: Request, res: Response) => {
             body_text,
             parsedTags.length > 0 ? parsedTags : null,
             related_postgres_anime_id ? Number(related_postgres_anime_id) : null,
-            rating ? Number(rating) : null,
+            rating != null ? Number(rating) : null,
             views_text || null
         );
         
@@ -299,6 +294,6 @@ export const updateAnimeNews = async (req: Request, res: Response) => {
         res.status(200).json({ message: "Anime News updated successfully", animeNews: formattedNews });
     } catch (err: any) {
         console.error(err);
-        res.status(500).json({ message: "Server error during Anime News update." });
+        crudError(res, err, "Server error during Anime News update.");
     }
 };

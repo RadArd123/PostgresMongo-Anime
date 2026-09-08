@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Sparkles } from "lucide-react";
+import { SparklesIcon } from "lucide-react";
 
 export interface FightScene {
   title: string;
@@ -183,7 +183,7 @@ export default function AnimeFightBackground() {
             {/* Subtle bottom gradient only for badge legibility on hover */}
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <div className="absolute bottom-2 left-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-1.5 px-2 py-1 rounded-md bg-black/80 backdrop-blur-md border border-white/20 shadow-md">
-              <Sparkles className="size-3 text-blue-400 shrink-0" />
+              <SparklesIcon className="size-3 text-blue-400 shrink-0" />
               <span className="text-[10px] font-extrabold text-white uppercase tracking-wider truncate max-w-[120px]">
                 {scene.anime}
               </span>

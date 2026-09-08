@@ -1,4 +1,4 @@
-import { Check, X } from "lucide-react";
+import { CheckIcon, XIcon } from "lucide-react";
 
 
 const PasswordCriteria = ({ password }:{password: string}) => {
@@ -14,9 +14,9 @@ const PasswordCriteria = ({ password }:{password: string}) => {
         {criteria.map((item)=>(
             <div key={item.label} className="flex items-center text-xs">
                 {item.met ?(
-                    <Check className="size-4 text-green-500 mr-2"/>
+                    <CheckIcon className="size-4 text-green-500 mr-2"/>
                 ) :(
-                    <X className="size-4 text-gray-500 mr-2"/>
+                    <XIcon className="size-4 text-gray-500 mr-2"/>
                 )}
                 <span className={item.met? "text-green-500" : "text-gray-500"}>{item.label}</span>
             </div>

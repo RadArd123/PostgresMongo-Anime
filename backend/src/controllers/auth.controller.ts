@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { generateTokenAndSetCookie } from "../utils/generateTokenAndSetCookie";
 import { DbUser } from "../interfaces/auth.types";
 import { authModel } from "../model/auth.model";
-import { signupSchema, loginSchema } from "../schemas/auth.schemas";
+import { signupSchema, loginSchema, deleteAccountSchema } from "../schemas/auth.schemas";
 import { z } from "zod";
 import { ExtendedRequest } from "../interfaces/request.types";
 
@@ -14,7 +14,7 @@ export const signup = async (req: Request, res: Response) => {
         const { username, password, email } = validateData;
 
         const user = await authModel.signup({ username, password, email } as DbUser);
-        generateTokenAndSetCookie(res, user.id, user.is_admin);
+        generateTokenAndSetCookie(res, user.id);
 
         res.status(201).json({ message: "User created successfully", user: { ...user, isAdmin: user.is_admin } });
 
@@ -39,7 +39,7 @@ export const login = async (req: Request, res: Response) => {
 
         const user = await authModel.login({ username, password } as DbUser);
 
-        generateTokenAndSetCookie(res, user.id, user.is_admin);
+        generateTokenAndSetCookie(res, user.id);
         res.status(200).json({ message: "Login successful", user: { id: user.id, username: user.username, email: user.email, isAdmin: user.is_admin } });
 
     } catch (err: any) {
@@ -58,17 +58,30 @@ export const login = async (req: Request, res: Response) => {
     }
 };
 export const logout = (req: Request, res: Response) => {
-    res.clearCookie("token");
+    res.clearCookie("token", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+    });
     res.status(200).json({ message: "Logout successful" });
 };
 export const checkAuth = async (req: ExtendedRequest, res: Response) => {
     try {
-        const userId = req.user?.id;
-        if (!userId) {
+        const user = req.user;
+        if (!user) {
             return res.status(401).json({ message: "Unauthorized" });
         }
-        const isAdmin = req.user?.isAdmin || false;
-        res.status(200).json({ message: "Authenticated", success: true, isAdmin: isAdmin });
+        res.status(200).json({
+            message: "Authenticated",
+            success: true,
+            isAdmin: user.isAdmin,
+            user: {
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                isAdmin: user.isAdmin,
+            },
+        });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Server error during authentication check.", error: err });
@@ -82,12 +95,23 @@ export const deleteAccount = async (req: ExtendedRequest, res: Response) => {
             return res.status(401).json({ message: "Unauthorized" });
         }
 
-        await authModel.deleteUser(userId);
+        const { password } = deleteAccountSchema.parse(req.body);
+        await authModel.deleteUser(userId, password);
 
         // Stergem si cookie-ul de autentificare
-        res.clearCookie("token");
+        res.clearCookie("token", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "strict",
+        });
         res.status(200).json({ success: true, message: "Account deleted successfully" });
     } catch (err: any) {
+        if (err instanceof z.ZodError) {
+            return res.status(400).json({ message: err.issues[0]?.message || "Invalid data" });
+        }
+        if (err.message === "Invalid password") {
+            return res.status(401).json({ message: "Invalid password" });
+        }
         console.error("Error in deleteAccount:", err);
         res.status(500).json({ message: err.message || "Server error during account deletion." });
     }

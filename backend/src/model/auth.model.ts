@@ -32,12 +32,17 @@ export const authModel = {
         }
         return user;
     },
-    deleteUser: async (user_id: number): Promise<DbUser> => {
-        const userResults = await pool.query<DbUser>("DELETE FROM users WHERE id = $1 RETURNING *", [user_id]);
-        if (userResults.rows.length === 0) {
+    deleteUser: async (user_id: number, password: string): Promise<void> => {
+        const existingUser = await pool.query<DbUser>('SELECT * FROM users WHERE id = $1', [user_id]);
+        const user = existingUser.rows[0];
+        if (!user || !(await bcrypt.compare(password, user.password))) {
+            throw new Error('Invalid password');
+        }
+
+        const userResults = await pool.query("DELETE FROM users WHERE id = $1", [user_id]);
+        if (userResults.rowCount !== 1) {
             throw new Error("User not found");
         }
-        return userResults.rows[0];
     }
 
 }

@@ -8,7 +8,7 @@ import { useAnimeNewsStore } from "@/store/animeNewsStore";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import type { Anime } from "@/interfaces/anime.types";
 import { ScrollArea } from "../ui/scroll-area";
-import { Newspaper } from "lucide-react";
+import { NewspaperIcon } from "lucide-react";
 
 const DialogAddNews = ({ animes = [] }: { animes: Anime[] }) => {
   const { addAnimeNews, isLoading } = useAnimeNewsStore();
@@ -72,7 +72,7 @@ const DialogAddNews = ({ animes = [] }: { animes: Anime[] }) => {
           <form className="space-y-6" onSubmit={handleSubmit}>
             <DialogHeader className="flex flex-row items-center gap-3 space-y-0 pb-2">
               <div className="bg-blue-500/20 p-2 rounded-xl">
-                  <Newspaper className="w-6 h-6 text-blue-400" />
+                  <NewspaperIcon className="w-6 h-6 text-blue-400" />
               </div>
               <div>
                   <DialogTitle className="text-2xl font-bold text-white">

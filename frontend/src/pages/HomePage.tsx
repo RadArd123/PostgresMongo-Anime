@@ -1,9 +1,6 @@
 import AnimeCards from "@/components/myComponents/AnimeCards";
 import AnimeSuggestion from "@/components/myComponents/AnimeSuggestion";
 import BannerImg from "@/components/myComponents/BannerImg";
-import Footer from "@/components/myComponents/Footer";
-
-
 import NewEpisodesSection from "@/components/myComponents/NewEpisodesSection";
 import NewsCards from "@/components/myComponents/NewsCards";
 import { useAnimeStore } from "@/store/animeStore";
@@ -21,15 +18,15 @@ const HomePage = () => {
     fetchAnimes();
   }, []);
 
-  const topAnimetitle:string = "Top Animes";
-  const popularAnimeTitle:string = "Most Popular";
+  const topAnimetitle:string = "Cele Mai Bune Anime";
+  const popularAnimeTitle:string = "Cele Mai Populare";
 
   return (
     <div className="w-full h-full ">
       <BannerImg />
 
-      {/* Responsive container taking full available width while clearing sidebar */}
-      <div className="relative w-full pl-[130px] md:pl-[150px] pr-8 md:pr-16 space-y-20 pt-8 pb-12 z-10">
+      {/* Responsive container taking full available width while clearing sidebar on desktop */}
+      <div className="relative w-full px-4 md:pl-[130px] lg:pl-[150px] md:pr-16 space-y-20 pt-8 pb-12 z-10">
         
         {/* New Glassmorphism Preview Section */}
         {/* Top Animes Section restored to its original place */}
@@ -53,10 +50,6 @@ const HomePage = () => {
           <NewEpisodesSection />
         </section>
 
-
-        <section >
-          <Footer />
-        </section>
       </div>
       
     </div>

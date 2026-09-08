@@ -2,10 +2,13 @@ import React, { useEffect, useState, useMemo } from "react";
 import { axiosInstance } from "@/lib/axios";
 import type { AdminUser } from "./UserSidebar";
 import UserIcon from "./UserIcon";
-import { Shield, ShieldAlert, Trash2, Search, RefreshCw, UserCheck, Mail, Activity, CheckCircle2, AlertTriangle, Trophy, Flame } from "lucide-react";
+import { ShieldIcon, ShieldAlertIcon, Trash2Icon, SearchIcon, RefreshCwIcon, UserCheckIcon, MailIcon, ActivityIcon, CheckCircle2Icon, AlertTriangleIcon, TrophyIcon, FlameIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import AdminUserDialogs from './AdminUserDialogs';
+import { useAuthStore } from '@/store/authStore';
 
 export const UserManagementTable: React.FC = () => {
+  const currentUserId = useAuthStore(state => state.user?.id);
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [search, setSearch] = useState<string>("");
@@ -94,6 +97,7 @@ export const UserManagementTable: React.FC = () => {
 
   return (
     <div className="space-y-6 relative">
+      <AdminUserDialogs users={users} onSaved={fetchUsers} />
       {/* Toast Notification */}
       <AnimatePresence>
         {toastMessage && (
@@ -103,7 +107,7 @@ export const UserManagementTable: React.FC = () => {
             exit={{ opacity: 0, y: -20, scale: 0.95 }}
             className="fixed top-6 right-6 z-50 bg-emerald-600 border border-emerald-400 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 text-sm font-bold"
           >
-            <CheckCircle2 size={18} />
+            <CheckCircle2Icon size={18} />
             <span>{toastMessage}</span>
           </motion.div>
         )}
@@ -114,7 +118,7 @@ export const UserManagementTable: React.FC = () => {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-base font-extrabold text-white flex items-center gap-2">
-              <Trophy className="text-amber-400 size-5" />
+              <TrophyIcon className="text-amber-400 size-5" />
               <span>Most Active Otakus (Leaderboard Podium)</span>
             </h3>
             <span className="text-xs text-gray-400 font-mono">Ranked by visits & database telemetry</span>
@@ -150,7 +154,7 @@ export const UserManagementTable: React.FC = () => {
                         {medals[idx]}
                       </span>
                       <span className="text-xs font-mono text-gray-400 flex items-center gap-1">
-                        <Flame className="text-orange-400 size-3.5 fill-orange-400" />
+                        <FlameIcon className="text-orange-400 size-3.5 fill-orange-400" />
                         <b className="text-white">{user.totalVisits || 0}</b> visits
                       </span>
                     </div>
@@ -161,7 +165,7 @@ export const UserManagementTable: React.FC = () => {
                       <div>
                         <h4 className="font-bold text-white text-base truncate flex items-center gap-1.5">
                           <span>{user.username}</span>
-                          {user.role === "admin" && <Shield className="size-3.5 text-purple-400 fill-purple-400" />}
+                          {user.role === "admin" && <ShieldIcon className="size-3.5 text-purple-400 fill-purple-400" />}
                         </h4>
                         <p className="text-xs text-gray-400 italic truncate max-w-[180px]">
                           "{user.status || "Otaku"}"
@@ -196,7 +200,7 @@ export const UserManagementTable: React.FC = () => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#21262d] pb-4">
           <div className="space-y-1">
             <h3 className="text-lg font-bold text-white flex items-center gap-2" style={{ fontFamily: "Righteous, cursive" }}>
-              <UserCheck className="text-blue-400 size-5" />
+              <UserCheckIcon className="text-blue-400 size-5" />
               <span>User & Role Directory</span>
             </h3>
             <p className="text-xs text-gray-400">
@@ -208,7 +212,7 @@ export const UserManagementTable: React.FC = () => {
             <div className="px-3 py-1.5 rounded-xl bg-[#161b22] border border-[#21262d] text-xs font-mono text-gray-400 flex items-center gap-2">
               <span>Total: <b className="text-white">{users.length}</b></span>
               <span>•</span>
-              <span className="text-purple-400 flex items-center gap-1"><Shield size={12} /> Admins: <b>{adminCount}</b></span>
+              <span className="text-purple-400 flex items-center gap-1"><ShieldIcon size={12} /> Admins: <b>{adminCount}</b></span>
             </div>
             <button
               onClick={fetchUsers}
@@ -216,18 +220,18 @@ export const UserManagementTable: React.FC = () => {
               className="p-2 rounded-xl bg-[#161b22] hover:bg-[#21262d] border border-[#30363d] text-gray-400 hover:text-white transition-colors"
               title="Refresh User Table"
             >
-              <RefreshCw size={16} className={loading ? "animate-spin text-blue-400" : ""} />
+              <RefreshCwIcon size={16} className={loading ? "animate-spin text-blue-400" : ""} />
             </button>
           </div>
         </div>
 
-        {/* Filters & Search */}
+        {/* Filters & SearchIcon */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="relative w-full md:w-80">
-            <Search size={16} className="absolute left-3.5 top-3 text-gray-500" />
+            <SearchIcon size={16} className="absolute left-3.5 top-3 text-gray-500" />
             <input
               type="text"
-              placeholder="Search by ID, username, or email..."
+              placeholder="SearchIcon by ID, username, or email..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#161b22] border border-[#21262d] text-xs text-white placeholder:text-gray-500 outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all"
@@ -261,12 +265,12 @@ export const UserManagementTable: React.FC = () => {
       <div className="bg-[#0D1117] border border-[#21262d] rounded-2xl overflow-hidden shadow-2xl">
         {loading ? (
           <div className="py-20 text-center space-y-3">
-            <RefreshCw size={28} className="animate-spin mx-auto text-blue-500" />
+            <RefreshCwIcon size={28} className="animate-spin mx-auto text-blue-500" />
             <p className="text-sm text-gray-400 font-medium">Loading user database telemetry...</p>
           </div>
         ) : filteredUsers.length === 0 ? (
           <div className="py-16 text-center space-y-2 text-gray-500">
-            <AlertTriangle size={32} className="mx-auto text-amber-500/50" />
+            <AlertTriangleIcon size={32} className="mx-auto text-amber-500/50" />
             <p className="text-sm font-semibold text-gray-400">No users match criteria</p>
             <p className="text-xs">Try adjusting your search query or role filter.</p>
           </div>
@@ -278,7 +282,7 @@ export const UserManagementTable: React.FC = () => {
                   <th className="py-4 px-6">User Account</th>
                   <th className="py-4 px-6">Email Address</th>
                   <th className="py-4 px-6">Role Status</th>
-                  <th className="py-4 px-6">Activity Stats</th>
+                  <th className="py-4 px-6">ActivityIcon Stats</th>
                   <th className="py-4 px-6">Last Active</th>
                   <th className="py-4 px-6 text-right">Administrative Actions</th>
                 </tr>
@@ -302,7 +306,7 @@ export const UserManagementTable: React.FC = () => {
                             <UserIcon username={user.username} avatarUrl={user.avatarUrl} />
                             {isAdminUser && (
                               <div className="absolute -bottom-1 -right-1 size-4 rounded-full bg-purple-600 border border-[#0d1117] flex items-center justify-center text-white" title="Admin">
-                                <Shield size={10} />
+                                <ShieldIcon size={10} />
                               </div>
                             )}
                           </div>
@@ -323,7 +327,7 @@ export const UserManagementTable: React.FC = () => {
                       {/* Email Address */}
                       <td className="py-4 px-6 whitespace-nowrap text-gray-300 font-mono text-xs">
                         <div className="flex items-center gap-2">
-                          <Mail size={14} className="text-gray-500" />
+                          <MailIcon size={14} className="text-gray-500" />
                           <span>{user.email}</span>
                         </div>
                       </td>
@@ -332,7 +336,7 @@ export const UserManagementTable: React.FC = () => {
                       <td className="py-4 px-6 whitespace-nowrap">
                         {isAdminUser ? (
                           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/15 border border-purple-500/30 text-purple-400 text-xs font-bold uppercase tracking-wider shadow-[0_0_12px_rgba(168,85,247,0.15)]">
-                            <Shield size={12} className="fill-purple-400" /> Administrator
+                            <ShieldIcon size={12} className="fill-purple-400" /> Administrator
                           </span>
                         ) : (
                           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gray-800 border border-gray-700 text-gray-300 text-xs font-medium uppercase tracking-wider">
@@ -341,11 +345,11 @@ export const UserManagementTable: React.FC = () => {
                         )}
                       </td>
 
-                      {/* Activity Stats */}
+                      {/* ActivityIcon Stats */}
                       <td className="py-4 px-6 whitespace-nowrap font-mono text-xs">
                         <div className="flex items-center gap-2">
                           <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-orange-500/10 border border-orange-500/30 text-orange-400 font-bold" title="Total App Visits">
-                            <Flame size={12} className="fill-orange-400" />
+                            <FlameIcon size={12} className="fill-orange-400" />
                             <span>{user.totalVisits || 0} visits</span>
                           </span>
                           <span className="inline-flex items-center gap-1 px-2 py-1 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400" title="Favorites Count">
@@ -360,7 +364,7 @@ export const UserManagementTable: React.FC = () => {
                       {/* Last Active */}
                       <td className="py-4 px-6 whitespace-nowrap text-gray-400 text-xs font-mono">
                         <div className="flex items-center gap-1.5">
-                          <Activity size={14} className="text-emerald-400" />
+                          <ActivityIcon size={14} className="text-emerald-400" />
                           <span>{user.lastActive || "Today"}</span>
                         </div>
                       </td>
@@ -370,7 +374,7 @@ export const UserManagementTable: React.FC = () => {
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => handleToggleRole(user.id, user.role)}
-                            disabled={isProcessing}
+                            disabled={isProcessing || user.id === currentUserId}
                             className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all border flex items-center gap-1.5 ${
                               isAdminUser
                                 ? "bg-amber-500/10 border-amber-500/30 text-amber-400 hover:bg-amber-500/20"
@@ -378,17 +382,18 @@ export const UserManagementTable: React.FC = () => {
                             }`}
                             title={isAdminUser ? "Demote to regular user" : "Promote to Administrator"}
                           >
-                            <ShieldAlert size={14} />
+                            <ShieldAlertIcon size={14} />
                             <span>{isProcessing ? "Updating..." : isAdminUser ? "Demote Admin" : "Make Admin"}</span>
                           </button>
 
                           <button
                             onClick={() => handleDeleteUser(user.id, user.username)}
-                            disabled={isProcessing}
+                            disabled={isProcessing || user.id === currentUserId}
+                            aria-label={`Delete ${user.username}`}
                             className="p-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 transition-colors"
                             title="Delete User Account"
                           >
-                            <Trash2 size={15} />
+                            <Trash2Icon size={15} />
                           </button>
                         </div>
                       </td>

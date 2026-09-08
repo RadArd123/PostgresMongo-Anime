@@ -7,7 +7,7 @@ import ActionCard from "./ActionCard";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import type { Anime } from "@/interfaces/anime.types";
 import { useEpisodeStore } from "@/store/episodeStore";
-import { PlayCircle } from "lucide-react";
+import { PlayCircleIcon } from "lucide-react";
 
 const DialogAddEpisode = ({ animes }: { animes: Anime[] }) => {
   const [animeId, setAnimeId] = useState("");
@@ -48,7 +48,7 @@ const DialogAddEpisode = ({ animes }: { animes: Anime[] }) => {
         <form className="space-y-6" onSubmit={handleSubmit}>
           <DialogHeader className="flex flex-row items-center gap-3 space-y-0">
             <div className="bg-blue-500/20 p-2 rounded-xl">
-                <PlayCircle className="w-6 h-6 text-blue-400" />
+                <PlayCircleIcon className="w-6 h-6 text-blue-400" />
             </div>
             <div>
                 <DialogTitle className="text-2xl font-bold text-white">

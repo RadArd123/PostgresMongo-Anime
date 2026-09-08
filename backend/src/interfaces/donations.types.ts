@@ -1,11 +1,13 @@
 export interface Donation {
   id: number;
-  user_id: number;
+  user_id: number | null;
   tier_name: string;
   amount: number;
   coffees: number;
   donor_name: string | null;
   message: string | null;
+  stripe_session_id?: string | null;
+  stripe_event_id?: string | null;
   created_at: string;
   // Joined fields from profiles/users
   username?: string;

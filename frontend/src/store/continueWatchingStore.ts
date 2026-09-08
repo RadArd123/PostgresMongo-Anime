@@ -19,6 +19,8 @@ export interface ContinueWatchingItem {
 }
 
 interface ContinueWatchingState {
+  progressByEpisode: Record<number, ContinueWatchingItem>;
+  fetchEpisodeProgress: (episodeId: number) => Promise<ContinueWatchingItem | null>;
   items: ContinueWatchingItem[];
   isLoading: boolean;
   error: string | null;
@@ -29,6 +31,12 @@ interface ContinueWatchingState {
 }
 
 export const useContinueWatchingStore = create<ContinueWatchingState>((set, get) => ({
+  progressByEpisode: {},
+  fetchEpisodeProgress: async episodeId => {
+    const { data } = await axiosInstance.get(`/continue-watching/episode/${episodeId}`);
+    if (data.item) set(state => ({ progressByEpisode: { ...state.progressByEpisode, [episodeId]: data.item } }));
+    return data.item;
+  },
   items: [],
   isLoading: false,
   error: null,
@@ -56,6 +64,7 @@ export const useContinueWatchingStore = create<ContinueWatchingState>((set, get)
       });
       const updatedItem = response.data.item;
       if (!updatedItem) return;
+      set(state => ({ progressByEpisode: { ...state.progressByEpisode, [episodeId]: updatedItem } }));
 
       // Update state optimistically or refetch
       if (completed) {
@@ -86,7 +95,8 @@ export const useContinueWatchingStore = create<ContinueWatchingState>((set, get)
 
   markCompleted: async (episodeId) => {
     try {
-      await axiosInstance.put(`/continue-watching/complete/${episodeId}`);
+      const { data } = await axiosInstance.put(`/continue-watching/complete/${episodeId}`);
+      if (data.item) set(state => ({ progressByEpisode: { ...state.progressByEpisode, [episodeId]: data.item } }));
       set((state) => ({
         items: state.items.filter((item) => item.episode_id !== episodeId)
       }));

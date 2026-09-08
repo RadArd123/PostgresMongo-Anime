@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import type { Anime } from "@/interfaces/anime.types";
 import { useNavigate } from "react-router-dom";
-import { Heart, Bookmark } from "lucide-react";
+import { HeartIcon, BookmarkIcon } from "lucide-react";
 import { useFavoritesStore } from "@/store/favoritesStore";
 import { useWatchlistStore } from "@/store/watchlistStore";
 
@@ -97,7 +97,7 @@ export default function BentoGridAnime({ animes, title }: { animes: Anime[], tit
                       onClick={(e) => handleFavoriteClick(e, anime.id)}
                       className="transition-transform hover:scale-110 active:scale-95"
                     >
-                      <Heart
+                      <HeartIcon
                         size={22}
                         className={`transition-colors drop-shadow-sm ${
                           isFavorited ? "text-primary fill-primary" : "text-white hover:text-red-200"
@@ -109,7 +109,7 @@ export default function BentoGridAnime({ animes, title }: { animes: Anime[], tit
                         onClick={(e) => handleWatchlistClick(e, anime.id)}
                         className="transition-transform hover:scale-110 active:scale-95"
                       >
-                      <Bookmark
+                      <BookmarkIcon
                         size={22}
                         className={`drop-shadow-sm ${
                           isInWatchlist ? "text-blue-500 fill-blue-500" : "text-white hover:text-blue-300"

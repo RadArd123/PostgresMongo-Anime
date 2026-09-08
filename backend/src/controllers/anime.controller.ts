@@ -1,3 +1,4 @@
+import { crudError } from '../utils/crudError';
 import {Request, Response} from "express";
 import { Anime } from "../interfaces/anime.types";
 import { animeModel } from "../model/anime.model";
@@ -41,7 +42,7 @@ export const createAnime = async (req:Request, res:Response) => {
         res.status(201).json({message: "Anime created successfully", anime: newAnime});   
     }catch(err:any){
         console.error(err);
-        res.status(500).json({ message: "Server error during anime creation." });
+        crudError(res, err, "Server error during anime creation.");
     }finally {
     // <-- 3. (CRITIC) Curăță fișierele temporare
     // Acest bloc se execută indiferent dacă 'try' a reușit sau a eșuat
@@ -63,7 +64,7 @@ export const getAnimes = async (req:Request, res:Response) => {
         res.status(200).json({animes});
     }catch(err:any){
         console.error(err);
-        res.status(500).json({ message: "Server error fetching animes." });
+        crudError(res, err, "Server error fetching animes.");
     }
 };
 export const getAnimeById = async (req:Request, res:Response) => {
@@ -76,7 +77,7 @@ export const getAnimeById = async (req:Request, res:Response) => {
         res.status(200).json({ anime: anime });
     }catch(err:any){
         console.error(err);
-        res.status(500).json({ message: "Server error fetching anime." });
+        crudError(res, err, "Server error fetching anime.");
     }
 };
 export const deleteAnime = async (req:Request, res:Response) => {
@@ -92,7 +93,7 @@ export const deleteAnime = async (req:Request, res:Response) => {
             return res.status(404).json({ message: err.message });
             }
         console.error(err);
-        res.status(500).json({ message: "Server error deleting anime." });
+        crudError(res, err, "Server error deleting anime.");
     }
 };
 export const updateAnime = async (req:Request, res:Response) => {
@@ -106,6 +107,6 @@ export const updateAnime = async (req:Request, res:Response) => {
         res.status(200).json({message: "Anime updated successfully", anime: anime}); 
     }catch(err:any){
         console.error(err);
-        res.status(500).json({ message: "Server error updating anime." });
+        crudError(res, err, "Server error updating anime.");
     }
 };

@@ -1,4 +1,4 @@
-import { Flame, Search, Swords, Heart, Gamepad2, Ghost, Star, Moon, Play } from 'lucide-react';
+import { FlameIcon, SearchIcon, SwordsIcon, HeartIcon, Gamepad2Icon, GhostIcon, StarIcon, MoonIcon, PlayIcon } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 import type { IHeroAnime } from '../../interfaces/heroAnime.types';
 
@@ -19,11 +19,11 @@ const GlassHeroSection = ({ heroAnimes = [] }: Props) => {
         <h1 className="text-3xl font-bold tracking-tight">Flix.id</h1>
 
         <div className="flex items-center bg-black/80 rounded-full px-2 py-1">
-          <button className="px-5 py-2 text-sm font-medium bg-black rounded-full shadow-md text-white">Movie</button>
-          <button className="px-5 py-2 text-sm font-medium text-gray-400 hover:text-white transition-colors">Series</button>
-          <button className="px-5 py-2 text-sm font-medium text-gray-400 hover:text-white transition-colors">Originals</button>
+          <button className="px-5 py-2 text-sm font-medium bg-black rounded-full shadow-md text-white">Film</button>
+          <button className="px-5 py-2 text-sm font-medium text-gray-400 hover:text-white transition-colors">Seriale</button>
+          <button className="px-5 py-2 text-sm font-medium text-gray-400 hover:text-white transition-colors">Originale</button>
           <button className="p-2 ml-2 bg-white/10 rounded-full hover:bg-white/20 transition-colors">
-            <Search className="w-4 h-4 text-white" />
+            <SearchIcon className="w-4 h-4 text-white" />
           </button>
         </div>
 
@@ -47,9 +47,9 @@ const GlassHeroSection = ({ heroAnimes = [] }: Props) => {
             </h2>
             <div className="flex items-center gap-3">
               <button className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center hover:bg-white/30 transition-colors border border-white/20">
-                <Play className="w-4 h-4 text-white fill-white" />
+                <PlayIcon className="w-4 h-4 text-white fill-white" />
               </button>
-              <span className="text-sm font-medium text-white/90 drop-shadow">Let Play Movie</span>
+              <span className="text-sm font-medium text-white/90 drop-shadow">Redă Filmul</span>
             </div>
           </div>
         </div>
@@ -69,9 +69,9 @@ const GlassHeroSection = ({ heroAnimes = [] }: Props) => {
             </h2>
             <div className="flex items-center gap-3">
               <button className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center hover:bg-white/30 transition-colors border border-white/20">
-                <Play className="w-4 h-4 text-white fill-white" />
+                <PlayIcon className="w-4 h-4 text-white fill-white" />
               </button>
-              <span className="text-sm font-medium text-white/90 drop-shadow">Let Play Movie</span>
+              <span className="text-sm font-medium text-white/90 drop-shadow">Redă Filmul</span>
             </div>
           </div>
         </div>
@@ -80,25 +80,25 @@ const GlassHeroSection = ({ heroAnimes = [] }: Props) => {
       {/* Categories Row */}
       <div className="flex items-center justify-between gap-4 relative z-10 overflow-x-auto hide-scrollbar pb-2">
         <button onClick={() => navigate('/browse')} className="flex items-center gap-2 px-6 py-3 rounded-full glass hover:bg-white/20 transition-all whitespace-nowrap text-white/90">
-          <Flame className="w-4 h-4" /> Trending
+          <FlameIcon className="w-4 h-4" /> În Trend
         </button>
         <button onClick={() => navigate('/browse')} className="flex items-center gap-2 px-6 py-3 rounded-full glass hover:bg-white/20 transition-all whitespace-nowrap text-white/90">
-          <Swords className="w-4 h-4" /> Action
+          <SwordsIcon className="w-4 h-4" /> Acțiune
         </button>
         <button onClick={() => navigate('/browse')} className="flex items-center gap-2 px-6 py-3 rounded-full glass hover:bg-white/20 transition-all whitespace-nowrap text-white/90">
-          <Heart className="w-4 h-4" /> Romance
+          <HeartIcon className="w-4 h-4" /> Dragoste
         </button>
         <button onClick={() => navigate('/browse')} className="flex items-center gap-2 px-6 py-3 rounded-full bg-white/30 backdrop-blur-md border border-white/40 shadow-[0_0_15px_rgba(255,255,255,0.2)] font-medium transition-all whitespace-nowrap">
-          <Gamepad2 className="w-4 h-4" /> Animation
+          <Gamepad2Icon className="w-4 h-4" /> Animație
         </button>
         <button onClick={() => navigate('/browse')} className="flex items-center gap-2 px-6 py-3 rounded-full glass hover:bg-white/20 transition-all whitespace-nowrap text-white/90">
-          <Ghost className="w-4 h-4" /> Horror
+          <GhostIcon className="w-4 h-4" /> Horror
         </button>
         <button onClick={() => navigate('/browse')} className="flex items-center gap-2 px-6 py-3 rounded-full glass hover:bg-white/20 transition-all whitespace-nowrap text-white/90">
-          <Star className="w-4 h-4" /> Special
+          <StarIcon className="w-4 h-4" /> Special
         </button>
         <button onClick={() => navigate('/browse')} className="flex items-center gap-2 px-6 py-3 rounded-full glass hover:bg-white/20 transition-all whitespace-nowrap text-white/90">
-          <Moon className="w-4 h-4" /> Drakor
+          <MoonIcon className="w-4 h-4" /> Drakor
         </button>
       </div>
 

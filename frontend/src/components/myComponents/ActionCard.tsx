@@ -1,11 +1,13 @@
-type ActionCardProps = {
+type ActionCardProps = React.ComponentPropsWithRef<'button'> & {
   title: string;
   subtitle: string;
   onClick?: () => void;
 };
-const ActionCard: React.FC<ActionCardProps> = ({title,subtitle, onClick}) => {
+const ActionCard: React.FC<ActionCardProps> = ({title,subtitle, onClick, ...props}) => {
   return (
     <button
+      type="button"
+      {...props}
       onClick={onClick}
       className="group flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-700 bg-slate-900/60 py-6 hover:border-blue-500 hover:bg-slate-900 transition"
     >

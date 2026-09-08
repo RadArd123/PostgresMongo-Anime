@@ -27,7 +27,7 @@ export default function SignUpPage() {
     setError(null);
 
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match");
+      setError("Parolele nu se potrivesc");
       setIsLoading(false);
       return;
     }
@@ -55,13 +55,13 @@ export default function SignUpPage() {
         <div className="relative z-10 w-full">
           <div className="mb-10 text-center">
             <h1 className="text-3xl md:text-5xl text-zinc-100 leading-tight tracking-tighter drop-shadow-[0_4px_20px_rgba(0,0,0,0.95)]">
-              Create{" "}
+              Creează-ți{" "}
               <span className="text-white font-black drop-shadow-[0_0_15px_rgba(255,255,255,0.4)]">
-                Your Avatar
+                Avatarul
               </span>
               <br />
               <span className="text-zinc-400 font-light text-base md:text-lg tracking-wide drop-shadow-[0_2px_10px_rgba(0,0,0,0.9)]">
-                to Join the Guild
+                pentru a te alătura Ghildei
               </span>
             </h1>
           </div>
@@ -70,7 +70,7 @@ export default function SignUpPage() {
             <div className="space-y-3">
               <input
                 type="text"
-                placeholder="Choose Avatar Name (Username)"
+                placeholder="Alege Numele Avatarului (Utilizator)"
                 className="w-full bg-black/80 backdrop-blur-2xl border border-white/20 rounded-2xl px-5 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-white/50 focus:ring-1 focus:ring-white/30 transition-all shadow-[0_10px_30px_rgba(0,0,0,0.8)]"
                 name="username"
                 value={formData.username}
@@ -79,7 +79,7 @@ export default function SignUpPage() {
 
               <input
                 type="email"
-                placeholder="System Email"
+                placeholder="Email"
                 className="w-full bg-black/80 backdrop-blur-2xl border border-white/20 rounded-2xl px-5 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-white/50 focus:ring-1 focus:ring-white/30 transition-all shadow-[0_10px_30px_rgba(0,0,0,0.8)]"
                 name="email"
                 value={formData.email}
@@ -88,7 +88,7 @@ export default function SignUpPage() {
               
               <input
                 type="password"
-                placeholder="Create Access Password"
+                placeholder="Creează Parola de Acces"
                 className="w-full bg-black/80 backdrop-blur-2xl border border-white/20 rounded-2xl px-5 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-white/50 focus:ring-1 focus:ring-white/30 transition-all shadow-[0_10px_30px_rgba(0,0,0,0.8)]"
                 name="password"
                 autoComplete="new-password"
@@ -98,7 +98,7 @@ export default function SignUpPage() {
 
               <input
                 type="password"
-                placeholder="Confirm Password"
+                placeholder="Confirmă Parola"
                 className="w-full bg-black/80 backdrop-blur-2xl border border-white/20 rounded-2xl px-5 py-3 text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-white/50 focus:ring-1 focus:ring-white/30 transition-all shadow-[0_10px_30px_rgba(0,0,0,0.8)]"
                 name="confirmPassword"
                 value={formData.confirmPassword}
@@ -109,18 +109,18 @@ export default function SignUpPage() {
 
             {displayError && (
               <div className="text-red-400 text-[10px] uppercase tracking-widest text-center animate-pulse drop-shadow-md">
-                System Alert: {displayError}
+                Alertă Sistem: {displayError}
               </div>
             )}
 
             <div className="flex justify-center pt-2">
               <p className="text-[11px] text-zinc-400 font-medium tracking-wider uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
-                Already have an ID?{" "}
+                Ai deja un cont?{" "}
                 <Link
                   to="/login"
                   className="text-zinc-100 hover:text-white underline underline-offset-4 transition-all ml-1 font-bold"
                 >
-                  Go to your Realm
+                  Intră în Realm-ul tău
                 </Link>
               </p>
             </div>
@@ -131,7 +131,7 @@ export default function SignUpPage() {
               className="w-full group mt-6 bg-white hover:bg-zinc-200 disabled:bg-zinc-500 border border-white/20 rounded-2xl py-2 pl-8 pr-2 flex items-center justify-between transition-all active:scale-[0.98] shadow-[0_10px_40px_rgba(255,255,255,0.15)]"
             >
               <span className="text-black font-black tracking-tighter uppercase text-sm">
-                {isLoading ? "Synchronizing..." : "Complete Registration"}
+                {isLoading ? "Se sincronizează..." : "Finalizează Înregistrarea"}
               </span>
               <div className="w-12 h-12 bg-black rounded-xl flex items-center justify-center group-hover:translate-x-1 transition-transform">
                 <span className="text-white text-xl">→</span>
@@ -140,9 +140,9 @@ export default function SignUpPage() {
           </form>
 
           <p className="mt-10 text-[10px] text-zinc-500 text-center leading-relaxed font-medium tracking-wide drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
-            By registering, you initialize your connection to the{" "}
+            Înregistrându-te, îți inițializezi conexiunea la{" "}
             <span onClick={() => toast.info('📜 Disponibil în curând în versiunea finală.')} className="text-zinc-300 underline cursor-pointer hover:text-white transition-colors">
-              Guild Protocols
+              Protocoalele Ghildei
             </span>
           </p>
         </div>

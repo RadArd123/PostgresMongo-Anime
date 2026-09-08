@@ -1,3 +1,4 @@
+import { adminMutationFailed } from "@/lib/adminMutation";
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import type { AnimeResponse, Anime } from "../interfaces/anime.types";
@@ -22,6 +23,7 @@ export const useAnimeStore = create<AnimeResponse>((set) => ({
       }));
     } catch (err: any) {
       set({ error: err.response?.data?.message || "Anime creation failed" });
+      adminMutationFailed(err, "Unable to save this change.");
     } finally {
       set({ isLoading: false });
     }
@@ -58,6 +60,7 @@ export const useAnimeStore = create<AnimeResponse>((set) => ({
         set((state) => ({animes: state.animes.filter((anime) => anime.id !== id),message: response.data.message}));
     } catch (err: any) {
       set({ error: err.response?.data?.message || "Anime deletion failed" });
+      adminMutationFailed(err, "Unable to save this change.");
     } finally {
       set({ isLoading: false });
     }
@@ -70,6 +73,7 @@ export const useAnimeStore = create<AnimeResponse>((set) => ({
         set((state) => ({animes: state.animes.map((anime) => anime.id === id ? response.data.anime : anime),message: response.data.message,}));
     }catch (err: any) {
         set({ error: err.response?.data?.message || "Anime update failed" });
+      adminMutationFailed(err, "Unable to save this change.");
     } finally {
         set({ isLoading: false });
     }

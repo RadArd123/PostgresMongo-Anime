@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { axiosInstance } from '../lib/axios';
 import type { DonationStore, DonationInput } from '../interfaces/donations.types';
 
-export const useDonationStore = create<DonationStore>((set, get) => ({
+export const useDonationStore = create<DonationStore>((set) => ({
   donations: [],
   stats: null,
   userDonations: [],
@@ -15,9 +15,9 @@ export const useDonationStore = create<DonationStore>((set, get) => ({
       const response = await axiosInstance.get('/donations');
       set({ donations: response.data, isLoading: false });
     } catch (error: any) {
-      set({ 
-        isLoading: false, 
-        error: error.response?.data?.message || 'Failed to fetch donations' 
+      set({
+        isLoading: false,
+        error: error.response?.data?.message || 'Failed to fetch donations'
       });
     }
   },
@@ -28,9 +28,9 @@ export const useDonationStore = create<DonationStore>((set, get) => ({
       const response = await axiosInstance.get('/donations/stats');
       set({ stats: response.data, isLoading: false });
     } catch (error: any) {
-      set({ 
-        isLoading: false, 
-        error: error.response?.data?.message || 'Failed to fetch donation stats' 
+      set({
+        isLoading: false,
+        error: error.response?.data?.message || 'Failed to fetch donation stats'
       });
     }
   },
@@ -41,30 +41,25 @@ export const useDonationStore = create<DonationStore>((set, get) => ({
       const response = await axiosInstance.get('/donations/my');
       set({ userDonations: response.data, isLoading: false });
     } catch (error: any) {
-      set({ 
-        isLoading: false, 
-        error: error.response?.data?.message || 'Failed to fetch user donations' 
+      set({
+        isLoading: false,
+        error: error.response?.data?.message || 'Failed to fetch user donations'
       });
     }
   },
 
-  createDonation: async (data: DonationInput) => {
+  createCheckoutSession: async (data: DonationInput) => {
     try {
       set({ isLoading: true, error: null });
-      await axiosInstance.post('/donations', data);
-      
-      // Refetch stats and donations after successful creation
-      await get().fetchDonations();
-      await get().fetchStats();
-      
+      const response = await axiosInstance.post('/donations/create-checkout-session', data);
       set({ isLoading: false });
-      return true;
+      return response.data.url;
     } catch (error: any) {
-      set({ 
-        isLoading: false, 
-        error: error.response?.data?.message || 'Failed to create donation' 
+      set({
+        isLoading: false,
+        error: error.response?.data?.message || 'Failed to create Stripe session'
       });
-      return false;
+      return null;
     }
   }
 }));

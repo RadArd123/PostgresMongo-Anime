@@ -45,18 +45,18 @@ const NotFoundPage = () => {
       {/* Text Content */}
       <div className="text-center flex flex-col items-center z-20">
         <h1 className="text-3xl md:text-[2.5rem] font-medium text-white mb-4 tracking-tight">
-          It seems you got a bit lost!
+           Se pare că te-ai rătăcit puțin!
         </h1>
 
         <p className="text-gray-400 text-sm md:text-base mb-10 font-medium">
-          The page you were looking for doesn't exist
+           Pagina pe care o căutai nu există
         </p>
 
         <button
           onClick={() => navigate("/")}
           className="px-10 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold rounded-full shadow-[0_0_20px_rgba(37,99,235,0.4)] transition-all hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(37,99,235,0.6)] text-sm"
         >
-          Go Back
+           Înapoi
         </button>
       </div>
 

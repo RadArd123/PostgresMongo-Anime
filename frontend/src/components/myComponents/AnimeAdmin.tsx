@@ -1,5 +1,6 @@
 import type { Anime } from "@/interfaces/anime.types";
 import { ScrollArea } from "../ui/scroll-area";
+import { Link } from 'react-router-dom';
 
 const AnimeAdmin = ({ animes }: { animes: Anime[] }) => {
   return (
@@ -7,8 +8,10 @@ const AnimeAdmin = ({ animes }: { animes: Anime[] }) => {
       <ScrollArea className="h-[80vh]">
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
         {animes.map((anime) => (
-          <div
+          <Link
             key={anime.id}
+            to={`/anime/${anime.id}`}
+            aria-label={`Open ${anime.title}`}
             className="flex justify-center"
           >
             <div className="group w-full max-w-[220px] sm:max-w-[260px] md:max-w-[300px]">
@@ -30,7 +33,7 @@ const AnimeAdmin = ({ animes }: { animes: Anime[] }) => {
                 </div>
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
       </ScrollArea>

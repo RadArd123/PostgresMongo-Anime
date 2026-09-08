@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Star, TrendingUp } from "lucide-react";
+import { StarIcon, TrendingUpIcon } from "lucide-react";
 import { useAnimeNewsStore } from "@/store/animeNewsStore";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { ScrollArea } from "../ui/scroll-area";
@@ -73,9 +73,9 @@ const NewsCards = () => {
       {/* Header */}
       <div className="border-l-4 border-blue-600 pl-4 mb-8 px-4">
         <h1 className="text-white text-2xl md:text-3xl font-extrabold leading-tight">
-          Latest Anime News
+          Ultimele Știri Anime
         </h1>
-        <p className="text-gray-400 mt-2">Discover the latest stories in anime</p>
+        <p className="text-gray-400 mt-2">Descoperă cele mai noi povești din anime</p>
       </div>
 
       {/* Slider */}
@@ -135,11 +135,11 @@ const NewsCards = () => {
                     {/* Stats */}
                     <div className="flex gap-4 sm:gap-6 text-xs sm:text-sm text-gray-300 pt-3 border-t border-white/20">
                       <div className="flex items-center gap-1.5 sm:gap-2">
-                        <Star className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 fill-yellow-400 drop-shadow-md" />
+                        <StarIcon className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400 fill-yellow-400 drop-shadow-md" />
                         <span className="font-bold text-white drop-shadow-md">{news?.overlay_stats?.rating || "-"}</span>
                       </div>
                       <div className="flex items-center gap-1.5 sm:gap-2">
-                        <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400 drop-shadow-md" />
+                        <TrendingUpIcon className="w-4 h-4 sm:w-5 sm:h-5 text-emerald-400 drop-shadow-md" />
                         <span className="font-bold text-white drop-shadow-md">{news?.overlay_stats?.views_text || "-"}</span>
                       </div>
                     </div>
@@ -177,11 +177,11 @@ const NewsCards = () => {
               <ScrollArea className="flex-1 px-6 py-6 md:px-10 overflow-y-auto">
                 <div className="flex items-center gap-6 text-sm text-gray-300 pb-6 border-b border-white/10 mb-6">
                   <div className="flex items-center gap-2">
-                    <Star className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                    <StarIcon className="w-5 h-5 text-yellow-400 fill-yellow-400" />
                     <span className="font-bold text-white">{news?.overlay_stats?.rating || "-"}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <TrendingUp className="w-5 h-5 text-emerald-400" />
+                    <TrendingUpIcon className="w-5 h-5 text-emerald-400" />
                     <span className="font-bold text-white">{news?.overlay_stats?.views_text || "-"}</span>
                   </div>
                 </div>
@@ -196,7 +196,7 @@ const NewsCards = () => {
 
       {/* Scroll Indicator */}
       <p className="text-gray-500 text-sm px-4 flex items-center gap-2">
-        <span>←</span> Drag to scroll through news <span>→</span>
+        <span>←</span> Trage pentru a naviga prin știri <span>→</span>
       </p>
     </div>
   );

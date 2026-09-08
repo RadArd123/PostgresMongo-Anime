@@ -9,11 +9,13 @@ import { useFavoritesStore } from "@/store/favoritesStore";
 import { useWatchlistStore } from "@/store/watchlistStore";
 import { useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Play, Heart, Bookmark, Check } from "lucide-react";
+import { PlayIcon, HeartIcon, BookmarkIcon, CheckIcon } from "lucide-react";
 import { toast } from "sonner";
+import { useAuthStore } from '@/store/authStore';
 
 const AnimePage = () => {
-  const { anime, getAnimeById } = useAnimeStore();
+  const { anime, getAnimeById, error } = useAnimeStore();
+  const authenticated = useAuthStore(state => state.isAuthenticated);
   const { episodesById, fetchEpisodesByAnimeId, resetEpisodes } = useEpisodeStore();
   const { currentUserFavorites, addFavorite, removeFavorite, fetchFavorites } = useFavoritesStore();
   const { watchlist, addToWatchlist, removeFromWatchlist, fetchWatchlist } = useWatchlistStore();
@@ -24,20 +26,19 @@ const AnimePage = () => {
     if (id) {
       getAnimeById?.(Number(id));
       fetchEpisodesByAnimeId?.(Number(id));
-      fetchFavorites();
-      fetchWatchlist();
+      if (authenticated) { fetchFavorites(); fetchWatchlist(); }
     }
     return () => {
       if (resetEpisodes) {
         resetEpisodes();
       }
     };
-  }, [id, getAnimeById, fetchEpisodesByAnimeId, fetchFavorites, fetchWatchlist, resetEpisodes]);
+  }, [id, authenticated, getAnimeById, fetchEpisodesByAnimeId, fetchFavorites, fetchWatchlist, resetEpisodes]);
 
   if (!anime || anime.id !== Number(id)) {
     return (
-      <div className="min-h-screen w-full bg-[#0a0a0a] text-slate-100 flex items-center justify-center pl-[80px]">
-        <div className="loader border-t-4 border-b-4 border-blue-500 w-12 h-12 rounded-full animate-spin"></div>
+      <div className="min-h-screen w-full bg-[#0a0a0a] text-slate-100 flex items-center justify-center">
+        {error ? <div role="alert" className="text-center space-y-4"><p>Seria nu a putut fi încărcată.</p><Button onClick={() => getAnimeById(Number(id))}>Încearcă din nou</Button></div> : <div role="status" aria-label="Se încarcă seria" className="loader border-t-4 border-b-4 border-blue-500 w-12 h-12 rounded-full animate-spin" />}
       </div>
     );
   }
@@ -47,6 +48,7 @@ const AnimePage = () => {
   const isInWatchlist = watchlist.some((item: any) => item.id === animeId);
 
   const handleFavoriteClick = async () => {
+    if (!authenticated) { navigate('/login'); return; }
     if (isFavorite) {
       const favObj = currentUserFavorites.find((fav: any) => fav.id === animeId);
       if (favObj) await removeFavorite(favObj.id);
@@ -56,6 +58,7 @@ const AnimePage = () => {
   };
 
   const handleWatchlistClick = async () => {
+    if (!authenticated) { navigate('/login'); return; }
     if (isInWatchlist) {
       const watchObj = watchlist.find((item: any) => item.id === animeId);
       if (watchObj) await removeFromWatchlist(watchObj.id);
@@ -65,7 +68,7 @@ const AnimePage = () => {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#0a0a0a] text-slate-100 flex flex-col pl-[80px] md:pl-[120px] relative">
+    <div className="min-h-screen w-full bg-[#0a0a0a] text-slate-100 flex flex-col relative px-4 md:pl-[130px] lg:pl-[150px] md:pr-10">
       {/* Full Wallpaper Banner */}
       <div className="absolute top-0 left-0 right-0 h-[85vh] overflow-hidden pointer-events-none">
         <img
@@ -97,7 +100,7 @@ const AnimePage = () => {
           <div className="flex-1 space-y-5 text-center md:text-left drop-shadow-lg">
             <div className="space-y-2">
               <span className="text-xs font-mono font-bold uppercase tracking-[0.2em] text-blue-400">
-                SERIES OVERVIEW
+                PREZENTARE GENERALĂ
               </span>
               <SplitTextAnime
                 englishText={anime.title}
@@ -143,7 +146,7 @@ const AnimePage = () => {
                 }}
                 className="h-11 px-7 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold shadow-[0_4px_15px_rgba(37,99,235,0.4)] transition-all transform hover:-translate-y-0.5 flex items-center gap-2"
               >
-                <Play size={16} className="fill-white" /> Start Episode 1
+                <PlayIcon size={16} className="fill-white" /> Începe Episodul 1
               </Button>
 
               <Button
@@ -155,8 +158,8 @@ const AnimePage = () => {
                     : "border-white/20 bg-white/5 text-gray-200 hover:bg-white/10"
                 }`}
               >
-                {isInWatchlist ? <Check size={16} /> : <Bookmark size={16} />}
-                {isInWatchlist ? "In Watchlist" : "Watchlist"}
+                {isInWatchlist ? <CheckIcon size={16} /> : <BookmarkIcon size={16} />}
+                {isInWatchlist ? "În Lista de Urmărire" : "Urmărește"}
               </Button>
 
               <Button
@@ -168,8 +171,8 @@ const AnimePage = () => {
                     : "border-white/20 bg-white/5 text-gray-200 hover:bg-white/10"
                 }`}
               >
-                <Heart size={16} className={isFavorite ? "fill-red-400" : ""} />
-                {isFavorite ? "Favorited" : "Favorite"}
+                <HeartIcon size={16} className={isFavorite ? "fill-red-400" : ""} />
+                {isFavorite ? "La Favorite" : "Adaugă la Favorite"}
               </Button>
             </div>
           </div>

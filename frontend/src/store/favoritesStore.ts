@@ -12,7 +12,8 @@ export const useFavoritesStore = create<FavoritesResponse>((set) => ({
         set({isLoading: true, error: null});
         try{
             const response = await axiosInstance.post('/favorites/addFavorites', { anime_id: id });
-            set((state) => ({currentUserFavorites: [...state.currentUserFavorites, response.data.favorite], message: response.data.message}));
+            const favorites = await axiosInstance.get('/favorites/getFavorites');
+            set({currentUserFavorites: favorites.data.favorites, message: response.data.message});
         }catch (err: any) {
             set({error: err.response?.data?.message || 'Adding to favorites failed'});
         } finally {

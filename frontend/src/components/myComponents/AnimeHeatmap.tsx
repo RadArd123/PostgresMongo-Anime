@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useRef, useCallback, useEffect } from "react";
+import { useMemo, useState, useRef, useCallback, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Group } from "@visx/group";
 
@@ -10,6 +10,23 @@ export interface HeatmapDay {
 interface Props {
   data: HeatmapDay[];
   totalVisits?: number;
+}
+
+interface HeatmapCell {
+  bin: number;
+  count: number;
+  date: Date;
+}
+
+interface HeatmapColumn {
+  bin: number;
+  bins: HeatmapCell[];
+}
+
+interface TooltipProps {
+  cell?: HeatmapCell;
+  x?: number;
+  y?: number;
 }
 
 // ─── Constants ───────────────────────────────────────────
@@ -35,7 +52,7 @@ const getLevel = (count: number): number => {
 const getCellColor = (count: number) => LEVEL_COLORS[getLevel(count)];
 
 // ─── Tooltip ─────────────────────────────────────────────
-const Tooltip = ({ cell, x, y }: any) => {
+const Tooltip = ({ cell, x = 0, y = 0 }: TooltipProps) => {
   if (!cell) return null;
   const label = cell.count === 0
     ? "No visits"
@@ -78,7 +95,7 @@ const HeatmapInner = ({ data, width }: { data: HeatmapDay[]; width: number }) =>
     const endOfWeek = new Date(today);
     endOfWeek.setDate(today.getDate() + (6 - today.getDay()));
 
-    let cols: any[] = [];
+    const cols: HeatmapColumn[] = [];
     const nc = 52, nr = 7, cw = 13, ch = 13, gap = 4; // increased gap slightly for LC feel
     
     // No left margin needed since Y axis is gone. Bottom margin increased for months.
@@ -132,7 +149,7 @@ const HeatmapInner = ({ data, width }: { data: HeatmapDay[]; width: number }) =>
   }, [columns]);
 
   // Hover state
-  const [hovered, setHovered] = useState<{ cell: any; x: number; y: number } | null>(null);
+  const [hovered, setHovered] = useState<{ cell: HeatmapCell; x: number; y: number } | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to the rightmost edge on load
@@ -146,7 +163,7 @@ const HeatmapInner = ({ data, width }: { data: HeatmapDay[]; width: number }) =>
     }
   }, [columns]);
 
-  const handleMouseEnter = useCallback((cell: any, ci: number, di: number) => {
+  const handleMouseEnter = useCallback((cell: HeatmapCell, ci: number, di: number) => {
     if (!containerRef.current) return;
     const x = offsetLeft + ci * stepX + cellW / 2;
     const y = MARGIN.top + di * stepY;

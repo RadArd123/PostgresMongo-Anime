@@ -1,6 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { Search, Play, Swords, Heart, Ghost, Flame, Compass, Zap, Star } from "lucide-react";
-import Footer from "@/components/myComponents/Footer";
+import { SearchIcon, PlayIcon, SwordsIcon, HeartIcon, GhostIcon, FlameIcon, CompassIcon, ZapIcon, StarIcon } from "lucide-react";
 import { useHeroAnimeStore } from "@/store/heroAnime.Store";
 import { useAnimeStore } from "@/store/animeStore";
 import { useSettingsStore } from "@/store/settingsStore";
@@ -10,13 +9,13 @@ import { useNavigate } from "react-router-dom";
 // Helper for genre icons
 const getGenreIcon = (genreName: string) => {
   const g = genreName.toLowerCase();
-  if (g.includes("action") || g.includes("shonen")) return <Swords size={16} className="mr-2" />;
-  if (g.includes("romance") || g.includes("romantic")) return <Heart size={16} className="mr-2" />;
-  if (g.includes("horror") || g.includes("thriller") || g.includes("dark")) return <Ghost size={16} className="mr-2" />;
-  if (g.includes("comedy")) return <Flame size={16} className="mr-2" />;
-  if (g.includes("adventure")) return <Compass size={16} className="mr-2" />;
-  if (g.includes("fantasy") || g.includes("supernatural") || g.includes("magic")) return <Zap size={16} className="mr-2" />;
-  return <Star size={16} className="mr-2" />;
+  if (g.includes("action") || g.includes("shonen")) return <SwordsIcon size={16} className="mr-2" />;
+  if (g.includes("romance") || g.includes("romantic")) return <HeartIcon size={16} className="mr-2" />;
+  if (g.includes("horror") || g.includes("thriller") || g.includes("dark")) return <GhostIcon size={16} className="mr-2" />;
+  if (g.includes("comedy")) return <FlameIcon size={16} className="mr-2" />;
+  if (g.includes("adventure")) return <CompassIcon size={16} className="mr-2" />;
+  if (g.includes("fantasy") || g.includes("supernatural") || g.includes("magic")) return <ZapIcon size={16} className="mr-2" />;
+  return <StarIcon size={16} className="mr-2" />;
 };
 
 const BrowsePage = () => {
@@ -69,7 +68,7 @@ const BrowsePage = () => {
   return (
     <div className="w-full h-full min-h-screen bg-black text-slate-100 flex flex-col justify-between">
       {/* Responsive container clearing sidebar */}
-      <div className="relative w-full pl-[100px] md:pl-[150px] pr-4 md:pr-16 pt-12 pb-12 z-10 flex-1">
+      <div className="relative w-full px-4 md:pl-[130px] lg:pl-[150px] md:pr-16 pt-12 pb-12 z-10 flex-1">
         
         {/* Flix.id Style Featured Banners */}
         <section className="mb-10 w-full max-w-[1400px] mx-auto">
@@ -97,7 +96,7 @@ const BrowsePage = () => {
                   
                   <button className="flex items-center gap-3 w-fit hover:opacity-80 transition-opacity">
                     <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/10">
-                      <Play className="w-4 h-4 md:w-5 md:h-5 text-white fill-white ml-1" />
+                      <PlayIcon className="w-4 h-4 md:w-5 md:h-5 text-white fill-white ml-1" />
                     </div>
                     <span className="text-sm md:text-base font-medium text-white shadow-black drop-shadow-md">
                       Let Play Movie
@@ -109,7 +108,7 @@ const BrowsePage = () => {
           </div>
         </section>
 
-        {/* Search & Filter Section */}
+        {/* SearchIcon & Filter Section */}
         <section className="mb-12 w-full max-w-[1400px] mx-auto">
           <div className="bg-[#181818] border border-[#2a2a2a] rounded-[2rem] p-6 md:p-8 shadow-2xl flex flex-col gap-6">
             
@@ -134,14 +133,14 @@ const BrowsePage = () => {
               })}
             </div>
 
-            {/* Search Bar */}
+            {/* SearchIcon Bar */}
             <div className="relative w-full">
               <div className="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-500" />
+                <SearchIcon className="h-5 w-5 text-gray-500" />
               </div>
               <input
                 type="text"
-                placeholder="Search anime by title..."
+                placeholder="Caută anime după titlu..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-14 pr-6 py-4 bg-[#0d0d0d] border border-[#222222] rounded-2xl text-white placeholder-gray-500 focus:outline-none focus:border-gray-500 focus:ring-1 focus:ring-gray-500 transition-all text-sm md:text-base"
@@ -155,7 +154,7 @@ const BrowsePage = () => {
         <section className="mb-20 w-full max-w-[1400px] mx-auto">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-white heading-font">
-              {filteredAnimes.length} Results
+              {filteredAnimes.length} Rezultate
             </h2>
           </div>
           
@@ -172,18 +171,15 @@ const BrowsePage = () => {
             </div>
           ) : (
             <div className="flex flex-col items-center justify-center py-20 text-center bg-white/5 rounded-3xl border border-white/10">
-              <Search className="h-12 w-12 text-gray-500 mb-4" />
-              <h3 className="text-xl font-bold text-white mb-2">No anime found</h3>
+              <SearchIcon className="h-12 w-12 text-gray-500 mb-4" />
+              <h3 className="text-xl font-bold text-white mb-2">Niciun anime găsit</h3>
               <p className="text-gray-400 max-w-md">
-                We couldn't find any anime matching your search and filter criteria. Try adjusting your filters.
+                Nu am găsit niciun anime care să corespundă criteriilor de căutare și filtrare. Încearcă să ajustezi filtrele.
               </p>
             </div>
           )}
         </section>
 
-        <section className="mt-auto">
-          <Footer />
-        </section>
       </div>
     </div>
   );

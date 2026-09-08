@@ -2,6 +2,8 @@ import { Response } from 'express';
 import { ExtendedRequest } from '../interfaces/request.types';
 import { chatModel } from '../model/chat.model';
 import { getIO } from '../config/socket';
+import { createNotification } from '../utils/notificationHelper';
+import { pool } from '../config/db';
 
 export const sendMessage = async (req: ExtendedRequest, res: Response) => {
   try {
@@ -26,12 +28,49 @@ export const sendMessage = async (req: ExtendedRequest, res: Response) => {
       console.warn("Socket broadcast error:", socketErr);
     }
 
+    // ── @mention detection ────────────────────────────────────────
+    const mentionRegex = /@(\w+)/g;
+    const mentions = [...message.matchAll(mentionRegex)].map((m) => m[1]);
+
+    if (mentions.length > 0) {
+      const senderResult = await pool.query('SELECT username FROM users WHERE id = $1', [userId]);
+      const senderUsername = senderResult.rows[0]?.username || 'Cineva';
+
+      for (const mentionedUsername of mentions) {
+        // Don't notify yourself
+        if (mentionedUsername.toLowerCase() === senderUsername.toLowerCase()) continue;
+
+        const userResult = await pool.query(
+          'SELECT id FROM users WHERE LOWER(username) = LOWER($1)',
+          [mentionedUsername]
+        );
+
+        if (userResult.rows.length > 0) {
+          const mentionedUserId = userResult.rows[0].id;
+          try {
+            await createNotification(getIO(), {
+              userId: mentionedUserId,
+              type: 'chat_mention',
+              title: `Mențiune în Live Chat 💬`,
+              message: `${senderUsername} te-a menționat: "${message.trim().slice(0, 100)}${message.length > 100 ? '...' : ''}"`,
+              actionUrl: '/chat',
+              senderId: userId,
+            });
+          } catch (notifErr) {
+            console.warn('Mention notification error:', notifErr);
+          }
+        }
+      }
+    }
+    // ─────────────────────────────────────────────────────────────
+
     res.status(201).json({ message: "Message sent successfully", chatMessage: newMessage });
   } catch (err) {
     console.error("Error in sendMessage:", err);
     res.status(500).json({ message: "Internal server error while sending message" });
   }
 };
+
 
 export const getMessages = async (req: ExtendedRequest, res: Response) => {
   try {

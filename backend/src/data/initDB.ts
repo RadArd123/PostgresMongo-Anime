@@ -203,19 +203,129 @@ export const initDB = async () => {
     await pool.query(`
       CREATE TABLE IF NOT EXISTS donations(
         id SERIAL PRIMARY KEY,
-        user_id INT NOT NULL,
+        user_id INT,
         tier_name VARCHAR(100) NOT NULL,
         amount DECIMAL(10,2) NOT NULL,
         coffees INT DEFAULT 1,
         donor_name VARCHAR(100),
         message TEXT,
+        stripe_session_id VARCHAR(255),
+        stripe_event_id VARCHAR(255),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         CONSTRAINT fk_donation_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+      );
+    `);
+
+    // Existing databases may predate anonymous Stripe donations and idempotency fields.
+    await pool.query(`ALTER TABLE donations ALTER COLUMN user_id DROP NOT NULL;`);
+    await pool.query(`ALTER TABLE donations ADD COLUMN IF NOT EXISTS stripe_session_id VARCHAR(255);`);
+    await pool.query(`ALTER TABLE donations ADD COLUMN IF NOT EXISTS stripe_event_id VARCHAR(255);`);
+    await pool.query(`CREATE UNIQUE INDEX IF NOT EXISTS uq_donations_stripe_session ON donations(stripe_session_id);`);
+    await pool.query(`CREATE UNIQUE INDEX IF NOT EXISTS uq_donations_stripe_event ON donations(stripe_event_id);`);
+
+    // 14. Tabela Badges (insigne acordate de admin)
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS badges(
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(100) NOT NULL UNIQUE,
+        description TEXT,
+        icon_url TEXT,
+        color VARCHAR(7) DEFAULT '#FFD700',
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+      );
+    `);
+
+    // 15. Tabela User Badges (insigne primite de useri)
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS user_badges(
+        id SERIAL PRIMARY KEY,
+        user_id INT NOT NULL,
+        badge_id INT NOT NULL,
+        awarded_by INT,
+        awarded_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+        CONSTRAINT fk_ub_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        CONSTRAINT fk_ub_badge FOREIGN KEY (badge_id) REFERENCES badges(id) ON DELETE CASCADE,
+        CONSTRAINT fk_ub_awarded_by FOREIGN KEY (awarded_by) REFERENCES users(id) ON DELETE SET NULL,
+        CONSTRAINT uq_user_badge UNIQUE(user_id, badge_id)
+      );
+    `);
+
+    // 16. Tabela Notifications (centrul de notificari)
+    await pool.query(`
+      DO $$ BEGIN
+        IF NOT EXISTS (SELECT 1 FROM pg_type t JOIN pg_namespace n ON n.oid = t.typnamespace WHERE t.typname = 'notification_type' AND n.nspname = current_schema()) THEN
+          CREATE TYPE notification_type AS ENUM (
+            'new_episode',
+            'admin_message',
+            'donation_thanks',
+            'badge_awarded',
+            'chat_mention',
+            'system'
+          );
+        END IF;
+      END $$;
+    `);
+
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS notifications(
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        user_id INT NOT NULL,
+        type notification_type NOT NULL,
+        title VARCHAR(255) NOT NULL,
+        message TEXT NOT NULL,
+        action_url VARCHAR(500),
+        image_url VARCHAR(500),
+        anime_id INT,
+        sender_id INT,
+        badge_id INT,
+        is_read BOOLEAN NOT NULL DEFAULT FALSE,
+        is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
+        created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+        read_at TIMESTAMP WITH TIME ZONE,
+        CONSTRAINT fk_notif_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        CONSTRAINT fk_notif_anime FOREIGN KEY (anime_id) REFERENCES animes(id) ON DELETE SET NULL,
+        CONSTRAINT fk_notif_sender FOREIGN KEY (sender_id) REFERENCES users(id) ON DELETE SET NULL,
+        CONSTRAINT fk_notif_badge FOREIGN KEY (badge_id) REFERENCES badges(id) ON DELETE SET NULL
+      );
+    `);
+
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_notif_user_unread ON notifications(user_id, is_read) WHERE is_deleted = FALSE;
+    `);
+    await pool.query(`
+      CREATE INDEX IF NOT EXISTS idx_notif_created ON notifications(created_at DESC);
+    `);
+
+    // 17. Tabela Anime Subscriptions (clopotelul de pe pagina anime)
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS anime_subscriptions(
+        id SERIAL PRIMARY KEY,
+        user_id INT NOT NULL,
+        anime_id INT NOT NULL,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+        CONSTRAINT fk_sub_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        CONSTRAINT fk_sub_anime FOREIGN KEY (anime_id) REFERENCES animes(id) ON DELETE CASCADE,
+        CONSTRAINT uq_user_anime_sub UNIQUE(user_id, anime_id)
+      );
+    `);
+
+    // 18. Tabela Notification Preferences (setari per user)
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS notification_preferences(
+        user_id INT PRIMARY KEY,
+        notify_new_episode BOOLEAN NOT NULL DEFAULT TRUE,
+        notify_admin_msg BOOLEAN NOT NULL DEFAULT TRUE,
+        notify_badge BOOLEAN NOT NULL DEFAULT TRUE,
+        notify_mention BOOLEAN NOT NULL DEFAULT TRUE,
+        notify_system BOOLEAN NOT NULL DEFAULT TRUE,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+        CONSTRAINT fk_pref_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
       );
     `);
 
     console.log("Database initialized successfully");
   } catch (err) {
     console.error("Error initializing database", err); 
+    throw err;
   }
 };

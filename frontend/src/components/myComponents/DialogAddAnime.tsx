@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "../ui/input";
 import ActionCard from "./ActionCard";
 import { useAnimeStore } from "@/store/animeStore";
-import { PlusCircle } from "lucide-react";
+import { PlusCircleIcon } from "lucide-react";
 
 const DialogAddAnime = () => {
   const { createAnime, isLoading } = useAnimeStore();
@@ -55,7 +55,7 @@ const DialogAddAnime = () => {
         <form className="space-y-6" onSubmit={handleSubmit}>
           <DialogHeader className="flex flex-row items-center gap-3 space-y-0">
             <div className="bg-blue-500/20 p-2 rounded-xl">
-                <PlusCircle className="w-6 h-6 text-blue-400" />
+                <PlusCircleIcon className="w-6 h-6 text-blue-400" />
             </div>
             <div>
                 <DialogTitle className="text-2xl font-bold text-white">

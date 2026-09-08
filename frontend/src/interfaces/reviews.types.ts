@@ -5,6 +5,8 @@ export interface Reviews{
     rating: number,
     comment?: string,
     created_at?: Date,
+    username?: string,
+    avatar_url?: string,
 }
 export interface ReviewResponse{
  

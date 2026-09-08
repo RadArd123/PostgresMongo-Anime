@@ -7,7 +7,7 @@ import ActionCard from "./ActionCard";
 import { useAnimeStore } from "@/store/animeStore";
 import type { Anime } from "@/interfaces/anime.types";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { Trash2 } from "lucide-react";
+import { Trash2Icon } from "lucide-react";
 
 const DialogDeleteAnime = ({ animes }: { animes: Anime[] }) => {
   const { deleteAnime, isLoading } = useAnimeStore();
@@ -38,7 +38,7 @@ const DialogDeleteAnime = ({ animes }: { animes: Anime[] }) => {
         <form className="space-y-6" onSubmit={handleSubmit}>
           <DialogHeader className="flex flex-row items-center gap-3 space-y-0">
             <div className="bg-red-500/20 p-2 rounded-xl">
-                <Trash2 className="w-6 h-6 text-red-400" />
+                <Trash2Icon className="w-6 h-6 text-red-400" />
             </div>
             <div>
                 <DialogTitle className="text-2xl font-bold text-white">

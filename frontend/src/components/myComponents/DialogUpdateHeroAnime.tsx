@@ -16,7 +16,7 @@ import { useHeroAnimeStore } from "@/store/heroAnime.Store";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import type { Anime } from "@/interfaces/anime.types";
 import { ScrollArea } from "../ui/scroll-area";
-import { Edit } from "lucide-react";
+import { EditIcon } from "lucide-react";
 import type { IHeroAnime } from "@/interfaces/heroAnime.types";
 
 const DialogUpdateHeroAnime = ({ animes = [], heroAnimes = [] }: { animes: Anime[], heroAnimes: IHeroAnime[] }) => {
@@ -82,7 +82,7 @@ const DialogUpdateHeroAnime = ({ animes = [], heroAnimes = [] }: { animes: Anime
         <form className="space-y-5 pr-4" onSubmit={handleSubmit}>
           <DialogHeader className="flex flex-row items-center gap-3 space-y-0 pb-2">
             <div className="bg-amber-500/20 p-2 rounded-xl">
-                <Edit className="w-6 h-6 text-amber-400" />
+                <EditIcon className="w-6 h-6 text-amber-400" />
             </div>
             <div>
                 <DialogTitle className="text-2xl font-bold text-white">

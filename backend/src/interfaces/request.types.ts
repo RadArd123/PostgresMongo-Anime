@@ -1,5 +1,5 @@
 import { Request } from 'express';
 
 export interface ExtendedRequest extends Request {
-    user?: { id: number, isAdmin:boolean };
+    user?: { id: number; username: string; email: string; isAdmin: boolean };
 }

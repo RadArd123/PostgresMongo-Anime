@@ -1,20 +1,22 @@
 import jwt from 'jsonwebtoken';
 import { Response } from 'express';
 
-export const generateTokenAndSetCookie = (res: Response, userId: number, isAdmin:boolean) => {
-    const token  = jwt.sign({ 
-        id: userId ,
-        isAdmin: isAdmin
+export const generateTokenAndSetCookie = (res: Response, userId: number) => {
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+        throw new Error('JWT_SECRET is not configured');
+    }
+    const token  = jwt.sign({
+        id: userId
     },
-    process.env.JWT_SECRET as string, {
+    secret, {
         expiresIn: '10h',
     });
     res.cookie("token", token, {
         httpOnly: true, //xss
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",//csrf
-        maxAge: 7*24*60*60*1000,
+        maxAge: 10*60*60*1000,
     });
         return token;
 }
- 

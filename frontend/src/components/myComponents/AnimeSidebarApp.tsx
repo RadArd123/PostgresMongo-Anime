@@ -1,22 +1,27 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  Heart, Bookmark, Compass, Settings, Bell,
-  ChevronLeft, ChevronRight, Home, LogOut, UserRoundPen, UserStar, Coffee, Film, MessageSquare, Tv2
+  HeartIcon, BookmarkIcon, CompassIcon, BellIcon, UserIcon,
+  ChevronLeftIcon, ChevronRightIcon, LogOutIcon, LogInIcon, CoffeeIcon, VideoIcon, MessageSquareIcon, Tv2Icon, UserRoundPenIcon, UserStarIcon
 } from "lucide-react";
+import { HomeIcon } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/store/authStore";
 import { useProfileStore } from "@/store/profileStore";
 import { useContinueWatchingStore } from "@/store/continueWatchingStore";
-import zoroAvatar from "@/assets/zoro.jpg";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { NotificationsModal } from "./NotificationsModal";
-import { SupportModal } from "./SupportModal";
+
+const NotificationsModal = lazy(() =>
+  import("./NotificationsModal").then((module) => ({ default: module.NotificationsModal }))
+);
+const SupportModal = lazy(() =>
+  import("./SupportModal").then((module) => ({ default: module.SupportModal }))
+);
 
 type AnimeSidebarProps = {
   collapsed: boolean;
@@ -29,19 +34,19 @@ type AnimeSidebarProps = {
 // Top Profile Section (with Popover)
 // ──────────────────────────────────────────────────────────────────────────────
 const ProfileHeader = ({ collapsed }: { collapsed?: boolean }) => {
-  const { user, isAdmin, logout, isLoading, error } = useAuthStore();
+  const { user, isAdmin, isAuthenticated, logout, isLoading, error } = useAuthStore();
   const { profile, fetchProfile } = useProfileStore();
   const navigate = useNavigate();
   const userName = profile?.username || user?.username || "Radu";
   const userStatus = profile?.status || "I love Anime";
 
   useEffect(() => {
-    if (!profile) {
+    if (isAuthenticated && !profile) {
       fetchProfile();
     }
-  }, [profile, fetchProfile]);
+  }, [fetchProfile, isAuthenticated, profile]);
 
-  const avatarSrc = profile?.avatar_url || zoroAvatar;
+  const avatarSrc = profile?.avatar_url;
 
   const handleLogout = async () => {
     try {
@@ -62,7 +67,9 @@ const ProfileHeader = ({ collapsed }: { collapsed?: boolean }) => {
             <div className="size-10 md:size-12 rounded-full overflow-hidden border-2 border-white/10 shadow-[0_0_15px_rgba(255,255,255,0.1)]">
               <Avatar className="w-full h-full">
                 <AvatarImage src={avatarSrc} className="object-cover" />
-                <AvatarFallback className="bg-indigo-500/20">{userName.slice(0, 2).toUpperCase()}</AvatarFallback>
+                <AvatarFallback className="bg-indigo-500/20 flex items-center justify-center">
+                  <UserIcon className="size-6 text-indigo-300" />
+                </AvatarFallback>
               </Avatar>
             </div>
             <div className="absolute top-0 right-0 size-3 bg-green-500 rounded-full border-2 border-[#0a0a0a]" />
@@ -74,17 +81,25 @@ const ProfileHeader = ({ collapsed }: { collapsed?: boolean }) => {
           className="w-48 rounded-xl border border-white/10 bg-[#111111cc] backdrop-blur-md p-2 shadow-xl font-semibold z-50"
         >
           <div className="flex flex-col text-sm text-white">
-            <button onClick={() => navigate("/profile")} className="flex w-full items-center rounded-lg px-3 py-2 hover:bg-white/5 active:bg-white/10 transition-colors">
-              <UserRoundPen className="mr-2 h-4 w-4" /> My Profile
-            </button>
-            {isAdmin && (
-              <button onClick={() => navigate("/admin")} className="flex w-full items-center rounded-lg px-3 py-2 hover:bg-white/5 active:bg-white/10 transition-colors text-blue-400">
-                <UserStar className="mr-2 h-4 w-4" /> Admin Panel
+            {isAuthenticated ? (
+              <>
+                <button onClick={() => navigate("/profile")} className="flex w-full items-center rounded-lg px-3 py-2 hover:bg-white/5 active:bg-white/10 transition-colors">
+                  <UserRoundPenIcon className="mr-2 h-4 w-4" /> Profilul Meu
+                </button>
+                {isAdmin && (
+                  <button onClick={() => navigate("/admin")} className="flex w-full items-center rounded-lg px-3 py-2 hover:bg-white/5 active:bg-white/10 transition-colors text-blue-400">
+                    <UserStarIcon className="mr-2 h-4 w-4" /> Admin Panel
+                  </button>
+                )}
+                <button onClick={handleLogout} className="flex w-full items-center border-none rounded-lg px-3 py-2 hover:bg-red-500/20 text-red-400 transition-colors mt-1">
+                  <LogOutIcon className="mr-2 h-4 w-4" /> Deconectare
+                </button>
+              </>
+            ) : (
+              <button onClick={() => navigate("/login")} className="flex w-full items-center rounded-lg px-3 py-2 hover:bg-white/5 active:bg-white/10 transition-colors">
+                <LogInIcon className="mr-2 h-4 w-4" /> Conectare
               </button>
             )}
-            <button onClick={handleLogout} className="flex w-full items-center border-none rounded-lg px-3 py-2 hover:bg-red-500/20 text-red-400 transition-colors mt-1">
-              <LogOut className="mr-2 h-4 w-4" /> Log Out
-            </button>
           </div>
         </PopoverContent>
       </Popover>
@@ -107,15 +122,15 @@ const NavigationMenu = ({ collapsed }: { collapsed?: boolean }) => {
   const location = useLocation();
 
   const menuItems = [
-    { name: "Home", icon: Home, path: "/" },
-    { name: "Browse", icon: Compass, path: "/browse" },
-    { name: "Favorites", icon: Heart, path: "/favorites" },
-    { name: "Watchlist", icon: Bookmark, path: "/watchlist" },
+    { name: "Acasă", icon: HomeIcon, path: "/" },
+    { name: "Explorează", icon: CompassIcon, path: "/browse" },
+    { name: "Favorite", icon: HeartIcon, path: "/favorites" },
+    { name: "Watchlist", icon: BookmarkIcon, path: "/watchlist" },
   ];
 
   return (
     <div className="px-3 py-4 space-y-1">
-      {!collapsed && <p className="px-3 text-[10px] uppercase font-bold text-gray-500 mb-2 tracking-widest">Menu</p>}
+      {!collapsed && <p className="px-3 text-[10px] uppercase font-bold text-gray-500 mb-2 tracking-widest">Meniu</p>}
       {menuItems.map((item) => {
         const isActive = location.pathname === item.path;
         return (
@@ -166,7 +181,7 @@ const ContinueWatchingCard = ({ collapsed, loading }: { collapsed?: boolean, loa
           </div>
         ))}
         <button onClick={() => navigate("/continue-watching")} className="size-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center hover:bg-white/10 transition-colors text-gray-400 hover:text-white" title="All History">
-          <Tv2 className="size-5" />
+          <Tv2Icon className="size-5" />
         </button>
       </div>
     );
@@ -174,7 +189,7 @@ const ContinueWatchingCard = ({ collapsed, loading }: { collapsed?: boolean, loa
 
   return (
     <div className="px-4 py-2 mt-2">
-      <p className="px-1 text-[10px] uppercase font-bold text-gray-500 mb-2 tracking-widest">Continue Watching</p>
+      <p className="px-1 text-[10px] uppercase font-bold text-gray-500 mb-2 tracking-widest">Continuă Vizionarea</p>
       <div className="bg-white/[0.03] border border-white/[0.05] rounded-[24px] p-2 shadow-inner">
         <div className="max-h-[220px] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           <ul className="space-y-1">
@@ -212,7 +227,7 @@ const ContinueWatchingCard = ({ collapsed, loading }: { collapsed?: boolean, loa
                         {item.anime_title || "Anime Series"}
                       </p>
                       <p className="text-[10px] text-neutral-500 truncate mt-0.5 flex items-center gap-1">
-                        <Film size={10} className="text-blue-400" />
+                        <VideoIcon size={10} className="text-blue-400" />
                         <span>Ep. {item.episode_number}</span>
                       </p>
                     </div>
@@ -220,13 +235,13 @@ const ContinueWatchingCard = ({ collapsed, loading }: { collapsed?: boolean, loa
                 );
               })
             ) : (
-              <li className="p-2 text-center text-xs text-gray-500">No unfinished episodes</li>
+              <li className="p-2 text-center text-xs text-gray-500">Niciun episod neterminat</li>
             )}
             <li onClick={() => navigate("/continue-watching")} className="flex items-center gap-3 rounded-xl p-2 hover:bg-white/[0.06] transition-all cursor-pointer text-gray-400 hover:text-white mt-1">
               <div className="size-10 shrink-0 rounded-[10px] border border-dashed border-white/20 flex items-center justify-center">
-                <Tv2 className="size-4" />
+                <Tv2Icon className="size-4" />
               </div>
-              <span className="text-xs font-semibold">View all history</span>
+              <span className="text-xs font-semibold">Vezi tot istoricul</span>
             </li>
           </ul>
         </div>
@@ -247,20 +262,24 @@ const BottomActions = ({ collapsed }: { collapsed?: boolean }) => {
 
   return (
     <div className="mt-auto p-4 flex flex-col gap-3">
-      <NotificationsModal open={openNotifications} onOpenChange={setOpenNotifications} />
-      <SupportModal open={openSupport} onOpenChange={setOpenSupport} />
+      <Suspense fallback={null}>
+        {openNotifications && (
+          <NotificationsModal open={openNotifications} onOpenChange={setOpenNotifications} />
+        )}
+        {openSupport && <SupportModal open={openSupport} onOpenChange={setOpenSupport} />}
+      </Suspense>
 
       {/* Settings Row */}
       <div className={`flex items-center ${collapsed ? "justify-center flex-col gap-3" : "justify-between bg-white/[0.03] border border-white/[0.05] rounded-2xl p-2 px-4 shadow-inner"}`}>
         <button onClick={() => setOpenSupport(true)} className="text-gray-400 hover:text-white transition-colors relative group" title="Support">
-          <Coffee className="size-5 group-hover:text-amber-500 transition-colors" />
+          <CoffeeIcon className="size-5 group-hover:text-amber-500 transition-colors" />
         </button>
         <button onClick={() => setOpenNotifications(true)} className="text-gray-400 hover:text-white transition-colors relative" title="Notifications">
-          <Bell className="size-5" />
+          <BellIcon className="size-5" />
           <span className="absolute -top-1 -right-1 size-2 bg-red-500 rounded-full border border-[#0a0a0a]" />
         </button>
-        <button onClick={() => navigate("/settings")} className="text-gray-400 hover:text-white transition-colors" title="Settings">
-          <Settings className="size-5" />
+        <button onClick={() => navigate("/profile")} className="text-gray-400 hover:text-white transition-colors" title="Profile">
+          <UserIcon className="size-5" />
         </button>
       </div>
 
@@ -273,7 +292,7 @@ const BottomActions = ({ collapsed }: { collapsed?: boolean }) => {
             : "bg-gradient-to-tr from-blue-600 to-indigo-500 hover:from-blue-500 hover:to-indigo-400 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)]"
         }`}
       >
-        <MessageSquare className="size-5 shrink-0" />
+        <MessageSquareIcon className="size-5 shrink-0" />
         {!collapsed && <span>Live Chat</span>}
       </button>
     </div>
@@ -293,7 +312,7 @@ const AnimeSidebar = ({ collapsed, setCollapsed, loading = false }: AnimeSidebar
         onClick={() => setCollapsed(!collapsed)}
         className="absolute -right-2 top-1/2 -translate-y-1/2 z-50 bg-neutral-800 border border-white/10 rounded-full p-1.5 shadow-xl text-white hover:bg-neutral-700 transition-colors"
       >
-        {collapsed ? <ChevronRight className="size-4" /> : <ChevronLeft className="size-4" />}
+        {collapsed ? <ChevronRightIcon className="size-4" /> : <ChevronLeftIcon className="size-4" />}
       </button>
 
       <aside

@@ -4,8 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --test --require ts-node/register tests/security.test.ts",
+    "test:integration": "node --test --require ts-node/register tests/admin-crud.test.ts",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run typecheck && npm test",
     "start": "ts-node src/index.ts",
+    "db:init": "ts-node src/scripts/initDatabase.ts",
     "build": "tsc",
     "serve": "node dist/index.js",
     "dev": "nodemon --watch src --exec ts-node src/index.ts"
@@ -21,12 +25,9 @@
     "@types/express": "^5.0.5",
     "@types/express-fileupload": "^1.5.1",
     "@types/jsonwebtoken": "^9.0.10",
-    "@types/multer": "^2.0.0",
     "@types/node": "^24.9.1",
     "@types/pg": "^8.15.5",
-    "@types/react": "^19.2.3",
-    "@types/socket.io": "^3.0.1",
-    "express": "^5.1.0",
+    "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   },
@@ -35,15 +36,15 @@
     "cloudinary": "^2.8.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
-    "crypto": "^1.0.1",
     "dotenv": "^17.2.3",
     "express-fileupload": "^1.5.2",
-    "fs": "^0.0.1-security",
+    "express-rate-limit": "^8.7.0",
+    "express": "^5.1.0",
+    "helmet": "^8.3.0",
     "jsonwebtoken": "^9.0.2",
-    "multer": "^2.0.2",
-    "nodemon": "^3.1.10",
     "pg": "^8.16.3",
     "socket.io": "^4.8.3",
+    "stripe": "^22.6.0",
     "zod": "^4.1.12"
   }
 }

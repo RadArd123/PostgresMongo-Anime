@@ -4,9 +4,9 @@ import { useFavoritesStore } from "../store/favoritesStore";
 import { useWatchlistStore } from "../store/watchlistStore";
 import { useThemeStore, type ThemeColor } from "../store/themeStore";
 import {
-  Loader2, Edit3, Trash2, Mail, Calendar,
-  Heart, Bookmark, Eye, Flame, Star, TvMinimalPlay,
-  Activity, BarChart3, Swords, Compass, Zap, Ghost, Music
+  Loader2Icon, Edit3Icon, Trash2Icon, MailIcon, CalendarIcon,
+  HeartIcon, BookmarkIcon, EyeIcon, FlameIcon, StarIcon, TvMinimalPlayIcon,
+  BarChart3Icon, SwordsIcon, CompassIcon, ZapIcon, GhostIcon, MusicIcon, UserIcon
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -14,15 +14,14 @@ import EditProfileDialog from "../components/myComponents/EditProfileDialog";
 import DeleteAccountDialog from "../components/myComponents/DeleteAccountDialog";
 import AnimeRadarChart from "../components/myComponents/AnimeRadarChart";
 import AnimeHeatmap from "../components/myComponents/AnimeHeatmap";
-import zoroAvatar from "@/assets/zoro.jpg";
 import sukunaBanner from "@/assets/sukuna-mahoraga.gif";
 
 // ─── Helpers ────────────────────────────────────────────
 const GENRE_ICONS: Record<string, React.ReactNode> = {
-  Action: <Swords size={14} />, Adventure: <Compass size={14} />,
-  Fantasy: <Zap size={14} />, Horror: <Ghost size={14} />,
-  Romance: <Heart size={14} />, Comedy: <Flame size={14} />,
-  Music: <Music size={14} />, Supernatural: <Star size={14} />,
+  Action: <SwordsIcon size={14} />, Adventure: <CompassIcon size={14} />,
+  Fantasy: <ZapIcon size={14} />, Horror: <GhostIcon size={14} />,
+  Romance: <HeartIcon size={14} />, Comedy: <FlameIcon size={14} />,
+  MusicIcon: <MusicIcon size={14} />, Supernatural: <StarIcon size={14} />,
 };
 
 /** Extract genre → count from an array of anime objects */
@@ -123,7 +122,7 @@ const ProfilePage: React.FC = () => {
       metrics,
       series: [
         {
-          label: "Your Taste",
+          label: "Gustul Tău",
           color: "#3b82f6",
           values,
         },
@@ -154,21 +153,20 @@ const ProfilePage: React.FC = () => {
   if (loading && !profile) {
     return (
       <div className="flex-1 flex justify-center items-center h-screen bg-[#010409]">
-        <Loader2 className="w-12 h-12 animate-spin text-blue-500" />
+        <Loader2Icon className="w-12 h-12 animate-spin text-blue-500" />
       </div>
     );
   }
   if (error) return <div className="flex-1 flex justify-center items-center h-screen text-red-500">Error: {error}</div>;
   if (!profile) return null;
 
-  const defaultAvatar = zoroAvatar;
   const defaultBanner = sukunaBanner;
-  const avatarUrl = profile.avatar_url || defaultAvatar;
+  const avatarUrl = profile.avatar_url;
   const bannerUrl = profile.banner_url || defaultBanner;
   const joinYear = new Date(profile.profile_created_at).getFullYear();
 
   return (
-    <div className="flex-1 min-h-screen bg-[#010409] text-gray-200">
+    <div className="flex-1 min-h-screen bg-[#010409] text-gray-200 ">
       <div className="max-w-[1100px] mx-auto px-4 md:px-8 py-10 flex flex-col lg:flex-row gap-8">
 
         {/* ════════════════ LEFT SIDEBAR ════════════════ */}
@@ -176,11 +174,15 @@ const ProfilePage: React.FC = () => {
 
           {/* Avatar */}
           <div className="relative">
-            <div className="w-[240px] h-[240px] rounded-full overflow-hidden border-4 border-[#21262d] shadow-2xl relative group mx-auto lg:mx-0">
-              <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+            <div className="w-[240px] h-[240px] rounded-full overflow-hidden border-4 border-[#21262d] shadow-2xl relative group mx-auto lg:mx-0 flex items-center justify-center bg-[#161b22]">
+              {avatarUrl ? (
+                <img src={avatarUrl} alt="Avatar" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+              ) : (
+                <UserIcon className="w-32 h-32 text-[#21262d] opacity-50" />
+              )}
               <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                 <button onClick={() => setIsEditOpen(true)} className="bg-white/20 p-3 rounded-full backdrop-blur-sm hover:bg-white/30 transition-colors">
-                  <Edit3 className="w-5 h-5 text-white" />
+                  <Edit3Icon className="w-5 h-5 text-white" />
                 </button>
               </div>
             </div>
@@ -191,7 +193,7 @@ const ProfilePage: React.FC = () => {
             <h1 className="text-2xl font-black text-white" style={{ fontFamily: "Righteous, cursive" }}>
               {profile.username}
             </h1>
-            <p className="text-gray-400 text-sm mt-0.5">Otaku / Anime Enthusiast</p>
+            <p className="text-gray-400 text-sm mt-0.5">Otaku / Pasionat de Anime</p>
             {profile.status && (
               <p className="text-gray-300 text-sm mt-3 leading-relaxed italic">"{profile.status}"</p>
             )}
@@ -202,35 +204,35 @@ const ProfilePage: React.FC = () => {
             onClick={() => setIsEditOpen(true)}
             className="w-full bg-[#21262d] hover:bg-[#30363d] text-white text-sm font-semibold py-2 px-4 rounded-lg border border-[#30363d] transition-colors flex items-center justify-center gap-2"
           >
-            <Edit3 className="w-4 h-4" /> Edit profile
+            <Edit3Icon className="w-4 h-4" /> Editează profilul
           </button>
 
           {/* Meta */}
           <div className="space-y-2 text-sm text-gray-400 border-t border-[#21262d] pt-4">
             <div className="flex items-center gap-2">
-              <Mail className="w-4 h-4 text-gray-500" />
+              <MailIcon className="w-4 h-4 text-gray-500" />
               <span className="truncate">{profile.email}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-gray-500" />
-              <span>Joined {new Date(profile.profile_created_at).toLocaleDateString("en-US", { month: "long", year: "numeric" })}</span>
+              <CalendarIcon className="w-4 h-4 text-gray-500" />
+              <span>Înscris în {new Date(profile.profile_created_at).toLocaleDateString("ro-RO", { month: "long", year: "numeric" })}</span>
             </div>
           </div>
 
           {/* Quick counts */}
           <div className="flex gap-4 text-sm text-gray-400 border-t border-[#21262d] pt-4">
-            <span className="flex items-center gap-1.5"><Heart size={14} className="text-red-400" /><b className="text-white">{currentUserFavorites.length}</b> Favorites</span>
-            <span className="flex items-center gap-1.5"><Bookmark size={14} className="text-blue-400" /><b className="text-white">{watchlist.length}</b> Watchlist</span>
+            <span className="flex items-center gap-1.5"><HeartIcon size={14} className="text-red-400" /><b className="text-white">{currentUserFavorites.length}</b> Favorite</span>
+            <span className="flex items-center gap-1.5"><BookmarkIcon size={14} className="text-blue-400" /><b className="text-white">{watchlist.length}</b> Watchlist</span>
           </div>
 
           {/* Top Genres tags */}
           {topGenres.length > 0 && (
             <div className="border-t border-[#21262d] pt-4">
-              <p className="text-[0.65rem] font-bold uppercase tracking-widest text-gray-500 mb-3">Top Genres</p>
+              <p className="text-[0.65rem] font-bold uppercase tracking-widest text-gray-500 mb-3">Genuri Preferate</p>
               <div className="flex flex-wrap gap-2">
                 {topGenres.map(([genre]) => (
                   <span key={genre} className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#161b22] border border-[#21262d] text-xs text-gray-300">
-                    {GENRE_ICONS[genre] || <Star size={12} />}
+                    {GENRE_ICONS[genre] || <StarIcon size={12} />}
                     {genre}
                   </span>
                 ))}
@@ -257,11 +259,10 @@ const ProfilePage: React.FC = () => {
                   key={color.id}
                   onClick={() => setTheme(color.id as ThemeColor)}
                   title={color.label}
-                  className={`size-8 rounded-full ${color.bg} transition-all duration-300 flex items-center justify-center border-2 ${
-                    themeColor === color.id
+                  className={`size-8 rounded-full ${color.bg} transition-all duration-300 flex items-center justify-center border-2 ${themeColor === color.id
                       ? "border-white scale-110 shadow-[0_0_12px_rgba(255,255,255,0.4)]"
                       : "border-transparent opacity-70 hover:opacity-100 hover:scale-105"
-                  }`}
+                    }`}
                 />
               ))}
             </div>
@@ -273,7 +274,7 @@ const ProfilePage: React.FC = () => {
               onClick={() => setIsDeleteOpen(true)}
               className="w-full text-sm text-red-500 hover:text-red-400 bg-red-950/20 hover:bg-red-950/40 border border-red-900/30 py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
             >
-              <Trash2 className="w-4 h-4" /> Delete account
+              <Trash2Icon className="w-4 h-4" /> Șterge contul
             </button>
           </div>
         </aside>
@@ -298,16 +299,16 @@ const ProfilePage: React.FC = () => {
               onClick={() => setIsEditOpen(true)}
               className="absolute top-4 right-4 bg-black/50 p-2 rounded-lg backdrop-blur-sm opacity-0 group-hover:opacity-100 hover:bg-black/80 transition-all border border-white/10"
             >
-              <Edit3 className="w-4 h-4 text-white" />
+              <Edit3Icon className="w-4 h-4 text-white" />
             </button>
           </motion.div>
 
           {/* ── Stat Cards ── */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <StatCard icon={<Heart size={16} className="text-red-400" />} label="Favorites" value={currentUserFavorites.length} color="bg-red-500/10" />
-            <StatCard icon={<Bookmark size={16} className="text-blue-400" />} label="Watchlist" value={watchlist.length} color="bg-blue-500/10" />
-            <StatCard icon={<Eye size={16} className="text-green-400" />} label="App Visits" value={totalVisits} color="bg-green-500/10" />
-            <StatCard icon={<TvMinimalPlay size={16} className="text-purple-400" />} label="Since" value={joinYear} color="bg-purple-500/10" />
+            <StatCard icon={<HeartIcon size={16} className="text-red-400" />} label="Favorite" value={currentUserFavorites.length} color="bg-red-500/10" />
+            <StatCard icon={<BookmarkIcon size={16} className="text-blue-400" />} label="Watchlist" value={watchlist.length} color="bg-blue-500/10" />
+            <StatCard icon={<EyeIcon size={16} className="text-green-400" />} label="Vizite Aplicație" value={totalVisits} color="bg-green-500/10" />
+            <StatCard icon={<TvMinimalPlayIcon size={16} className="text-purple-400" />} label="Since" value={joinYear} color="bg-purple-500/10" />
           </div>
 
           {/* ── Heatmap ── */}
@@ -330,7 +331,7 @@ const ProfilePage: React.FC = () => {
               transition={{ delay: 0.25 }}
               className="bg-[#0D1117] border border-[#21262d] rounded-2xl p-6 hover:border-[#30363d] transition-colors flex flex-col"
             >
-              <SectionHeader icon={<BarChart3 size={16} />} title="Anime Taste Profile" />
+              <SectionHeader icon={<BarChart3Icon size={16} />} title="Profilul Gusturilor Anime" />
               <div className="flex-1 flex items-center justify-center">
                 {radarData.series[0] && Object.values(radarData.series[0].values).some(v => v > 0) ? (
                   <AnimeRadarChart
@@ -340,15 +341,15 @@ const ProfilePage: React.FC = () => {
                   />
                 ) : (
                   <div className="text-center text-gray-600 py-10">
-                    <Star className="mx-auto mb-3 opacity-30" size={40} />
-                    <p className="text-sm">Add favorites to see your taste profile</p>
+                    <StarIcon className="mx-auto mb-3 opacity-30" size={40} />
+                    <p className="text-sm">Adaugă favorite pentru a vedea profilul gusturilor</p>
                   </div>
                 )}
               </div>
               {/* Legend */}
               <div className="flex items-center gap-2 mt-2 justify-center">
                 <div className="w-3 h-3 rounded-full bg-blue-500 opacity-70" />
-                <span className="text-xs text-gray-500">Based on {currentUserFavorites.length + watchlist.length} anime</span>
+                <span className="text-xs text-gray-500">Bazat pe {currentUserFavorites.length + watchlist.length} anime</span>
               </div>
             </motion.div>
 
@@ -359,9 +360,9 @@ const ProfilePage: React.FC = () => {
               transition={{ delay: 0.3 }}
               className="bg-[#0D1117] border border-[#21262d] rounded-2xl p-6 hover:border-[#30363d] transition-colors flex flex-col gap-4"
             >
-              <SectionHeader icon={<Flame size={16} />} title="About Me" />
+              <SectionHeader icon={<FlameIcon size={16} />} title="Despre Mine" />
               <p className="text-gray-300 text-sm leading-relaxed">
-                {profile.bio || "No bio yet. Tell the world about your favorite anime and why you're the biggest otaku around!"}
+                {profile.bio || "Nicio biografie încă. Spune lumii care e anime-ul tău preferat!"}
               </p>
 
               {/* Preferred Genres ranked list */}
@@ -375,7 +376,7 @@ const ProfilePage: React.FC = () => {
                         <div key={genre}>
                           <div className="flex justify-between items-center mb-1">
                             <span className="text-xs text-gray-300 flex items-center gap-1.5">
-                              {GENRE_ICONS[genre] || <Star size={11} />} {genre}
+                              {GENRE_ICONS[genre] || <StarIcon size={11} />} {genre}
                             </span>
                             <span className="text-xs text-gray-500">{count}</span>
                           </div>
@@ -404,7 +405,7 @@ const ProfilePage: React.FC = () => {
               transition={{ delay: 0.4 }}
               className="bg-[#0D1117] border border-[#21262d] rounded-2xl p-6 hover:border-[#30363d] transition-colors"
             >
-              <SectionHeader icon={<Heart size={16} />} title={`Favorites — ${currentUserFavorites.length} anime`} />
+              <SectionHeader icon={<HeartIcon size={16} />} title={`Favorite — ${currentUserFavorites.length} anime`} />
               <div className="flex gap-3 overflow-x-auto pb-2 hide-scrollbar">
                 {currentUserFavorites.slice(0, 12).map((anime: any) => (
                   <motion.div

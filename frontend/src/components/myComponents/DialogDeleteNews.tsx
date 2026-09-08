@@ -7,7 +7,7 @@ import ActionCard from "./ActionCard";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import type { IAnimeNews } from "@/interfaces/animeNews.types";
 import { useAnimeNewsStore } from "@/store/animeNewsStore";
-import { Trash2 } from "lucide-react";
+import { Trash2Icon } from "lucide-react";
 
 const DialogDeleteNews = ({ news = [] }: { news: IAnimeNews[] }) => {
   const { removeAnimeNews, isLoading } = useAnimeNewsStore();
@@ -40,7 +40,7 @@ const DialogDeleteNews = ({ news = [] }: { news: IAnimeNews[] }) => {
         <form className="space-y-6" onSubmit={handleSubmit}>
           <DialogHeader className="flex flex-row items-center gap-3 space-y-0">
             <div className="bg-red-500/20 p-2 rounded-xl">
-                <Trash2 className="w-6 h-6 text-red-400" />
+                <Trash2Icon className="w-6 h-6 text-red-400" />
             </div>
             <div>
                 <DialogTitle className="text-2xl font-bold text-white">

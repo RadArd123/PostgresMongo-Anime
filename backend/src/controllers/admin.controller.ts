@@ -125,11 +125,24 @@ export const toggleAdmin = async (req: ExtendedRequest, res: Response) => {
         if (isNaN(targetUserId)) {
             return res.status(400).json({ success: false, message: "Invalid user ID" });
         }
+        if (targetUserId === req.user?.id) {
+            return res.status(409).json({ success: false, message: 'You cannot change your own admin role.' });
+        }
 
-        const result = await pool.query(
-            "UPDATE users SET is_admin = NOT COALESCE(is_admin, false) WHERE id = $1 RETURNING id, username, is_admin",
-            [targetUserId]
-        );
+        const client = await pool.connect();
+        let result;
+        try {
+            await client.query('BEGIN');
+            await client.query('SELECT pg_advisory_xact_lock(7610435)');
+            const admins = await client.query('SELECT id FROM users WHERE is_admin = true ORDER BY id');
+            if (admins.rows.length <= 1 && admins.rows.some(row => row.id === targetUserId)) {
+                await client.query('ROLLBACK');
+                return res.status(409).json({ message: 'At least one administrator must remain.' });
+            }
+            result = await client.query('UPDATE users SET is_admin = NOT COALESCE(is_admin, false) WHERE id = $1 RETURNING id, username, is_admin', [targetUserId]);
+            await client.query('COMMIT');
+        } catch (error) { await client.query('ROLLBACK'); throw error; }
+        finally { client.release(); }
 
         if (result.rows.length === 0) {
             return res.status(404).json({ success: false, message: "User not found" });
@@ -149,7 +162,31 @@ export const deleteUser = async (req: ExtendedRequest, res: Response) => {
             return res.status(400).json({ success: false, message: "Invalid user ID" });
         }
 
-        const result = await pool.query("DELETE FROM users WHERE id = $1 RETURNING id, username", [targetUserId]);
+        if (targetUserId === req.user?.id) {
+            return res.status(409).json({ success: false, message: 'You cannot delete your own admin account.' });
+        }
+        const client = await pool.connect();
+        let result;
+        try {
+            await client.query('BEGIN');
+            await client.query('SELECT pg_advisory_xact_lock(7610435)');
+            const admins = await client.query('SELECT id FROM users WHERE is_admin = true ORDER BY id');
+            if (admins.rows.length <= 1 && admins.rows.some(row => row.id === targetUserId)) {
+                await client.query('ROLLBACK');
+                return res.status(409).json({ message: 'At least one administrator must remain.' });
+            }
+            await client.query('SELECT id FROM users WHERE id = $1 FOR UPDATE', [targetUserId]);
+            for (const table of ['reviews', 'favorites', 'watchlists']) {
+                await client.query(`DELETE FROM ${table} WHERE user_id = $1`, [targetUserId]);
+            }
+            // Preserve payment history when an account is removed.
+            await client.query('UPDATE donations SET user_id = NULL WHERE user_id = $1', [targetUserId]);
+            result = await client.query('DELETE FROM users WHERE id = $1 RETURNING id, username', [targetUserId]);
+            await client.query('COMMIT');
+        } catch (error) {
+            await client.query('ROLLBACK');
+            throw error;
+        } finally { client.release(); }
 
         if (result.rows.length === 0) {
             return res.status(404).json({ success: false, message: "User not found" });
@@ -161,4 +198,3 @@ export const deleteUser = async (req: ExtendedRequest, res: Response) => {
         res.status(500).json({ success: false, message: error.message || "Failed to delete user" });
     }
 };
-

@@ -21,7 +21,7 @@ interface ProfileStore {
   fetchProfile: () => Promise<void>;
   fetchActivity: () => Promise<void>;
   updateProfile: (data: { status?: string; avatar_url?: string; banner_url?: string; bio?: string }) => Promise<void>;
-  deleteAccount: () => Promise<void>;
+  deleteAccount: (password: string) => Promise<void>;
 }
 
 export const useProfileStore = create<ProfileStore>((set) => ({
@@ -66,10 +66,10 @@ export const useProfileStore = create<ProfileStore>((set) => ({
     }
   },
 
-  deleteAccount: async () => {
+  deleteAccount: async (password: string) => {
     set({ loading: true, error: null });
     try {
-      await axiosInstance.delete("/auth/delete-account");
+      await axiosInstance.delete("/auth/delete-account", { data: { password } });
       set({ profile: null, loading: false });
       window.location.href = "/";
     } catch (err: any) {

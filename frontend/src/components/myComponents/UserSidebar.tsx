@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { ScrollArea } from "../ui/scroll-area";
 import UserIcon from "./UserIcon";
-import { Home, Shield, User as UserIconLucide, RefreshCw, Search } from "lucide-react";
+import { HomeIcon, ShieldIcon, UserIcon as UserIconLucide, RefreshCwIcon, SearchIcon } from "lucide-react";
 import { axiosInstance } from "@/lib/axios";
 
 export interface AdminUser {
@@ -78,14 +78,14 @@ const UserSidebar: React.FC<UserSidebarProps> = ({ onSelectUser, selectedUserId 
             title="Refresh Users"
             className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-[#161b22] transition-colors"
           >
-            <RefreshCw size={14} className={loading ? "animate-spin text-blue-400" : ""} />
+            <RefreshCwIcon size={14} className={loading ? "animate-spin text-blue-400" : ""} />
           </button>
           <a
             href="/"
-            title="Back to Home"
+            title="Back to HomeIcon"
             className="p-1.5 rounded-lg text-gray-400 hover:text-white hover:bg-[#161b22] transition-colors"
           >
-            <Home size={16} />
+            <HomeIcon size={16} />
           </a>
         </div>
       </div>
@@ -94,19 +94,19 @@ const UserSidebar: React.FC<UserSidebarProps> = ({ onSelectUser, selectedUserId 
       <div className="px-4 py-2.5 bg-[#161b22]/50 border-b border-[#21262d] flex items-center justify-between text-xs font-mono text-gray-400">
         <span>Total: <b className="text-white">{users.length}</b></span>
         <span className="flex items-center gap-1 text-purple-400">
-          <Shield size={12} /> Admins: <b>{adminCount}</b>
+          <ShieldIcon size={12} /> Admins: <b>{adminCount}</b>
         </span>
       </div>
 
       {/* Sidebar Content */}
       <nav className="flex-1 flex flex-col pt-3 overflow-hidden">
-        {/* Search input */}
+        {/* SearchIcon input */}
         <div className="px-3 pb-3">
           <div className="relative">
-            <Search size={14} className="absolute left-3 top-2.5 text-gray-500" />
+            <SearchIcon size={14} className="absolute left-3 top-2.5 text-gray-500" />
             <input
               className="w-full rounded-xl bg-[#161b22] border border-[#21262d] pl-8 pr-3 py-1.5 text-xs text-white placeholder:text-gray-500 outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-all"
-              placeholder="Search users by name/email..."
+              placeholder="SearchIcon users by name/email..."
               value={userSearch}
               onChange={(e) => setUserSearch(e.target.value)}
             />
@@ -117,7 +117,7 @@ const UserSidebar: React.FC<UserSidebarProps> = ({ onSelectUser, selectedUserId 
         <ScrollArea className="flex-1 px-2 pb-4">
           {loading && users.length === 0 ? (
             <div className="py-12 text-center text-xs text-gray-500 space-y-2">
-              <RefreshCw size={20} className="animate-spin mx-auto text-blue-500" />
+              <RefreshCwIcon size={20} className="animate-spin mx-auto text-blue-500" />
               <p>Loading DB users...</p>
             </div>
           ) : (
@@ -140,7 +140,7 @@ const UserSidebar: React.FC<UserSidebarProps> = ({ onSelectUser, selectedUserId 
                       <UserIcon username={user.username} avatarUrl={user.avatarUrl} />
                       {isAdminUser && (
                         <div className="absolute -bottom-1 -right-1 size-4 rounded-full bg-purple-600 border border-[#0d1117] flex items-center justify-center text-white shadow" title="Admin">
-                          <Shield size={10} />
+                          <ShieldIcon size={10} />
                         </div>
                       )}
                     </div>

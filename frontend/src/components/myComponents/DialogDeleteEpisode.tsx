@@ -8,7 +8,7 @@ import type { Episode } from "@/interfaces/episodes.types";
 import { useEpisodeStore } from "@/store/episodeStore";
 import type { Anime } from "@/interfaces/anime.types";
 import { Input } from "../ui/input";
-import { Trash2 } from "lucide-react";
+import { Trash2Icon } from "lucide-react";
 
 interface DialogDeleteEpisodeProps {
   episodes: Episode[];
@@ -27,11 +27,9 @@ const DialogDeleteEpisode = ({ episodes, animes, onFetchEpisodes, resetEpisodes 
   const handleAnimeChange = (value: string) => {
     setAnimeId(value);
     setEpisodeId("");
+    resetEpisodes?.();
     if (value && onFetchEpisodes) {
       onFetchEpisodes(Number(value));
-    }
-    if (resetEpisodes) {
-      resetEpisodes();
     }
   };
 
@@ -61,7 +59,7 @@ const DialogDeleteEpisode = ({ episodes, animes, onFetchEpisodes, resetEpisodes 
         <form className="space-y-6" onSubmit={handleSubmit}>
           <DialogHeader className="flex flex-row items-center gap-3 space-y-0">
             <div className="bg-red-500/20 p-2 rounded-xl">
-                <Trash2 className="w-6 h-6 text-red-400" />
+                <Trash2Icon className="w-6 h-6 text-red-400" />
             </div>
             <div>
                 <DialogTitle className="text-2xl font-bold text-white">

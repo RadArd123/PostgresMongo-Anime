@@ -2,7 +2,7 @@ import AnimeFavWatch from "@/components/myComponents/AnimeFavWatch";
 
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Star, LayoutGrid } from "lucide-react";
+import { StarIcon, LayoutGridIcon } from "lucide-react";
 import { useWatchlistStore } from "@/store/watchlistStore";
 
 const WatchlistPage = () => {
@@ -16,7 +16,7 @@ const WatchlistPage = () => {
     <div className="min-h-screen w-full bg-[#050505] text-slate-100 ">
       
       {/* ---- MAIN WRAPPER ---- */}
-      <div className="flex-1 flex flex-col pl-[130px] md:pl-[150px]">
+      <div className="flex-1 flex flex-col md:pl-[130px] lg:pl-[150px]">
         
 
         <main className="flex-1">
@@ -25,8 +25,8 @@ const WatchlistPage = () => {
             {/* ---- HEADER SECTION ---- */}
             <header className="flex flex-col gap-2">
               <div className="flex items-center gap-2 text-indigo-400 font-medium text-sm tracking-widest uppercase">
-                <Star size={16} fill="currentColor" />
-                <span>Personal List</span>
+                <StarIcon size={16} fill="currentColor" />
+                <span>Listă Personală</span>
               </div>
               <h1 className="text-4xl md:text-5xl font-black tracking-tighter bg-linear-to-r from-white to-slate-500 bg-clip-text text-transparent">
                 Listă de Urmărire
@@ -40,7 +40,7 @@ const WatchlistPage = () => {
               <section className="lg:col-span-10 space-y-6">
                 <div className="flex items-center justify-between border-b border-white/5 pb-4">
                   <div className="flex items-center gap-2">
-                    <LayoutGrid size={20} className="text-slate-400" />
+                    <LayoutGridIcon size={20} className="text-slate-400" />
                     <h2 className="text-xl font-bold">Adaugate Recent</h2>
                   </div>
                   <span className="text-xs text-slate-500 font-mono bg-white/5 px-2 py-1 rounded">
@@ -55,14 +55,14 @@ const WatchlistPage = () => {
                 ) : (
                   <div className="flex flex-col items-center justify-center py-20 bg-white/2 border border-white/5 rounded-3xl">
                     <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-4">
-                        <Star className="text-slate-600" />
+                        <StarIcon className="text-slate-600" />
                     </div>
-                    <p className="text-slate-400 font-medium">Your library is empty</p>
+                    <p className="text-slate-400 font-medium">Biblioteca ta este goală</p>
                     <button 
                       onClick={() => navigate('/browse')}
                       className="mt-4 text-sm bg-white text-black px-6 py-2 rounded-full font-bold hover:bg-indigo-500 hover:text-white transition-colors"
                     >
-                        Browse Anime
+                        Explorează Anime
                     </button>
                   </div>
                 )}

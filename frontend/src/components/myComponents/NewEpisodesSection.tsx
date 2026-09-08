@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Clock, ChevronDown, Loader2 } from "lucide-react";
+import { ClockIcon, ChevronDownIcon, Loader2Icon } from "lucide-react";
 import { useLatestEpisodesStore } from "@/store/latestEpisodesStore";
 
 const formatTimeAgo = (dateString: string) => {
@@ -11,10 +11,10 @@ const formatTimeAgo = (dateString: string) => {
   
   if (diffInHours < 1) {
     const diffInMins = Math.floor(diffInMs / (1000 * 60));
-    return `${diffInMins}m ago`;
+    return `acum ${diffInMins}m`;
   }
   if (diffInHours < 24) {
-    return `${diffInHours}h ago`;
+    return `acum ${diffInHours}h`;
   }
   return date.toLocaleDateString();
 };
@@ -33,9 +33,9 @@ const NewEpisodesSection: React.FC = () => {
         <div className="border-l-4 border-blue-700 pl-4 mb-8 px-4 flex justify-between items-end">
           <div>
             <h1 className="text-white text-2xl md:text-3xl font-extrabold leading-tight">
-              New Episodes
+              Episoade Noi
             </h1>
-            <p className="text-gray-400 mt-2">Recently Added</p>
+            <p className="text-gray-400 mt-2">Adăugate Recent</p>
           </div>
         </div>
 
@@ -74,7 +74,7 @@ const NewEpisodesSection: React.FC = () => {
                     >
                       <path d="M12 .587l3.668 7.431L24 9.748l-6 5.851 1.419 8.301L12 18.896 4.581 23.9 6 15.6 0 9.748l8.332-1.73L12 .587z" />
                     </svg>
-                    <span>Episode {ep.episode_number}</span>
+                    <span>Episodul {ep.episode_number}</span>
                   </span>
                 </div>
               </div>
@@ -82,7 +82,7 @@ const NewEpisodesSection: React.FC = () => {
               {/* time on right */}
               <div className="flex flex-col items-end shrink-0 pl-2">
                 <div className="flex text-xs md:text-sm text-blue-400/80 font-medium bg-blue-900/20 px-3 py-1.5 rounded-full border border-blue-800/30">
-                  <Clock className="w-3.5 h-3.5 mr-1.5 mt-px text-blue-400" />
+                  <ClockIcon className="w-3.5 h-3.5 mr-1.5 mt-px text-blue-400" />
                   <span>{formatTimeAgo(ep.created_at)}</span>
                 </div>
               </div>
@@ -93,7 +93,7 @@ const NewEpisodesSection: React.FC = () => {
         {/* Loading / Show More */}
         <div className="mt-12 flex justify-center">
           {loading && page === 1 ? (
-            <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+            <Loader2Icon className="w-8 h-8 animate-spin text-blue-500" />
           ) : hasMore ? (
             <button
               onClick={() => fetchLatestEpisodes(page + 1)}
@@ -101,16 +101,16 @@ const NewEpisodesSection: React.FC = () => {
               className="group flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white px-8 py-3 rounded-full transition-all active:scale-95 disabled:opacity-50"
             >
               {loading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2Icon className="w-5 h-5 animate-spin" />
               ) : (
                 <>
-                  <span className="font-semibold tracking-wide">Show More</span>
-                  <ChevronDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
+                  <span className="font-semibold tracking-wide">Arată Mai Multe</span>
+                  <ChevronDownIcon className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
                 </>
               )}
             </button>
           ) : episodes.length > 0 ? (
-            <span className="text-gray-500 text-sm font-medium">No more episodes</span>
+            <span className="text-gray-500 text-sm font-medium">Nu mai sunt episoade</span>
           ) : null}
         </div>
       </div>

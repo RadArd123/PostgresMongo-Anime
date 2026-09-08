@@ -1,14 +1,16 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
 import {
-  Bookmark,
-  Clock3,
-  Compass,
-  Heart,
-  Home,
-  LogOut,
-  Menu,
-  UserRoundPen,
-  UserStar,
+  BookmarkIcon,
+  Clock3Icon,
+  CompassIcon,
+  HeartIcon,
+  HomeIcon,
+  LogInIcon,
+  LogOutIcon,
+  MenuIcon,
+  UserIcon,
+  UserRoundPenIcon,
+  UserStarIcon,
 } from "lucide-react";
 
 import { useEffect, useState } from "react";
@@ -19,7 +21,7 @@ import {
 } from "@/components/ui/popover";
 import { useAuthStore } from "@/store/authStore";
 import { useProfileStore } from "@/store/profileStore";
-import zoroAvatar from "@/assets/zoro.jpg";
+import { useChatStore } from "@/store/chatStore";
 import { useNavigate } from "react-router-dom";
 import { SupportModal } from "./SupportModal";
 
@@ -27,8 +29,9 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [openSupport, setOpenSupport] = useState(false);
 
-  const { logout, isLoading, error, isAdmin, checkAuth } = useAuthStore();
+  const { logout, isLoading, error, isAdmin, isAuthenticated } = useAuthStore();
   const { profile, fetchProfile } = useProfileStore();
+  const { initSocket, disconnectSocket } = useChatStore();
 
   const handleLogout = async () => {
     try {
@@ -41,14 +44,21 @@ const Navbar = () => {
     }
   };
   useEffect(() => {
-    checkAuth();
-    if (!profile) {
+    if (isAuthenticated && !profile) {
       fetchProfile();
     }
-  }, [isAdmin, profile, fetchProfile]);
-  console.log("isAdmin in Navbar:", isAdmin);
+  }, [fetchProfile, isAuthenticated, profile]);
 
-  const avatarSrc = profile?.avatar_url || zoroAvatar;
+  // Initialize global socket for real-time notifications on all pages
+  useEffect(() => {
+    if (isAuthenticated) {
+      initSocket();
+    } else {
+      disconnectSocket();
+    }
+  }, [disconnectSocket, initSocket, isAuthenticated]);
+
+  const avatarSrc = profile?.avatar_url;
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   return (
@@ -58,10 +68,10 @@ const Navbar = () => {
         <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
           <button
             className="md:hidden  rounded-lg hover:bg-white/10 transition-colors w-5 h-5 flex items-center justify-center"
-            aria-label="Toggle Menu"
+            aria-label="Toggle MenuIcon"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
           >
-            <Menu className="size-6" />
+            <MenuIcon className="size-6" />
           </button>
 
    
@@ -86,7 +96,7 @@ const Navbar = () => {
                   ></path>
                 </svg>
                 <span className="text-[0px] group-hover:text-sm duration-300">
-                  Buy Me a Coffee
+                  Susține-ne
                 </span>
               </div>
             </div>
@@ -95,84 +105,96 @@ const Navbar = () => {
             <a
               href="/"
               className="p-2 rounded-lg hover:bg-white/10 transition-colors"
-              aria-label="Home"
-              title="Home"
+              aria-label="Acasă"
+              title="Acasă"
             >
-              <Home className="size=5" />
+              <HomeIcon className="size=5" />
             </a>
             <a
               href="/browse"
               className="p-2 rounded-lg hover:bg-white/10 transition-colors"
-              aria-label="Browse"
-              title="Browse"
+              aria-label="Explorează"
+              title="Explorează"
             >
-              <Compass className="size=5" />
+              <CompassIcon className="size=5" />
             </a>
 
             <a
               href="/continue-watching"
               className="p-2 rounded-lg hover:bg-white/10 transition-colors"
-              aria-label="Continue Watching"
-              title="Continue Watching"
+              aria-label="Continuă Vizionarea"
+              title="Continuă Vizionarea"
             >
-              <Clock3 className="size=5" />
+              <Clock3Icon className="size=5" />
             </a>
-            <Popover>
-              <PopoverTrigger asChild>
-                <Avatar className="w-13 h-13 rounded-full overflow-hidden border-9 border-zinc-800 ">
-                  <AvatarImage
-                    src={avatarSrc}
-                    className="w-full h-full object-cover"
-                  />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
-              </PopoverTrigger>
-              <PopoverContent
-                align="end"
-                sideOffset={8}
-                className="w-48 rounded-xl border border-white/10 bg-[#111111cc] backdrop-blur-md p-2 shadow-xl font-semibold"
-              >
-                <div className="flex flex-col text-sm text-white">
-                  <a
-                    href="/profile/edit"
-                    className="flex w-full items-center rounded-lg px-3 py-2 hover:bg-white/5 active:bg-white/10 transition-colors"
-                  >
-                    <UserRoundPen className="mr-2 h-4 w-4" />
-                    Edit Profile
-                  </a>
-                  <a
-                    href="/watchlist"
-                    className="flex w-full items-center rounded-lg px-3 py-2 hover:bg-white/5 active:bg-white/10 transition-colors"
-                  >
-                    <Bookmark className="mr-2 h-4 w-4" />
-                    Bookmarks
-                  </a>
-                  <a
-                    href="/favorites"
-                    className="flex w-full items-center rounded-lg px-3 py-2 hover:bg-white/5 active:bg-white/10 transition-colors"
-                  >
-                    <Heart className="mr-2 h-4 w-4" />
-                    Favorites
-                  </a>
-                  {isAdmin && (
+            {isAuthenticated ? (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <Avatar className="w-13 h-13 rounded-full overflow-hidden border-9 border-zinc-800 cursor-pointer">
+                    <AvatarImage
+                      src={avatarSrc}
+                      className="w-full h-full object-cover"
+                    />
+                    <AvatarFallback className="flex items-center justify-center bg-zinc-800">
+                      <UserIcon className="size-6 text-zinc-400" />
+                    </AvatarFallback>
+                  </Avatar>
+                </PopoverTrigger>
+                <PopoverContent
+                  align="end"
+                  sideOffset={8}
+                  className="w-48 rounded-xl border border-white/10 bg-[#111111cc] backdrop-blur-md p-2 shadow-xl font-semibold"
+                >
+                  <div className="flex flex-col text-sm text-white">
                     <a
-                      href="/admin"
+                      href="/profile/edit"
                       className="flex w-full items-center rounded-lg px-3 py-2 hover:bg-white/5 active:bg-white/10 transition-colors"
                     >
-                      <UserStar className="mr-2 h-4 w-4" />
-                      Admin Panel
+                      <UserRoundPenIcon className="mr-2 h-4 w-4" />
+                      Editează Profilul
                     </a>
-                  )}
-                  <button
-                    onClick={handleLogout}
-                    className="flex w-full items-center border-none rounded-lg px-3 py-2 hover:bg-white/5 active:bg-white/10 transition-colors"
-                  >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Log Out
-                  </button>
-                </div>
-              </PopoverContent>
-            </Popover>
+                    <a
+                      href="/watchlist"
+                      className="flex w-full items-center rounded-lg px-3 py-2 hover:bg-white/5 active:bg-white/10 transition-colors"
+                    >
+                      <BookmarkIcon className="mr-2 h-4 w-4" />
+                      Watchlist
+                    </a>
+                    <a
+                      href="/favorites"
+                      className="flex w-full items-center rounded-lg px-3 py-2 hover:bg-white/5 active:bg-white/10 transition-colors"
+                    >
+                      <HeartIcon className="mr-2 h-4 w-4" />
+                      Favorite
+                    </a>
+                    {isAdmin && (
+                      <a
+                        href="/admin"
+                        className="flex w-full items-center rounded-lg px-3 py-2 hover:bg-white/5 active:bg-white/10 transition-colors"
+                      >
+                        <UserStarIcon className="mr-2 h-4 w-4" />
+                        Admin Panel
+                      </a>
+                    )}
+                    <button
+                      onClick={handleLogout}
+                      className="flex w-full items-center border-none rounded-lg px-3 py-2 hover:bg-white/5 active:bg-white/10 transition-colors"
+                    >
+                      <LogOutIcon className="mr-2 h-4 w-4" />
+                      Deconectare
+                    </button>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            ) : (
+              <a
+                href="/login"
+                className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-sm font-bold text-white transition-all"
+              >
+                <LogInIcon className="size-4" />
+                Autentificare
+              </a>
+            )}
           </nav>
         </div>
       </header>

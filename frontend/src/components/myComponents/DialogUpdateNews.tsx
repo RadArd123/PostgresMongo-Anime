@@ -9,7 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import type { Anime } from "@/interfaces/anime.types";
 import type { IAnimeNews } from "@/interfaces/animeNews.types";
 import { ScrollArea } from "../ui/scroll-area";
-import { Edit } from "lucide-react";
+import { EditIcon } from "lucide-react";
 
 const DialogUpdateNews = ({ animes = [], news = [] }: { animes: Anime[], news: IAnimeNews[] }) => {
   const { updateAnimeNews, isLoading } = useAnimeNewsStore();
@@ -85,7 +85,7 @@ const DialogUpdateNews = ({ animes = [], news = [] }: { animes: Anime[], news: I
           <form className="space-y-6" onSubmit={handleSubmit}>
             <DialogHeader className="flex flex-row items-center gap-3 space-y-0 pb-2">
               <div className="bg-amber-500/20 p-2 rounded-xl">
-                  <Edit className="w-6 h-6 text-amber-400" />
+                  <EditIcon className="w-6 h-6 text-amber-400" />
               </div>
               <div>
                   <DialogTitle className="text-2xl font-bold text-white">

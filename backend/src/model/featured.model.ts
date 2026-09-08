@@ -60,11 +60,11 @@ export const deleteAnimeNews = async (id: string) => {
 export const updateHeroAnime = async (id: string, postgres_anime_id: number, title: string, description: string, original_title: string | null, rating: number) => {
     const result = await pool.query(
         `UPDATE hero_anime 
-         SET postgres_anime_id = COALESCE($1, postgres_anime_id),
-             title = COALESCE($2, title),
-             description = COALESCE($3, description),
-             original_title = COALESCE($4, original_title),
-             rating = COALESCE($5, rating)
+         SET postgres_anime_id = $1,
+             title = $2,
+             description = $3,
+             original_title = $4,
+             rating = $5
          WHERE id = $6 RETURNING *`,
         [postgres_anime_id, title, description, original_title, rating, id]
     );
@@ -74,12 +74,12 @@ export const updateHeroAnime = async (id: string, postgres_anime_id: number, tit
 export const updateSuggestedAnime = async (id: string, postgres_anime_id: number, title: string, description: string | null, views_count: string | null, rating: number | null, badge_label: string) => {
     const result = await pool.query(
         `UPDATE suggested_anime 
-         SET postgres_anime_id = COALESCE($1, postgres_anime_id),
-             title = COALESCE($2, title),
-             description = COALESCE($3, description),
-             views_count = COALESCE($4, views_count),
-             rating = COALESCE($5, rating),
-             badge_label = COALESCE($6, badge_label)
+         SET postgres_anime_id = $1,
+             title = $2,
+             description = $3,
+             views_count = $4,
+             rating = $5,
+             badge_label = $6
          WHERE id = $7 RETURNING *`,
          [postgres_anime_id, title, description, views_count, rating, badge_label, id]
     );
@@ -89,13 +89,13 @@ export const updateSuggestedAnime = async (id: string, postgres_anime_id: number
 export const updateAnimeNews = async (id: string, title: string, sub_title: string | null, body_text: string, tags: string[] | null, related_postgres_anime_id: number | null, rating: number | null, views_text: string | null) => {
     const result = await pool.query(
         `UPDATE anime_news 
-         SET title = COALESCE($1, title),
-             sub_title = COALESCE($2, sub_title),
-             body_text = COALESCE($3, body_text),
-             tags = COALESCE($4, tags),
-             related_postgres_anime_id = COALESCE($5, related_postgres_anime_id),
-             overlay_rating = COALESCE($6, overlay_rating),
-             overlay_views_text = COALESCE($7, overlay_views_text)
+         SET title = $1,
+             sub_title = $2,
+             body_text = $3,
+             tags = $4,
+             related_postgres_anime_id = $5,
+             overlay_rating = $6,
+             overlay_views_text = $7
          WHERE id = $8 RETURNING *`,
          [title, sub_title, body_text, tags, related_postgres_anime_id, rating, views_text, id]
     );

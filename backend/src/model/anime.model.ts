@@ -29,11 +29,22 @@ export const animeModel = {
     },
     deleteAnime: async (id: number): Promise<Anime> => {
       
-        const deleteAnime = await pool.query<Anime>("DELETE FROM animes WHERE id = $1 RETURNING *", [id]);
-        if(deleteAnime.rows.length === 0){
-            throw new Error("Anime not found");
-        }
-        return deleteAnime?.rows[0];
+        const client = await pool.connect();
+        try {
+            await client.query('BEGIN');
+            const existing = await client.query<Anime>('SELECT * FROM animes WHERE id = $1 FOR UPDATE', [id]);
+            if (!existing.rows[0]) throw new Error('Anime not found');
+            // Legacy databases have non-cascading foreign keys on these tables.
+            for (const table of ['reviews', 'favorites', 'watchlists', 'episodes']) {
+                await client.query(`DELETE FROM ${table} WHERE anime_id = $1`, [id]);
+            }
+            await client.query('DELETE FROM animes WHERE id = $1', [id]);
+            await client.query('COMMIT');
+            return existing.rows[0];
+        } catch (error) {
+            await client.query('ROLLBACK');
+            throw error;
+        } finally { client.release(); }
     },
     updateAnime: async (id: number, animeData: Anime): Promise<Anime> => {
         const {title, description, genre, release_year } = animeData;
@@ -44,9 +55,6 @@ export const animeModel = {
              RETURNING *`,
             [title, description, genre, release_year, id]
         );
-        if(updatedAnime.rows.length === 0){
-            throw new Error("Anime not found");
-        }
         return updatedAnime?.rows[0];
     }
 }

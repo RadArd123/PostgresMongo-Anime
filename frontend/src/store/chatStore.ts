@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { axiosInstance } from '../lib/axios';
 import { io, Socket } from 'socket.io-client';
+import { useNotificationStore } from './notificationStore';
 
 export interface ChatMessage {
   id: number;
@@ -41,7 +42,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
     const existingSocket = get().socket;
     if (existingSocket && existingSocket.connected) return;
 
-    const newSocket = io('http://localhost:3000', {
+    const newSocket = io(import.meta.env.VITE_SOCKET_URL || 'http://localhost:3000', {
       withCredentials: true,
       transports: ['websocket', 'polling']
     });
@@ -54,6 +55,11 @@ export const useChatStore = create<ChatState>((set, get) => ({
     newSocket.on('disconnect', () => {
       console.log('Disconnected from live chat socket');
       set({ isConnected: false });
+    });
+
+    // Real-time notification handler
+    newSocket.on('new_notification', (notif: any) => {
+      useNotificationStore.getState().addNotification(notif);
     });
 
     newSocket.on('new_message', (msg: ChatMessage) => {

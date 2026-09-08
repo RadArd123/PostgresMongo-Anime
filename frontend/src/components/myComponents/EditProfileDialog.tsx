@@ -2,8 +2,8 @@ import React, { useState, useRef, useCallback } from "react";
 import { useProfileStore } from "../../store/profileStore";
 import { axiosInstance } from "../../lib/axios";
 import {
-  X, Loader2, AtSign, AlignLeft, CheckCircle2,
-  Upload, Trash2, RefreshCw,
+  XIcon, Loader2Icon, AtSignIcon, AlignLeftIcon, CheckCircle2Icon,
+  UploadIcon, Trash2Icon, RefreshCwIcon,
 } from "lucide-react";
 import {
   InputGroup,
@@ -18,7 +18,7 @@ interface EditProfileDialogProps {
   onClose: () => void;
 }
 
-// ─── Upload state type ────────────────────────────────────
+// ─── UploadIcon state type ────────────────────────────────────
 type UploadState = "idle" | "uploading" | "done" | "error";
 
 // ─── ImageUploader component ──────────────────────────────
@@ -69,7 +69,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       onChange(cloudUrl);
       setState("done");
     } catch (err: any) {
-      setError(err.response?.data?.message || "Upload failed");
+      setError(err.response?.data?.message || "UploadIcon failed");
       setState("error");
     }
   }, [onChange]);
@@ -117,14 +117,14 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
                   onClick={(e) => { e.stopPropagation(); inputRef.current?.click(); }}
                   className="p-2 bg-white/20 rounded-full backdrop-blur-sm hover:bg-white/40 transition"
                 >
-                  <RefreshCw size={14} className="text-white" />
+                  <RefreshCwIcon size={14} className="text-white" />
                 </button>
                 <button
                   type="button"
                   onClick={(e) => { e.stopPropagation(); handleClear(); }}
                   className="p-2 bg-red-500/30 rounded-full backdrop-blur-sm hover:bg-red-500/60 transition"
                 >
-                  <Trash2 size={14} className="text-white" />
+                  <Trash2Icon size={14} className="text-white" />
                 </button>
               </div>
             </div>
@@ -132,10 +132,10 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
         ) : (
           <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-gray-600">
             {state === "uploading" ? (
-              <Loader2 size={24} className="animate-spin text-blue-500" />
+              <Loader2Icon size={24} className="animate-spin text-blue-500" />
             ) : (
               <>
-                <Upload size={22} className={dragOver ? "text-blue-400" : "text-gray-500"} />
+                <UploadIcon size={22} className={dragOver ? "text-blue-400" : "text-gray-500"} />
                 <span className="text-xs">{dragOver ? "Drop to upload" : "Click or drag & drop"}</span>
               </>
             )}
@@ -151,7 +151,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
               exit={{ opacity: 0 }}
               className="absolute inset-0 bg-black/60 flex items-center justify-center"
             >
-              <Loader2 size={28} className="animate-spin text-blue-400" />
+              <Loader2Icon size={28} className="animate-spin text-blue-400" />
             </motion.div>
           )}
         </AnimatePresence>
@@ -165,7 +165,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
               exit={{ opacity: 0 }}
               className="absolute top-2 right-2 bg-green-500 rounded-full p-1"
             >
-              <CheckCircle2 size={12} className="text-white" />
+              <CheckCircle2Icon size={12} className="text-white" />
             </motion.div>
           )}
         </AnimatePresence>
@@ -240,7 +240,7 @@ const EditProfileDialog: React.FC<EditProfileDialogProps> = ({ onClose }) => {
             onClick={onClose}
             className="text-gray-500 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-white/5"
           >
-            <X className="w-5 h-5" />
+            <XIcon className="w-5 h-5" />
           </button>
         </div>
 
@@ -290,7 +290,7 @@ const EditProfileDialog: React.FC<EditProfileDialogProps> = ({ onClose }) => {
                   className="pl-10 pr-16"
                 />
                 <InputGroupAddon align="inline-start">
-                  <AtSign size={15} />
+                  <AtSignIcon size={15} />
                 </InputGroupAddon>
                 <InputGroupAddon align="inline-end">
                   <InputGroupText>{status.length}/60</InputGroupText>
@@ -310,7 +310,7 @@ const EditProfileDialog: React.FC<EditProfileDialogProps> = ({ onClose }) => {
                 <InputGroupAddon align="block-end">
                   <div className="flex items-center justify-between w-full">
                     <span className="flex items-center gap-1.5 text-[11px] text-gray-600">
-                      <AlignLeft size={11} /> Keep it short and fun!
+                      <AlignLeftIcon size={11} /> Keep it short and fun!
                     </span>
                     <span className={`text-[11px] font-mono ${bio.length > maxBio - 30 ? "text-amber-400" : "text-gray-600"}`}>
                       {bio.length}/{maxBio}
@@ -339,9 +339,9 @@ const EditProfileDialog: React.FC<EditProfileDialogProps> = ({ onClose }) => {
             className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-all disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg shadow-blue-500/20 min-w-[130px] justify-center"
           >
             {saved ? (
-              <><CheckCircle2 className="w-4 h-4 text-green-300" /><span className="text-green-300">Saved!</span></>
+              <><CheckCircle2Icon className="w-4 h-4 text-green-300" /><span className="text-green-300">Saved!</span></>
             ) : loading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <Loader2Icon className="w-4 h-4 animate-spin" />
             ) : (
               "Save Changes"
             )}

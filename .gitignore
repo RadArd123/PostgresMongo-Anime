@@ -9,6 +9,8 @@ build/
 # Environment variables
 .env
 .env.local
+.env.*
+!.env.example
 .env.*.local
 *.local
 
@@ -40,6 +42,8 @@ restore_fixed.mjs
 test_parser.mjs
 test_parser2.mjs
 *.tmp
+*.dump
+*.backup
 
 # Uploads temp files
 backend/uploads/tmp-*

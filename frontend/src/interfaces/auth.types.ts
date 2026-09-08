@@ -1,15 +1,14 @@
-export interface DbUser {
-    id: number; // or string if UUID
+export interface AuthUser {
+    id: number;
     username: string;
     email: string;
-    password: string; // The hashed password
-    is_admin: boolean;
-    created_at?: Date; // Optional: if you have timestamps
+    isAdmin: boolean;
 }
 export interface AuthResponse {
-    user: DbUser | null;
+    user: AuthUser | null;
     isAuthenticated: boolean;
-    error?: any;
+    hasCheckedAuth: boolean;
+    error: string | null;
     isLoading: boolean;
     message?: string | null;
     isAdmin: boolean;

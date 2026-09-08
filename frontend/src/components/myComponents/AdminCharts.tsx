@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { motion } from "framer-motion";
-import { PieChart, BarChart3, Activity, Users, Film, Tv, Newspaper, Sparkles } from "lucide-react";
+import { PieChartIcon, BarChart3Icon, ActivityIcon, UsersIcon, VideoIcon, TvIcon, NewspaperIcon, SparklesIcon } from "lucide-react";
 
 interface AdminStats {
   totalUsers: number;
@@ -49,9 +49,9 @@ export const GenreDonutChart: React.FC<{ data: { genre: string; count: number }[
   return (
     <div className="bg-[#0D1117] border border-[#21262d] rounded-2xl p-6 flex flex-col justify-between h-full hover:border-[#30363d] transition-all shadow-xl">
       <div className="flex items-center gap-3 mb-6 pb-3 border-b border-[#21262d]">
-        <PieChart className="text-blue-400 size-5" />
+        <PieChartIcon className="text-blue-400 size-5" />
         <h3 className="font-bold text-white text-base tracking-wide" style={{ fontFamily: "Righteous, cursive" }}>
-          Genre Distribution
+          Distribuția Genurilor
         </h3>
       </div>
 
@@ -97,7 +97,7 @@ export const GenreDonutChart: React.FC<{ data: { genre: string; count: number }[
             </svg>
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
               <span className="text-3xl font-black text-white">{total}</span>
-              <span className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Total Animes</span>
+              <span className="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Total Anime</span>
             </div>
           </div>
 
@@ -118,7 +118,7 @@ export const GenreDonutChart: React.FC<{ data: { genre: string; count: number }[
           </div>
         </div>
       ) : (
-        <div className="text-center py-12 text-gray-500 text-sm">No genre distribution data available.</div>
+        <div className="text-center py-12 text-gray-500 text-sm">Nu există date de distribuție a genurilor.</div>
       )}
     </div>
   );
@@ -126,11 +126,11 @@ export const GenreDonutChart: React.FC<{ data: { genre: string; count: number }[
 
 export const ContentBarChart: React.FC<{ stats: AdminStats }> = ({ stats }) => {
   const items = [
-    { label: "Users", count: stats.totalUsers, icon: <Users size={16} />, color: "bg-blue-500", text: "text-blue-400" },
-    { label: "Animes", count: stats.totalAnimes, icon: <Film size={16} />, color: "bg-red-500", text: "text-red-400" },
-    { label: "Episodes", count: stats.totalEpisodes, icon: <Tv size={16} />, color: "bg-emerald-500", text: "text-emerald-400" },
-    { label: "News", count: stats.totalNews, icon: <Newspaper size={16} />, color: "bg-purple-500", text: "text-purple-400" },
-    { label: "Suggestions", count: stats.totalSuggestions, icon: <Sparkles size={16} />, color: "bg-amber-500", text: "text-amber-400" },
+    { label: "Utilizatori", count: stats.totalUsers, icon: <UsersIcon size={16} />, color: "bg-blue-500", text: "text-blue-400" },
+    { label: "Anime", count: stats.totalAnimes, icon: <VideoIcon size={16} />, color: "bg-red-500", text: "text-red-400" },
+    { label: "Episoade", count: stats.totalEpisodes, icon: <TvIcon size={16} />, color: "bg-emerald-500", text: "text-emerald-400" },
+    { label: "Știri", count: stats.totalNews, icon: <NewspaperIcon size={16} />, color: "bg-purple-500", text: "text-purple-400" },
+    { label: "Sugestii", count: stats.totalSuggestions, icon: <SparklesIcon size={16} />, color: "bg-amber-500", text: "text-amber-400" },
   ];
 
   const maxVal = Math.max(1, ...items.map(i => i.count));
@@ -138,9 +138,9 @@ export const ContentBarChart: React.FC<{ stats: AdminStats }> = ({ stats }) => {
   return (
     <div className="bg-[#0D1117] border border-[#21262d] rounded-2xl p-6 flex flex-col justify-between h-full hover:border-[#30363d] transition-all shadow-xl">
       <div className="flex items-center gap-3 mb-6 pb-3 border-b border-[#21262d]">
-        <BarChart3 className="text-emerald-400 size-5" />
+        <BarChart3Icon className="text-emerald-400 size-5" />
         <h3 className="font-bold text-white text-base tracking-wide" style={{ fontFamily: "Righteous, cursive" }}>
-          Database Overview
+          Prezentare Bază de Date
         </h3>
       </div>
 
@@ -207,13 +207,13 @@ export const ActivityAreaChart: React.FC<{ data: { date: string; count: number }
     <div className="bg-[#0D1117] border border-[#21262d] rounded-2xl p-6 flex flex-col justify-between h-full hover:border-[#30363d] transition-all shadow-xl col-span-1 lg:col-span-2">
       <div className="flex items-center justify-between mb-6 pb-3 border-b border-[#21262d]">
         <div className="flex items-center gap-3">
-          <Activity className="text-purple-400 size-5" />
+          <ActivityIcon className="text-purple-400 size-5" />
           <h3 className="font-bold text-white text-base tracking-wide" style={{ fontFamily: "Righteous, cursive" }}>
-            30-Day Activity Growth
+            Creștere Activitate 30 Zile
           </h3>
         </div>
         <span className="text-xs text-purple-400 bg-purple-500/10 border border-purple-500/20 px-3 py-1 rounded-full font-mono">
-          Live DB Visits
+          Vizite DB Live
         </span>
       </div>
 
@@ -229,7 +229,7 @@ export const ActivityAreaChart: React.FC<{ data: { date: string; count: number }
           {/* Grid lines */}
           <line x1="0" y1={height - 1} x2={width} y2={height - 1} stroke="#21262d" strokeWidth="1" />
           <line x1="0" y1={height / 2} x2={width} y2={height / 2} stroke="#21262d" strokeWidth="1" strokeDasharray="4 4" />
-          <line x1="0" y1="10" x2={width} y2="10" stroke="#21262d" strokeWidth="1" strokeDasharray="4 4" />
+          <line x1="0" y1="10" x2={width} y2={10} stroke="#21262d" strokeWidth="1" strokeDasharray="4 4" />
 
           {/* Area under curve */}
           <motion.polygon
@@ -260,7 +260,7 @@ export const ActivityAreaChart: React.FC<{ data: { date: string; count: number }
             return (
               <g key={d.date} className="group cursor-pointer">
                 <circle cx={x} cy={y} r="4" fill="#c4b5fd" className="group-hover:r-6 transition-all" />
-                <title>{`${d.date}: ${d.count} visits`}</title>
+                <title>{`${d.date}: ${d.count} vizite`}</title>
               </g>
             );
           })}
@@ -268,9 +268,9 @@ export const ActivityAreaChart: React.FC<{ data: { date: string; count: number }
       </div>
 
       <div className="flex items-center justify-between text-xs text-gray-500 pt-3 border-t border-[#21262d] font-mono">
-        <span>{chartData[0]?.date || "30 days ago"}</span>
-        <span>Peak: {maxCount} visits/day</span>
-        <span>{chartData[chartData.length - 1]?.date || "Today"}</span>
+        <span>{chartData[0]?.date || "acum 30 zile"}</span>
+        <span>Maxim: {maxCount} vizite/zi</span>
+        <span>{chartData[chartData.length - 1]?.date || "Astăzi"}</span>
       </div>
     </div>
   );

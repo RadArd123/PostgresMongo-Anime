@@ -1,6 +1,12 @@
 import { Response } from 'express';
 import { ExtendedRequest } from '../interfaces/request.types';
 import { continueWatchingModel } from '../model/continueWatching.model';
+import { pool } from '../config/db';
+
+export const getEpisodeProgress = async (req: ExtendedRequest, res: Response) => {
+  const { rows } = await pool.query('SELECT * FROM continue_watching WHERE user_id = $1 AND episode_id = $2', [req.user!.id, Number(req.params.episodeId)]);
+  res.json({ item: rows[0] || null });
+};
 
 export const addOrUpdateProgress = async (req: ExtendedRequest, res: Response) => {
   try {
@@ -13,6 +19,8 @@ export const addOrUpdateProgress = async (req: ExtendedRequest, res: Response) =
     if (!animeId || !episodeId) {
       return res.status(400).json({ message: "animeId and episodeId are required" });
     }
+    const episode = await pool.query('SELECT id FROM episodes WHERE id = $1 AND anime_id = $2', [episodeId, animeId]);
+    if (!episode.rows[0]) return res.status(404).json({ message: 'Episode not found for this anime' });
 
     const item = await continueWatchingModel.addOrUpdate(
       userId,
