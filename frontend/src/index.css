@@ -123,6 +123,24 @@ body {
   font-family: 'Nunito', sans-serif;
 }
 
+/* Keep text readable on mobile without disabling browser/pinch zoom. */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+@media (max-width: 767px) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  textarea,
+  select {
+    font-size: max(1em, 16px);
+  }
+
+  .hero-title {
+    overflow-wrap: anywhere;
+  }
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Righteous', cursive;
   letter-spacing: 0.02em;

@@ -17,10 +17,10 @@ const AnimeFooter = () => {
       <div className="relative max-w-7xl mx-auto flex flex-col min-h-[500px]">
         
         {/* Top Content Area */}
-        <div className="flex flex-col lg:flex-row justify-between p-12 lg:p-16 z-10">
+        <div className="flex min-w-0 flex-col lg:flex-row justify-between gap-8 p-4 sm:p-8 lg:p-16 z-10" data-testid="footer-content">
           
           {/* Left Side: Brand & Social */}
-          <div className="space-y-6 max-w-sm mb-12 lg:mb-0">
+          <div className="min-w-0 space-y-6 max-w-sm mb-4 lg:mb-0">
             <Link to="/" className="flex items-center gap-2 group">
               <span className="text-3xl font-black text-[#fdfdfd] tracking-wide" style={{ fontFamily: "Righteous, cursive" }}>
                 Ani<span className="text-blue-500">Verse</span>
@@ -44,7 +44,7 @@ const AnimeFooter = () => {
           </div>
 
           {/* Right Side: Links Columns */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-12 lg:gap-24">
+          <div className="grid min-w-0 grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-8 lg:gap-x-12 xl:gap-x-24 [&>div]:min-w-0 [&_a]:break-words">
             
             {/* Column 1 */}
             <div className="flex flex-col space-y-4">
@@ -76,7 +76,7 @@ const AnimeFooter = () => {
         </div>
 
         {/* Bottom Graphic: Tetris Canvas */}
-        <div className="absolute bottom-0 left-0 right-0 h-48 w-full overflow-hidden pointer-events-none opacity-90">
+        <div aria-hidden="true" data-testid="footer-tetris" className="relative mt-auto h-32 md:h-48 w-full shrink-0 overflow-hidden pointer-events-none opacity-90">
           <div 
             className="absolute bottom-0 w-full flex justify-center h-full"
             style={{ paddingBottom: '0px' }}

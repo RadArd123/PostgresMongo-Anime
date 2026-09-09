@@ -20,7 +20,7 @@ const AnimeSuggestion: React.FC = () => {
           </h1>
         </div>
       <div className="max-w-8xl mx-auto rounded-[32px] bg-white/[0.02] border border-white/10  overflow-hidden ">
-        <div className="flex flex-col md:flex-row gap-10 md:gap-16 items-center p-8 lg:p-12">
+        <div className="flex flex-col md:flex-row gap-10 md:gap-16 items-center p-5 sm:p-8 lg:p-12">
           {/* Poster / Image */}
           <div className="relative w-full md:w-1/2 max-w-[600px] shrink-0 group">
             <div className="rounded-2xl overflow-hidden  w-full">
@@ -37,12 +37,12 @@ const AnimeSuggestion: React.FC = () => {
           </div>
 
           {/* Content */}
-          <div className="w-full md:w-1/2 text-white flex flex-col justify-center">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-4 leading-tight">
+          <div className="w-full min-w-0 md:w-1/2 text-white flex flex-col justify-center">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-4 leading-tight break-words">
               {anime.title}
             </h1>
             
-            <div className="flex items-center gap-4 mb-6 text-sm text-gray-300">
+            <div className="flex flex-wrap items-center gap-4 mb-6 text-sm text-gray-300">
               <div className="inline-flex items-center gap-2 bg-yellow-500/10 px-3 py-1.5 rounded-full border border-yellow-500/20">
                 <StarIcon className="w-4 h-4 text-yellow-400" />
                 <strong className="text-yellow-400 font-bold">{anime.rating}</strong>
@@ -58,13 +58,13 @@ const AnimeSuggestion: React.FC = () => {
             </p>
 
             <div className="flex flex-wrap items-center gap-4">
-              <button className="flex items-center gap-3 bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-4 rounded-xl shadow-[0_0_20px_rgba(37,99,235,0.4)] transition-all active:scale-95">
-                <PlayIcon className="w-5 h-5 fill-current" />
+              <button className="flex w-full sm:w-auto min-w-0 items-center justify-center gap-3 bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 sm:px-8 py-4 rounded-xl shadow-[0_0_20px_rgba(37,99,235,0.4)] transition-all active:scale-95">
+                <PlayIcon className="w-5 h-5 shrink-0 fill-current" />
                 Începe Vizionarea
               </button>
 
-              <button className="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white px-6 py-4 rounded-xl transition-all active:scale-95 font-semibold">
-                <BookmarkIcon className="w-5 h-5" />
+              <button className="flex w-full sm:w-auto min-w-0 items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white px-4 sm:px-6 py-4 rounded-xl transition-all active:scale-95 font-semibold">
+                <BookmarkIcon className="w-5 h-5 shrink-0" />
                 Adaugă în Lista de Urmărire
               </button>
             </div>

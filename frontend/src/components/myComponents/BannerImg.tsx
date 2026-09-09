@@ -18,17 +18,19 @@ const BannerImg = () => {
   useEffect(() => {
     if (!api) return;
     setCurrent(api.selectedScrollSnap());
-    api.on("select", () => {
+    const onSelect = () => {
       setCurrent(api.selectedScrollSnap());
-    });
+    };
+    api.on("select", onSelect);
+    return () => { api.off("select", onSelect); };
   }, [api]);
 
   return (
-    <div className="relative w-full h-screen overflow-hidden">
-      <Carousel setApi={setApi} opts={{ align: "start", loop: true }} className="h-full">
-        <CarouselContent className="h-full ">
+    <div className="relative w-full min-w-0 overflow-hidden" data-testid="home-hero">
+      <Carousel setApi={setApi} opts={{ align: "start", loop: true }} aria-label="Featured anime">
+        <CarouselContent className="ml-0 items-stretch">
           {heroAnimes.map((slide, index) => (
-            <CarouselItem key={slide.id} className="h-screen w-full p-0">
+            <CarouselItem key={slide.id} className="w-full p-0 md:h-screen">
               <div
                 className="relative h-full w-full bg-cover bg-center"
                 style={{ backgroundImage: `url(${slide.background_image})` }}
@@ -38,19 +40,19 @@ const BannerImg = () => {
                 <div className="absolute bottom-0 left-0 w-full h-64 bg-linear-to-t from-black to-transparent"/>
 
                 {/* left-aligned card */}
-                <div className="absolute inset-0 flex items-center pl-[120px] md:pl-[140px] pr-6 md:pr-12">
-                  <div className="max-w-2xl rounded-2xl border-none border-transparent bg-transparent text-white">
-                    <div className="p-6 md:p-8">
+                <div className="relative flex min-h-[min(44rem,90svh)] h-full items-end px-5 pt-24 pb-24 sm:px-8 md:absolute md:inset-0 md:min-h-0 md:items-center md:pl-[140px] md:pr-12 md:py-0">
+                  <div className="w-full min-w-0 max-w-2xl rounded-2xl border-none border-transparent bg-transparent text-white">
+                    <div className="md:p-8">
                       <SplitTextAnime
                         englishText={slide.title}
                         japaneseText={slide.original_title}
-                        className="mb-4 text-3xl font-extrabold leading-tight tracking-tight md:text-4xl lg:text-5xl"
+                        className="hero-title mb-4 text-[clamp(1.5rem,7vw,2rem)] font-extrabold leading-tight tracking-tight md:text-4xl lg:text-5xl"
                         isActive={current === index}
                       />
                       <BlurText
                         key={slide.id}
                         text={slide.description || ""}
-                        className="mb-6 max-w-prose text-white/90 md:text-lg"
+                        className="mb-6 max-w-prose text-base leading-relaxed text-white/90 md:text-lg"
                         delay={15}
                         animateBy="words"
                         direction="bottom"
@@ -60,14 +62,14 @@ const BannerImg = () => {
                       />
 
                       {/* badges row */}
-                      <div className="flex flex-wrap items-center gap-3">
+                      <div className="flex flex-wrap items-center gap-3 relative z-10">
                           <div className="inline-flex items-center gap-2 rounded-full bg-yellow-500/15 px-4 py-2 text-sm font-semibold text-yellow-300">
                             <span className="grid h-6 w-6 place-items-center rounded-full bg-yellow-500/30">
                               <StarIcon className="h-4 w-4" />
                             </span>
                             {slide.rating}
                           </div>
-                          <Button variant="default"  className="h-10 w-40 shrink-0 rounded-full bg-blue-700 hover:bg-blue-800 text-neutral-200 shadow-2xl">
+                          <Button variant="default"  className="h-11 w-40 max-w-full shrink-0 rounded-full bg-blue-700 hover:bg-blue-800 text-neutral-200 shadow-2xl md:h-10">
                             <p className="font-extrabold">Start Watching</p>
                           </Button>
                       </div>
@@ -78,8 +80,8 @@ const BannerImg = () => {
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious className="left-[120px] top-1/2 -translate-y-1/2 border-white/30 bg-black/40 text-white hover:bg-black/60" />
-        <CarouselNext className="right-4 top-1/2 -translate-y-1/2 border-white/30 bg-black/40 text-white hover:bg-black/60" />
+        <CarouselPrevious className="left-5 top-auto bottom-5 size-11 translate-y-0 border-white/30 bg-black/40 text-white hover:bg-black/60 md:left-[120px] md:top-1/2 md:bottom-auto md:size-8 md:-translate-y-1/2" />
+        <CarouselNext className="right-5 top-auto bottom-5 size-11 translate-y-0 border-white/30 bg-black/40 text-white hover:bg-black/60 md:right-4 md:top-1/2 md:bottom-auto md:size-8 md:-translate-y-1/2" />
       </Carousel>
     </div>
   );

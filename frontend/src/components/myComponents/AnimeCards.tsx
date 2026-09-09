@@ -47,7 +47,7 @@ const AnimeCards = ({ title, animes }: { title: string; animes: Anime[] }) => {
         opts={{ align: "start" }}
         className="w-full relative group/buttons  "
       >
-        <CarouselContent className="w-full overflow-x-scroll hide-scrollbar cursor-grab select-none ">
+        <CarouselContent>
           {animes.map((anime) => (
               <CarouselItem
                 key={anime.id}

@@ -21,6 +21,7 @@ const MainLayout = () => {
       {/* ─── FLOATING MOBILE MENU BUTTON ─── */}
       <button
         onClick={() => setMobileMenuOpen(true)}
+        aria-label="Deschide meniul"
         className="md:hidden fixed top-4 left-4 z-50 p-2.5 rounded-2xl bg-black/40 backdrop-blur-md border border-white/10 text-white hover:text-blue-400 hover:bg-black/60 shadow-lg transition-all"
       >
         <MenuIcon className="size-6" />
@@ -45,8 +46,8 @@ const MainLayout = () => {
       </div>
 
       {/* ─── MAIN CONTENT AREA ─── */}
-      <div className="min-h-screen flex flex-col transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)]">
-        <div className="flex-1 flex flex-col min-h-[calc(100vh-200px)] relative">
+      <div className="w-full min-w-0 min-h-screen flex flex-col transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)]">
+        <div className="min-w-0 flex-1 flex flex-col min-h-[calc(100vh-200px)] relative">
           <Outlet />
         </div>
         <div className="px-4 md:pr-16">
