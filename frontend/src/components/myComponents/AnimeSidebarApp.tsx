@@ -27,6 +27,7 @@ type AnimeSidebarProps = {
   collapsed: boolean;
   setCollapsed: (v: boolean) => void;
   loading?: boolean;
+  mobile?: boolean;
 };
 
 
@@ -302,13 +303,14 @@ const BottomActions = ({ collapsed }: { collapsed?: boolean }) => {
 // ──────────────────────────────────────────────────────────────────────────────
 // Main sidebar wrapper (The sleek glassmorphism capsule)
 // ──────────────────────────────────────────────────────────────────────────────
-const AnimeSidebar = ({ collapsed, setCollapsed, loading = false }: AnimeSidebarProps) => {
+const AnimeSidebar = ({ collapsed, setCollapsed, loading = false, mobile = false }: AnimeSidebarProps) => {
   return (
     // The wrapper creates the margin around the sidebar to make it "float"
-    <div className="h-full py-4 pl-4 pr-2 relative group/sidebar">
+    <div className="h-full min-h-0 py-4 pl-4 pr-2 relative group/sidebar">
 
       {/* Toggle Button */}
       <button
+        aria-label={mobile ? "Închide meniul" : collapsed ? "Extinde meniul" : "Restrânge meniul"}
         onClick={() => setCollapsed(!collapsed)}
         className="absolute -right-2 top-1/2 -translate-y-1/2 z-50 bg-neutral-800 border border-white/10 rounded-full p-1.5 shadow-xl text-white hover:bg-neutral-700 transition-colors"
       >
@@ -321,15 +323,16 @@ const AnimeSidebar = ({ collapsed, setCollapsed, loading = false }: AnimeSidebar
           "relative flex flex-col h-full",
           // Extremely sleek glassmorphism background
           "bg-[#ffffff03] backdrop-blur-[40px] border border-white/[0.08] shadow-[0_8px_32px_rgba(0,0,0,0.4)]",
-          "w-full transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)]",
+          "w-full",
+          mobile ? "transition-none" : "transition-all duration-500 ease-[cubic-bezier(0.2,0.8,0.2,1)]",
           // Ultra rounded capsule aesthetic
           collapsed ? "rounded-[40px]" : "rounded-[32px]",
           "overflow-hidden",
         ].join(" ")}
       >
         {/* Hide scrollbar on the main area too */}
-        <div className="h-full w-full flex flex-col overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-          <div className="flex flex-col min-h-[calc(100vh-32px)]">
+        <div className="h-full min-h-0 w-full flex flex-col overflow-y-auto overscroll-contain [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+          <div className="flex flex-col min-h-full shrink-0">
             <ProfileHeader collapsed={collapsed} />
             <NavigationMenu collapsed={collapsed} />
             <ContinueWatchingCard collapsed={collapsed} loading={loading} />

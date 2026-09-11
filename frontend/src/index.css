@@ -3,6 +3,64 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Keep the glass backdrop intact while the mobile drawer moves. The generic
+   enter/exit keyframes also animate filter/opacity, creating a backdrop root. */
+.mobile-sidebar-sheet,
+.mobile-sidebar-overlay {
+  --sidebar-motion-duration: 280ms;
+  --sidebar-motion-easing: cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation-duration: var(--sidebar-motion-duration);
+  animation-timing-function: var(--sidebar-motion-easing);
+  transition: none;
+}
+
+.mobile-sidebar-sheet {
+  height: 100dvh;
+}
+
+.mobile-sidebar-sheet[data-state="open"] {
+  animation-name: mobile-sidebar-in;
+}
+
+.mobile-sidebar-sheet[data-state="closed"] {
+  animation-name: mobile-sidebar-out;
+}
+
+.mobile-sidebar-overlay[data-state="open"] {
+  animation-name: mobile-sidebar-overlay-in;
+}
+
+.mobile-sidebar-overlay[data-state="closed"] {
+  animation-name: mobile-sidebar-overlay-out;
+}
+
+@keyframes mobile-sidebar-in {
+  from { transform: translate3d(-100%, 0, 0); }
+  to { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes mobile-sidebar-out {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-100%, 0, 0); }
+}
+
+@keyframes mobile-sidebar-overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes mobile-sidebar-overlay-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobile-sidebar-sheet,
+  .mobile-sidebar-overlay {
+    animation: none;
+  }
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

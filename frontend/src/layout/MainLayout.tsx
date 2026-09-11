@@ -1,7 +1,7 @@
 import { lazy, Suspense, useState, useEffect } from "react";
 import SidebarApp from "../components/myComponents/AnimeSidebarApp";
 import { Outlet, useLocation } from "react-router-dom";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { MenuIcon } from "lucide-react";
 
 const AnimeFooter = lazy(() => import("../components/myComponents/AnimeFooter"));
@@ -18,19 +18,24 @@ const MainLayout = () => {
 
   return (
     <>
-      {/* ─── FLOATING MOBILE MENU BUTTON ─── */}
-      <button
-        onClick={() => setMobileMenuOpen(true)}
-        aria-label="Deschide meniul"
-        className="md:hidden fixed top-4 left-4 z-50 p-2.5 rounded-2xl bg-black/40 backdrop-blur-md border border-white/10 text-white hover:text-blue-400 hover:bg-black/60 shadow-lg transition-all"
-      >
-        <MenuIcon className="size-6" />
-      </button>
-
       {/* ─── MOBILE OFFCANVAS SIDEBAR ─── */}
       <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
-        <SheetContent side="left" className="p-0 bg-transparent border-none w-[320px] max-w-[85vw]">
-          <SidebarApp collapsed={false} setCollapsed={() => {}} />
+        <SheetTrigger asChild>
+          <button
+            aria-label="Deschide meniul"
+            className="md:hidden fixed top-4 left-4 z-50 p-2.5 rounded-2xl bg-black/40 backdrop-blur-md border border-white/10 text-white hover:text-blue-400 hover:bg-black/60 shadow-lg transition-colors data-[state=open]:invisible"
+          >
+            <MenuIcon className="size-6" />
+          </button>
+        </SheetTrigger>
+        <SheetContent
+          side="left"
+          aria-describedby={undefined}
+          overlayClassName="mobile-sidebar-overlay"
+          className="mobile-sidebar-sheet p-0 bg-transparent border-none w-[320px] max-w-[85vw] [&>button]:text-white"
+        >
+          <SheetTitle className="sr-only">Meniu principal</SheetTitle>
+          <SidebarApp collapsed={false} setCollapsed={() => setMobileMenuOpen(false)} mobile />
         </SheetContent>
       </Sheet>
 
